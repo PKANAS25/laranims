@@ -36,7 +36,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/subsCheck', 'SubscriptionController@subsCheck');
     Route::post('/student/subscription/add/{studentId}/{standard}', 'SubscriptionController@store');
 
-     
+    Route::get('/student/invoice/add/{studentId}', 'InvoiceController@add'); 
 
     Route::get('users','UsersController@index');
 	Route::get('users/{id?}/edit', 'UsersController@edit');

@@ -88,7 +88,7 @@ class StudentsController extends Controller
         $today =  date('Y-m-d'); 
 
         $student = new Student(array(
-            'full_name' => $request->get('fullname'),
+            'full_name' => ucwords(strtolower($request->get('fullname'))),
             'full_name_arabic' => $request->get('full_name_arabic'),
             'current_grade' => $request->get('current_grade'),
             'branch' => $branch,

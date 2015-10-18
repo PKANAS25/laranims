@@ -45,7 +45,7 @@ session(['subtitle' => 'enroll']); ?>
 
                                 @if (session('status'))
                                     <div class="alert alert-success">
-                                        {{!! session('status')." - Click" !!}} <a href="{!! action('StudentsController@profile', base64_encode(session('student'))) !!}">here</a> to view student details 
+                                        {{ session('status')." - Click" }} <a href="{!! action('StudentsController@profile', base64_encode(session('student'))) !!}">here</a> to view student details 
                                     </div>
                                 @endif
 

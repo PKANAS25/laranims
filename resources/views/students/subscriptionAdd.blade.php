@@ -79,6 +79,7 @@ session(['subtitle' => '']); ?>
                                         <div class="radio-inline">
                                             <label>
                                                 <input type="radio" name="trans" value="1" id="radio-required" data-fv-notempty="true" /> Round Trip
+                                            </label>    
                                         </div>
                                         <div class="radio-inline">
                                             <label>

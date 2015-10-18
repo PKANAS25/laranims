@@ -45,7 +45,7 @@ class subscriptionController extends Controller
                           
 
 
-        return view('students.subscription_add',compact('studentId','groups','offers','standard'));
+        return view('students.subscriptionAdd',compact('studentId','groups','offers','standard'));
     }
 
     /**

@@ -54,7 +54,7 @@ session(['subtitle' => '']); ?>
                             </div>
                             
                             <div class="checkbox m-b-5 m-t-0">
-                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a href="javascript:;" class="btn btn-success btn-xs m-r-5">New Payment</a> 
+                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a  href="{!! action('InvoiceController@add', base64_encode($student->student_id) ) !!}" class="btn btn-success btn-xs m-r-5">New Payment</a> 
                                 @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">New Payment</a> @endif 
                             </div> 
                             
