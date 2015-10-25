@@ -1,4 +1,4 @@
-@extends('students.subsMaster') 
+@extends('formsMaster') 
 
 @section('urlTitles')
 <?php session(['title' => 'Students']);
@@ -194,4 +194,239 @@ session(['subtitle' => '']); ?>
 			<!-- end row -->
 		</div>
     </div>
+    <script>
+        $(document).ready(function() {
+            App.init();
+
+
+            $('#start_date').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+            }).on('changeDate', function(e) { 
+            $('#eForm').formValidation('revalidateField', 'start_date');
+            $('#eForm').formValidation('revalidateField', 'subscription_type');
+             
+            });
+
+            
+            
+            
+             
+                                             
+            //$('#eForm').formValidation();
+
+            $('#eForm').formValidation({
+
+                message: 'This value is not valid',
+                fields:{
+                    
+
+                    subscription_type: {
+                     
+                     
+                     validators: {
+                     
+                     notEmpty: {},
+                     remote: {
+                        url: '/subsCheck' ,
+                        data: function(validator, $field, value) {
+                            return {
+                                start_date: validator.getFieldElements('start_date').val(),
+                                studentId: {{$studentId}}
+                            };
+                        }
+
+                    }
+                }
+            },
+
+                    start_date: {
+                     threshold: 5,
+                     verbose: false,
+                     
+                     validators: {
+                     
+                     notEmpty: {},
+                     remote: {
+                        url: '/subsCheck' ,
+                        data: function(validator, $field, value) {
+                            return {
+                                subscription_type: validator.getFieldElements('subscription_type').val(),
+                                studentId: {{$studentId}}
+                            };
+                        }
+
+                    }
+                }
+            },
+
+
+            discount_reason: {
+                  
+                    validators: {
+                       
+                             callback: {
+                            message: 'You must provide a reason for discount',
+                            callback: function(value, validator, $field) {
+                                var discount = $('#eForm').find('[name="discount"]').val();
+                               if(discount>0 && value==0)
+                                return false;
+                            else return true;
+                            }
+                        }
+                    }
+                }
+
+            
+
+
+        }                
+ 
+    }).on('change', '[name="subscription_type"]', function(e) {
+       $('#eForm').formValidation('revalidateField', 'start_date');
+    })
+    .on('keyup', '[name="discount"]', function(e) {
+       $('#eForm').formValidation('revalidateField', 'discount_reason');
+    })
+    .on('change', '[name="offer"]', function(e) { 
+          if($('#eForm').find('[name="offer"]').val()==0)
+          { 
+              document.getElementById('discount').disabled = false;
+              document.getElementById('discount_reason').disabled = false;  
+         }
+         else{
+            document.getElementById('discount').value = "0";
+            document.getElementById('discount').disabled = true;
+            document.getElementById('discount_reason').disabled = true;
+            document.getElementById('discount_reason').selectedIndex = 0;
+         }
+    })
+     
+    // This event will be triggered when the field passes given validator
+    .on('success.validator.fv', function(e, data) {
+        // data.field     --> The field name
+        // data.element   --> The field element
+        // data.result    --> The result returned by the validator
+        // data.validator --> The validator name
+        
+
+        if (data.field === 'start_date'
+            && data.validator === 'remote'
+            && (data.result.available === false || data.result.available === 'false'))
+        {
+
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-success')
+                .addClass('has-warning')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="start_date"]')
+                    .show();
+
+
+
+        }
+
+
+        if (data.field === 'start_date'
+            && data.validator === 'remote'
+            && (data.result.available === true || data.result.available === 'true'))
+        {
+             
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-warning')
+                .addClass('has-success')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="start_date"]')
+
+                    .show();
+        }
+
+        //--------------------------------------------------------------------------------------------------------
+        if (data.field === 'subscription_type'
+            && data.validator === 'remote'
+            && (data.result.available === false || data.result.available === 'false'))
+        {
+
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-success')
+                .addClass('has-warning')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="subscription_type"]')
+                    .show();
+        }
+
+
+        if (data.field === 'subscription_type'
+            && data.validator === 'remote'
+            && (data.result.available === true || data.result.available === 'true'))
+        {
+             
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-warning')
+                .addClass('has-success')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="subscription_type"]')
+                    .show();
+        }
+
+         
+
+
+    })
+    // This event will be triggered when the field doesn't pass given validator
+    .on('err.validator.fv', function(e, data) { 
+         
+        // We need to remove has-warning class
+        // when the field doesn't pass any validator
+        if (data.field === 'start_date') {
+            data.element
+                .closest('.form-group')
+                .removeClass('has-warning')
+                  
+
+        }
+
+        if (data.field === 'subscription_type') {
+            data.element
+                .closest('.form-group')
+                .removeClass('has-warning')
+                  
+
+        }
+
+        
+    });
+
+
+             
+             
+            //fn.datepicker.defaults.format = "yyyy-mm-dd";
+            // FormPlugins.init();  
+
+            
+
+        });
+
+                            
+    </script>
         @endsection

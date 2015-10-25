@@ -41,7 +41,7 @@
 	<link rel="stylesheet" href="/dist/css/formValidation.css"/>
 
     
-    <script type="text/javascript" src="/dist/bootstrap/js/bootstrap.min.js"></script>
+    <!-- <script type="text/javascript" src="/dist/bootstrap/js/bootstrap.min.js"></script>-->
     <script type="text/javascript" src="/dist/js/formValidation.js"></script>
     <script type="text/javascript" src="/dist/js/framework/bootstrap.js"></script>
     <!-- =========================================================================== -->
@@ -105,73 +105,11 @@
 	<script src="/plugins/DataTables/js/jquery.dataTables.js"></script>
 	<script src="/js/table-manage-default.demo.min.js"></script>
 
-	<script src="/js/form-plugins.demo.min.js"></script>
+	<!--<script src="/js/form-plugins.demo.min.js"></script> -->
 	<script src="/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	 
 	<!-- ================== END PAGE LEVEL JS ================== -->
-	<script>
-		$(document).ready(function() {
-			App.init();
-
-
-			$('#dated').datepicker({
-				format: "yyyy-mm-dd",
-				autoclose: true
-			}).on('changeDate', function(e) { 
-			$('#eForm').formValidation('revalidateField', 'dated');           
-             
-			});
-
-            
-            
-			
-			 
-                                             
-			//$('#eForm').formValidation();
-
-			$('#eForm').formValidation({
-
-		        message: 'This value is not valid',
-		        fields:{
-                    
-
-                     
-
-            discount_reason: {
-                  
-                    validators: {
-                       
-                             callback: {
-                            message: 'You must provide a reason for discount',
-                            callback: function(value, validator, $field) {
-                                var discount = $('#eForm').find('[name="discount"]').val();
-                               if(discount>0 && value==0)
-                                return false;
-                            else return true;
-                            }
-                        }
-                    }
-                }
-
-            
-
-
-        }                
- 
-    });
-
-
-			 
-			 
-			//fn.datepicker.defaults.format = "yyyy-mm-dd";
-			 FormPlugins.init();	
-
-		    
-
-		});
-
-							
-	</script>
+	
 	 
 	 
 </body>

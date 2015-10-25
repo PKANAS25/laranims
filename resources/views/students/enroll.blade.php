@@ -1,4 +1,4 @@
-@extends('students.enrollMaster') 
+@extends('formsMaster') 
 
 @section('urlTitles')
 <?php session(['title' => 'Students']);
@@ -288,4 +288,277 @@ session(['subtitle' => 'enroll']); ?>
 			<!-- end row -->
 		</div>
     </div>
+    <script>
+        $(document).ready(function() {
+            App.init();
+
+
+            $('#dob').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+            }).on('changeDate', function(e) { 
+            $('#eForm').formValidation('revalidateField', 'dob');
+            });
+
+            
+            $('#joining_date').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+                }).on('changeDate', function(e) { 
+                    $('#eForm').formValidation('revalidateField', 'joining_date');
+                });
+                                             
+            //$('#eForm').formValidation();
+
+            $('#eForm').formValidation({
+                message: 'This value is not valid',
+                
+
+                fields: {
+                     father_email: {
+                    verbose: false,
+                    validators: {
+                        notEmpty: {
+                            message: 'The email address is required and can\'t be empty'
+                        },
+                        emailAddress: {
+                            message: 'The input is not a valid email address'
+                        },
+                        stringLength: {
+                            max: 512,
+                            message: 'Cannot exceed 512 characters'
+                        },
+                        remote: {
+                            type: 'GET',
+                            url: 'https://api.mailgun.net/v2/address/validate?callback=?',
+                            crossDomain: true,
+                            name: 'address',
+                            data: {
+                                api_key: 'pubkey-83a6-sl6j2m3daneyobi87b3-ksx3q29'
+                            },
+                            dataType: 'jsonp',
+                            validKey: 'is_valid',
+                            message: 'The email is not valid'
+                        }
+                    }
+                },
+                
+                mother_email: {
+                    verbose: false,
+                    validators: {
+                        notEmpty: {
+                            message: 'The email address is required and can\'t be empty'
+                        },
+                        emailAddress: {
+                            message: 'The input is not a valid email address'
+                        },
+                        stringLength: {
+                            max: 512,
+                            message: 'Cannot exceed 512 characters'
+                        },
+                        remote: {
+                            type: 'GET',
+                            url: 'https://api.mailgun.net/v2/address/validate?callback=?',
+                            crossDomain: true,
+                            name: 'address',
+                            data: {
+                                api_key: 'pubkey-83a6-sl6j2m3daneyobi87b3-ksx3q29'
+                            },
+                            dataType: 'jsonp',
+                            validKey: 'is_valid',
+                            message: 'The email is not valid'
+                        }
+                    }
+                },
+                
+                    father_tel: {
+                        validators: {
+                            notEmpty: {},
+                            digits: {},
+                            phone: {
+                                country: 'AE'
+                            }
+                        }
+                    },
+                    father_mob: {
+                        validators: {
+                            notEmpty: {},
+                            digits: {},
+                            phone: {
+                                country: 'AE'
+                            }
+                        }
+                    },
+                    mother_tel: {
+                        validators: {
+                            notEmpty: {},
+                            digits: {},
+                            phone: {
+                                country: 'AE'
+                            }
+                        }
+                    },
+                    mother_mob: {
+                        validators: {
+                            notEmpty: {},
+                            digits: {},
+                            phone: {
+                                country: 'AE'
+                            }
+                        }
+                    },
+
+                    emergency_phone: {
+                        validators: {
+                            notEmpty: {},
+                            digits: {},
+                            phone: {
+                                country: 'AE'
+                            }
+                        }
+                    } ,
+                
+                fullname: {
+                     threshold: 5,
+                     verbose: false,
+                     
+                     validators: {
+                     notEmpty: {},
+                     remote: {
+                        url: '/enrollCheck'
+                    }
+                }
+            },
+                full_name_arabic: {
+                     threshold: 5,
+                     verbose: false,
+                     
+                     validators: {
+                     notEmpty: {},
+                     remote: {
+                        url: '/enrollCheck'
+                    }
+                }
+            }
+        }
+    })
+    // This event will be triggered when the field passes given validator
+    .on('success.validator.fv', function(e, data) {
+        // data.field     --> The field name
+        // data.element   --> The field element
+        // data.result    --> The result returned by the validator
+        // data.validator --> The validator name
+
+        if (data.field === 'fullname'
+            && data.validator === 'remote'
+            && (data.result.available === false || data.result.available === 'false'))
+        {
+
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-success')
+                .addClass('has-warning')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="fullname"]')
+                    .show();
+        }
+
+
+        if (data.field === 'fullname'
+            && data.validator === 'remote'
+            && (data.result.available === true || data.result.available === 'true'))
+        {
+             
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-warning')
+                .addClass('has-success')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="fullname"]')
+                    .show();
+        }
+
+        //------------------------------------------------------------------------------------
+
+        if (data.field === 'full_name_arabic'
+            && data.validator === 'remote'
+            && (data.result.available === false || data.result.available === 'false'))
+        {
+
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-success')
+                .addClass('has-warning')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="full_name_arabic"]')
+                    .show();
+        }
+
+
+        if (data.field === 'full_name_arabic'
+            && data.validator === 'remote'
+            && (data.result.available === true || data.result.available === 'true'))
+        {
+             
+            // The userName field passes the remote validator
+            data.element                    // Get the field element
+                .closest('.form-group')     // Get the field parent
+
+                // Add has-warning class
+                .removeClass('has-warning')
+                .addClass('has-success')
+
+                // Show message
+                .find('small[data-fv-validator="remote"][data-fv-for="full_name_arabic"]')
+                    .show();
+        }
+
+
+    })
+    // This event will be triggered when the field doesn't pass given validator
+    .on('err.validator.fv', function(e, data) { 
+         
+        // We need to remove has-warning class
+        // when the field doesn't pass any validator
+        if (data.field === 'fullname') {
+            data.element
+                .closest('.form-group')
+                .removeClass('has-warning')
+                  
+
+        }
+
+        if (data.field === 'full_name_arabic') {
+            data.element
+                .closest('.form-group')
+                .removeClass('has-warning')
+                  
+
+        }
+    });
+
+
+             
+             
+            //fn.datepicker.defaults.format = "yyyy-mm-dd";
+            // FormPlugins.init();  
+
+            
+
+        });
+
+                            
+    </script>
         @endsection

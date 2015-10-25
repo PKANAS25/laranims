@@ -5,8 +5,7 @@
 <!--<![endif]-->
  
 <head>
-	
-	<meta charset="UTF-8" />
+	<meta charset="utf-8" />
 	<title>NMS V3.0</title>
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
 	<meta content="" name="description" />
@@ -37,23 +36,17 @@
 
 	<script src="/plugins/jquery/jquery-1.9.1.min.js"></script>
 	<!-- ================== END BASE JS ================== -->
-	<style type="text/css">
-	.onlyprint {display: none;}
 
-	@media print { 
-	  .onlyprint {display:table-cell;}
-	  .dataTables_filter label{display: none;}
-	  
-	  a[href]:after 
-	   {
-    	content: none !important;
-  		}
+	<!-- ================Formavalidation.io========================= -->
+	<link rel="stylesheet" href="/dist/css/formValidation.css"/>
 
-	}
-	</style>
-	 
+    
+   <!-- <script type="text/javascript" src="/dist/bootstrap/js/bootstrap.min.js"></script>-->
+    <script type="text/javascript" src="/dist/js/formValidation.js"></script>
+    <script type="text/javascript" src="/dist/js/framework/bootstrap.js"></script>
+    <!-- =========================================================================== -->
 </head>
-<body> 
+<body>
 	<!-- begin #page-loader -->
 	 
 	<!-- end #page-loader -->
@@ -73,12 +66,14 @@
 		 @yield('content')
 		<!-- end #content -->
 		
+        <!-- begin theme-panel -->
          
+        <!-- end theme-panel -->
 		
 		<!-- begin scroll to top btn -->
 		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
 		<!-- end scroll to top btn -->
-	 </div>
+	</div>
 	<!-- end page container -->
 	
 	<!-- ================== BEGIN BASE JS ================== -->
@@ -110,31 +105,11 @@
 	<script src="/plugins/DataTables/js/jquery.dataTables.js"></script>
 	<script src="/js/table-manage-default.demo.min.js"></script>
 
-	<!-- <script src="/js/form-plugins.demo.min.js"></script> -->
+	<!--<script src="/js/form-plugins.demo.min.js"></script> -->
 	<script src="/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	 
 	<!-- ================== END PAGE LEVEL JS ================== -->
-	<script>
-		$(document).ready(function() {
-			App.init(); 
-                                            
-			$('#data-table').dataTable( {
-		        "paging":   false,
-		        "ordering": true,
-		        "info":     false,
-
-		    } );
- 
-		
-			//fn.datepicker.defaults.format = "yyyy-mm-dd";
-			 //FormPlugins.init();	
-
-		    
-
-		});
-
-
-	</script>
+	
 	 
 	 
 </body>

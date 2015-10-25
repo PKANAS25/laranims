@@ -1,4 +1,4 @@
-@extends('students.hoursMaster') 
+@extends('formsMaster') 
 
 @section('urlTitles')
 <?php session(['title' => 'Students']);
@@ -128,4 +128,67 @@ session(['subtitle' => '']); ?>
 			<!-- end row -->
 		</div>
     </div>
+    <script>
+        $(document).ready(function() {
+            App.init();
+
+
+            $('#dated').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+            }).on('changeDate', function(e) { 
+            $('#eForm').formValidation('revalidateField', 'dated');           
+             
+            });
+
+            
+            
+            
+             
+                                             
+            //$('#eForm').formValidation();
+
+            $('#eForm').formValidation({
+
+                message: 'This value is not valid',
+                fields:{
+                    
+
+                     
+
+            discount_reason: {
+                  
+                    validators: {
+                       
+                             callback: {
+                            message: 'You must provide a reason for discount',
+                            callback: function(value, validator, $field) {
+                                var discount = $('#eForm').find('[name="discount"]').val();
+                               if(discount>0 && value==0)
+                                return false;
+                            else return true;
+                            }
+                        }
+                    }
+                }
+
+            
+
+
+        }                
+ 
+    });
+
+
+             
+             
+            //fn.datepicker.defaults.format = "yyyy-mm-dd";
+             //FormPlugins.init();  
+
+            
+
+        });
+
+                            
+    </script>
         @endsection
