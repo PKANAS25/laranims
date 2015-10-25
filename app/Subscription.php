@@ -8,4 +8,5 @@ class Subscription extends Model
 {
 	public $timestamps = false;
     protected $guarded = ['subscription_id'];
+    protected $primaryKey = 'subscription_id';
 }

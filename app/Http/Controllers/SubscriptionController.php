@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use DB;
 use App\Subscription;
+use App\SubscriptionHour;
 use Carbon\Carbon;
 use Auth;
 use Session;
@@ -356,8 +357,150 @@ class subscriptionController extends Controller
             return array($conflict,$end_date);
     }
 
+//-----------------------------------------------------------------------------------------------
+
+public function delete(Request $request,$studentId)
+    {
+        $this->validate($request, [
+        'delete_reason' => 'required|min:4',
+        
+    ]);
+
+        $subscriptionId =  base64_decode($request->subscriptionId);         
+
+        $subscription = Subscription::where('subscription_id',$subscriptionId)->where('locked',0)->first();
+        if($subscription)
+        {
+            $subscription->deleted=1;
+            $subscription->deleted_by=Auth::id();
+            $subscription->delete_reason=$request->delete_reason;
+            $subscription->delete_date=Carbon::now()->toDateString();
+            $subscription->save();
+
+            Session::flash('status', 'Subscription deleted!');              
+          return redirect()->action('StudentsController@profile', [$studentId]) ; 
+        }
+        else{return redirect()->intended('profile/student/'.$studentId)->withErrors(['Technical Error. Contact Administrator']);}
+    }
 
 
+//-----------------------------------------------------------------------------------------------
+
+public function lockUnlock(Request $request)
+    {
+         
+        
+        $subscriptionId =  $request->subscriptionId;         
+
+        $subscription = Subscription::where('subscription_id',$subscriptionId)->first();
+        if($subscription && $request->action=="unlock")
+        {
+            $subscription->locked=0;            
+            $subscription->save();
+            ?>
+            &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="subsLock<?php echo $subscriptionId;?>" value="<?php echo $subscriptionId;?>"> <i class="fa fa-unlock"></i></button>
+            <?php
+          
+        }
+
+        else if($subscription && $request->action=="lock")
+        {
+            $subscription->locked=1;            
+            $subscription->save();
+            ?>
+            &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="subsUnlock<?php echo $subscriptionId;?>" value="<?php echo $subscriptionId;?>"> <i class="fa fa-lock"></i></button>
+            <?php
+          
+        }
+
+    }
+
+//-----------------------------------------------------------------------------------------------
+ public function addHours($studentId,$standard)
+    {
+         
+         
+        return view('students.hoursAdd',compact('studentId','standard'));
+    }
+//-----------------------------------------------------------------------------------------------   
+
+public function saveHours(Request $request,$studentId,$standard)
+    {    
+         
+         $dated =$request->get('dated');
+         $no_of_hours =$request->get('no_of_hours');
+         $studentId = base64_decode($studentId);
+         $standard = base64_decode($standard);
+
+      
+
+         $discount =$request->get('discount');
+         $discount_reason =$request->get('discount_reason'); 
+
+       
+         
+
+
+        $validator = Validator::make($request->all(),[
+            'no_of_hours' => 'required|integer|between:1,24',
+            'dated' => 'required|date_format:Y-m-d',
+             
+         ]    
+        );
+
+        $validator->after(function($validator) use($discount,$discount_reason) { 
+  
+            if($discount>0 && $discount_reason==""){
+                $validator->errors()->add('discount', 'You must provide a reason for discount');
+            }
+        });
+
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+
+        else{
+            $settings = DB::table('payment_settings') 
+            ->select('payment_settings.*') 
+            ->where('standard',$standard ) 
+            ->where('group_id',6) 
+            ->where('branch',Auth::user()->branch ) 
+            ->first();
+
+            $tuition_fee = $no_of_hours*$settings->{'Tuition Fee'};
+                         
+            $thisSubscriptionPay = $tuition_fee-$discount;                        
+            
+            if($thisSubscriptionPay>=0)
+            {
+               // INSERT INTO `subscriptions_hour` (`student_id`,  `enroll_date`, `dated`,`no_of_hours`,`notes`, `discount`, `discount_reason`, `subscribed_by`,`amount`,`current_standard`) VALUES (?,?,?,?,?,?,?,?,?,?)"))
+                       //   
+                                   // $insert_stmt->bind_param('ssssssssss', $student , $_SESSION['current_date'] , $dated, $no_of_hours,$notes,$discount,$discount_reason, $_SESSION['intLoggerIdAdmin'],$thisSubscriptionPay,$standard);  
+
+
+                                $subscriptionHour = new SubscriptionHour(array(
+                               'student_id' => $studentId,
+                               'enroll_date' => Carbon::now()->toDateString(),
+                               'dated' => $dated,
+                               'no_of_hours' => $no_of_hours,
+                               'notes' => $request->notes,
+                               'discount' => $discount,
+                               'discount_reason' => $discount_reason,
+                               'subscribed_by' => Auth::id(),
+                               'amount' => $thisSubscriptionPay,
+                               'current_standard' => $standard
+                               ));
+
+                            $subscriptionHour->save();
+
+                            Session::flash('status', 'Extra hours stay saved!');
+                            return redirect()->action('StudentsController@profile', [base64_encode($studentId)]) ;
+                            
+            }
+        }//else
+    }
+ //-----------------------------------------------------------------------------------------------   
 }
 
 

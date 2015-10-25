@@ -49,7 +49,7 @@ session(['subtitle' => '']); ?>
                             </div>
                             
                             <div class="checkbox m-b-5 m-t-0">
-                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a href="javascript:;" class="btn btn-primary btn-xs m-r-5">Extra Hours</a>  
+                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a href="{!! action('SubscriptionController@addHours', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}" class="btn btn-primary btn-xs m-r-5">Extra Hours</a>  
                                 @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">Extra Hours</a>  @endif 
                             </div>
                             
@@ -81,6 +81,15 @@ session(['subtitle' => '']); ?>
                         <div class="profile-info">
                             <!-- begin table -->
                             <div class="table-responsive">
+                                @if (count($errors) > 0)
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                                 @if (session('status'))
                                     <div class="alert alert-success">
                                         {{ session('status') }}   
@@ -205,7 +214,7 @@ session(['subtitle' => '']); ?>
                                         <th>Transportation</th>
                                         <th>Discount</th>
                                         <th>Amount</th>                                        
-                                        <th>&nbsp;</th>
+                                        <th colspan="2">&nbsp;</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -233,7 +242,38 @@ session(['subtitle' => '']); ?>
                                          ?>
 
                                         <td><a title="{{$detailing}}">{{ $subscription->amount}}</a></td>
-                                        <td>Actions</td>
+                                        <td>@if($subscription->locked==0)&nbsp;&nbsp; &nbsp;&nbsp; <a title="Delete suscription" href="#modal-dialogs{{$subscription->subscription_id}}" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>@endif</td>
+                                            <td>
+                                                <div id="divUnlock{{ $subscription->subscription_id}}">
+                                                    @if(Auth::user()->hasRole('subscriptionUnlock') && $subscription->locked==1)&nbsp;&nbsp; &nbsp;&nbsp;
+                                                        <button class="btn btn-sm" id="subsUnlock{{ $subscription->subscription_id}}" value="{{ $subscription->subscription_id}}"> <i class="fa fa-lock"></i></button>
+                                                    @elseif(Auth::user()->hasRole('subscriptionUnlock') && $subscription->locked==0)&nbsp;&nbsp; &nbsp;&nbsp;
+                                                        <button class="btn btn-sm" id="subsLock{{ $subscription->subscription_id}}" value="{{ $subscription->subscription_id}}"> <i class="fa fa-unlock"></i></button>
+                                                    @endif
+                                                </div>
+                                            <script type="text/javascript">
+                                            $(document.body).on('click', '#subsUnlock{{ $subscription->subscription_id}}', function(e){
+                                                e.preventDefault();
+                                                subscriptionId = $(this).val();
+
+                                                 $.get('/subsLockUnlock',{action:'unlock', subscriptionId:subscriptionId }, function(actionBlade){                      
+                                                    $("#divUnlock{{ $subscription->subscription_id}}").html(actionBlade);
+                                                     
+                                                });
+                                            });
+
+                                            $(document.body).on('click', '#subsLock{{ $subscription->subscription_id}}', function(e){
+                                                e.preventDefault();
+                                                subscriptionId = $(this).val();
+
+                                                 $.get('/subsLockUnlock',{action:'lock', subscriptionId:subscriptionId }, function(actionBlade){                      
+                                                    $("#divUnlock{{ $subscription->subscription_id}}").html(actionBlade);
+                                                     
+                                                });
+                                            });
+                                            </script>
+                                            
+                                        </td>
                                         </tr>
                                         <?php $i++;?>
                                         @endif                                   
@@ -249,7 +289,8 @@ session(['subtitle' => '']); ?>
                                         <td>-</td>
                                         <td><a title="{{$subscription->discount_reason}}">{{$subscription->discount}}</a></td>
                                         <td>{{ $subscription->amount}}</td>
-                                        <td>Actions</td>
+                                        <td></td>
+                                        <td></td>
                                         </tr>
                                         <?php $i++;?>
                                         @endif                                   
@@ -257,6 +298,53 @@ session(['subtitle' => '']); ?>
                                      
                                     </tbody>
                                     </table>
+                                    @foreach($subscriptions as $subscription  )
+                                    @if($subscription->deleted==0   && $subscription->refunded==0 && $subscription->locked==0)
+                                    <!-- #modal-dialog -->
+                                        <div class="modal fade" id="modal-dialogs{{$subscription->subscription_id}}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 class="modal-title">{{$subscription->group_name}}</h4>
+                                                    </div>
+
+                                                     
+                                                    <form autocomplete="OFF" method="post" action="/subscriptionDelete/{{base64_encode($student->student_id)}}" >
+                                                        <div class="modal-body">
+                                                             
+                                                                <input type="hidden" name="_token" value="{!! csrf_token() !!}">   
+                                                                <input type="hidden" name="subscriptionId" value="{!! base64_encode($subscription->subscription_id) !!}">                                                     
+                                                                <input  class="form-control" type="text" id="delete_reasons{{$subscription->subscription_id}}" name="delete_reason" placeholder="Delete Reason"   />
+                                                            
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+                                                            <button disabled type="submit" id="submits{{$subscription->subscription_id}}" class="btn btn-danger">Delete</button>
+                                                        </div>
+                                                    </form>
+                                                     
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script type="text/javascript">
+       
+                                    $('#delete_reasons{{$subscription->subscription_id}}').keyup(function(e){                                    
+                             
+                                        e.preventDefault();
+                                        var value =($(this).val());
+                                        
+                                       if(value!="" && value.length>3)
+                                       $('#submits{{$subscription->subscription_id}}').prop('disabled', false);
+                                       else
+                                       $('#submits{{$subscription->subscription_id}}').prop('disabled', true);
+                                       
+                                    }); 
+                                   </script>  
+                                    @endif
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -432,7 +520,9 @@ session(['subtitle' => '']); ?>
                                                     <td>{{$invoice->discount}}</td>
                                                     <td>{{$invoice->service_charge}}</td>
                                                     <td>{{$invoice->amount_paid}}</td>
-                                                    <td>Actions</td>
+                                                    <td><a title="Print receipt"  href="{!! action('InvoiceController@view', base64_encode($invoice->invoice_id) ) !!}" class="btn btn-sm btn-primary"><i class="fa fa-print"></i></a>
+                                                     @if($invoice->locked==0)&nbsp;&nbsp; &nbsp;&nbsp; <a title="Delete receipt" href="#modal-dialog{{$invoice->invoice_id}}" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>@endif
+                                                    </td>
 
                                                  </tr>
                                                  
@@ -440,6 +530,53 @@ session(['subtitle' => '']); ?>
                                                 @endforeach   
                                     </tbody>
                                     </table>
+                                    @foreach($invoices as $invoice )
+                                    @if($invoice->deleted==0 &&  $invoice->amount_paid>=0 && $invoice->locked==0)
+                                    <!-- #modal-dialog -->
+                                        <div class="modal fade" id="modal-dialog{{$invoice->invoice_id}}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 class="modal-title">Receipt# {{$invoice->invoice_no}}</h4>
+                                                    </div>
+
+                                                     
+                                                    <form autocomplete="OFF" method="post" action="{!! action('InvoiceController@delete', base64_encode($student->student_id) ) !!}" >
+                                                        <div class="modal-body">
+                                                             
+                                                                <input type="hidden" name="_token" value="{!! csrf_token() !!}">   
+                                                                <input type="hidden" name="invoiceId" value="{!! base64_encode($invoice->invoice_id) !!}">                                                     
+                                                                <input  class="form-control" type="text" id="delete_reason{{$invoice->invoice_id}}" name="delete_reason" placeholder="Delete Reason"   />
+                                                            
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+                                                            <button disabled type="submit" id="submit{{$invoice->invoice_id}}" class="btn btn-danger">Delete</button>
+                                                        </div>
+                                                    </form>
+                                                     
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script type="text/javascript">
+       
+                                    $('#delete_reason{{$invoice->invoice_id}}').keyup(function(e){                                    
+                             
+                                        e.preventDefault();
+                                        var value =($(this).val());
+                                        
+                                       if(value!="" && value.length>3)
+                                       $('#submit{{$invoice->invoice_id}}').prop('disabled', false);
+                                       else
+                                       $('#submit{{$invoice->invoice_id}}').prop('disabled', true);
+                                       
+                                    }); 
+                                   </script>  
+                                    @endif
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -650,5 +787,5 @@ session(['subtitle' => '']); ?>
                
           
         </div>
-               
+            
 @endsection

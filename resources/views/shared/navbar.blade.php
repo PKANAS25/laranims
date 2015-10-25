@@ -45,9 +45,9 @@
                             <span>Students</span> 
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="ui_general.html">Grades</a></li>
-                            <li><a href="ui_typography.html">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
-                             <li class="@if(session('subtitle') == 'enroll')   active @endif"><a href="/enroll">Enroll</a></li>
+                            <li class="@if(session('subtitle') == 'grades')   active @endif"><a href="/students/grades">Grades</a></li>
+                            <li class="@if(session('subtitle') == 'search')   active @endif"><a href="/students/search">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
+                            @if(Auth::user()->hasRole('nursery_admin')) <li class="@if(session('subtitle') == 'enroll')   active @endif"><a href="/enroll">Enroll</a></li>@endif
                             <li><a href="ui_unlimited_tabs.html">Attendance</a></li> 
                         </ul>
                     </li>

@@ -9,6 +9,7 @@ class Student extends Model
 	public $timestamps = false;
 
     protected $guarded = ['student_id']; 
+    protected $primaryKey = 'student_id';
 
    /* protected $fillable = ['full_name', 'full_name_arabic', 'current_grade','branch' ,'gender' ,'dob'  ,'joining_date' ,
     'nationality','address','map' ,'father_name','father_tel','father_mob','father_email','father_job' ,'father_workplace' ,

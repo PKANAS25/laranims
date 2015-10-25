@@ -20,6 +20,11 @@ session(['subtitle' => '']); ?>
             
             <!-- begin row -->
             <div class="row">
+                 @if (session('warning'))
+                                    <div class="alert alert-danger">
+                                        {{ session('warning') }}   
+                                    </div>
+                                @endif
                 <!-- begin col-3 -->
                 <div class="col-md-3 col-sm-6">
                     <div class="widget widget-stats bg-green">
@@ -90,7 +95,7 @@ session(['subtitle' => '']); ?>
                             <h4 class="panel-title">Admins</h4>
                         </div>
                         <div class="panel-body">
-                             <div class="table-responsive">{{base64_encode(2417)}}
+                             <div class="table-responsive"> 
                             <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
@@ -114,7 +119,7 @@ session(['subtitle' => '']); ?>
                                         <td>{!! $i !!}</td>
                                         <td>{!! $subs->student_id !!}</td>
                                         <td><a href="{!! action('StudentsController@profile', base64_encode($subs->student_id)) !!}">{!!  $subs->full_name !!} </a></td>
-                                        <td>{!! $subs->current_standard !!}</td>
+                                        <td>{!! $subs->standard !!}</td>
                                         <td>{!! $subs->group_name !!}</td>
                                         <td>{!!  $subs->subscription_type==5 ? date("d-M-y",strtotime($subs->start_date)) : date("d-M-y",strtotime($subs->start_date))." To ".date("d-M-y",strtotime($subs->end_date)) !!}</td>
                                         <td>@if($subs->added)

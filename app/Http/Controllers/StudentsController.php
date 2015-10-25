@@ -14,6 +14,8 @@ use DB;
 
 use File;
 
+use Carbon\Carbon;
+
 use App\Http\Requests\EnrollFormRequest;
 
 class StudentsController extends Controller
@@ -85,7 +87,7 @@ class StudentsController extends Controller
     {
         $branch = Auth::user()->branch;
         $enrolledBy = $id = Auth::id();
-        $today =  date('Y-m-d'); 
+        $today =  Carbon::now()->toDateString();
 
         $student = new Student(array(
             'full_name' => ucwords(strtolower($request->get('fullname'))),
@@ -117,7 +119,9 @@ class StudentsController extends Controller
         ));
         
         $student->save();
-        $studentId = $student->id;
+        $studentId = $student->student_id;//$student->id not working because of custom primary key set in Student model
+
+
 
         if($request->file('fileToUpload') && $studentId){
 
@@ -128,7 +132,32 @@ class StudentsController extends Controller
             );
 
         }
-
+         $msg = ucwords(strtolower($request->get('fullname')))." is successfully enrolled. Welcome to ".Auth::user()->branch_name.".+Please+call+8006877+for+any+enquiries" ;
+              $msg = str_replace(" ", "+", $msg);
+              $msg = str_replace("++", "+", $msg);
+              
+              ///////////////////////////////////////////////Sending SMS to mother/////////////////////////////////////////////////////
+              $mobile_no = preg_replace('/\D/', '', $request->get('mother_mob'));
+              $mobile_no =  ltrim($mobile_no, '0');
+              $mobile_no = "971".$mobile_no; 
+             
+              $url="http://94.56.94.242/api/api_http.php?username=aldana&password=dana960a&senderid=ALDANA&to=$mobile_no&text=$msg&route=6564-Du&type=text";
+                                            $ch = curl_init($url);
+                                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                            $curl_scraped_page = curl_exec($ch);
+                                            curl_close($ch);
+                                             
+             ///////////////////////////////////////////////Sending SMS to father/////////////////////////////////////////////////////
+              $mobile_no = preg_replace('/\D/', '', $request->get('father_mob'));
+              $mobile_no =  ltrim($mobile_no, '0');
+              $mobile_no = "971".$mobile_no; 
+             
+              $url="http://94.56.94.242/api/api_http.php?username=aldana&password=dana960a&senderid=ALDANA&to=$mobile_no&text=$msg&route=6564-Du&type=text";
+                                            $ch = curl_init($url);
+                                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                            $curl_scraped_page = curl_exec($ch);
+                                            curl_close($ch);                                
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                             
 
         return redirect('/enroll')->with(['status' => 'Successfully enrolled!', 'student'=>$studentId]);
 
@@ -154,7 +183,7 @@ class StudentsController extends Controller
     public function profile($studentId)
     {
         $studentId = base64_decode($studentId);
-        $today =  date('Y-m-d'); 
+        $today = Carbon::now()->toDateString();
 
         $student = DB::table('students') 
             ->leftjoin('nationality', 'students.nationality', '=', 'nationality.nation_id')
@@ -224,6 +253,7 @@ class StudentsController extends Controller
                          ->leftjoin('users AS deletion','invoices.deleted_by','=','deletion.id')
                          ->select('invoices.*','issued.name AS issuer','deletion.name AS deleter')
                          ->where('student_id',$studentId)  
+                         ->orderBy('invoice_no','DESC')
                          ->get();  
 //---------------------------------------------------------------------------------------------------------------------------------------------  
 
@@ -240,19 +270,63 @@ class StudentsController extends Controller
  
         return view('students.profile',compact('student','profile_pic','totalPayable','totalPaid','subscriptions','subscriptions_hour','invoices','events'));
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+//---------------------------------------------------------------------------------------------------------------------------------------------            
+    
+    public function searchView()
+    {  
+     
+      return view('students.search');
     }
+//---------------------------------------------------------------------------------------------------------------------------------------------            
 
+    public function searchBind(Request $request)
+    {
+        $keyword = $request->keyword;
+         
+
+           $students = DB::table('students')                   
+            ->leftjoin('classrooms','students.current_grade','=','classrooms.class_id')
+            ->select('students.*','classrooms.standard', 'classrooms.division') 
+            ->where(function($query){
+                 $query->where('students.branch', Auth::user()->branch);
+                 $query->where('students.deleted', 0);
+             })
+             ->where(function($query) use ($keyword){
+                $query->orwhere('full_name', 'like', '%'.$keyword.'%');
+                $query->orWhere('full_name_arabic', 'like', '%'.$keyword.'%');
+                $query->orWhere('student_id', 'like', '%'.$keyword.'%');
+                $query->orWhere('father_mob', 'like', '%'.$keyword.'%');
+                $query->orWhere('father_tel', 'like', '%'.$keyword.'%');
+                $query->orWhere('father_name', 'like', '%'.$keyword.'%');
+                $query->orWhere('mother_mob', 'like', '%'.$keyword.'%');
+                $query->orWhere('mother_tel', 'like', '%'.$keyword.'%');
+                $query->orWhere('mother_name', 'like', '%'.$keyword.'%');
+             })            
+            ->get();
+ if($students)
+ {
+?>
+<table class="table table-striped table-hover table-bordered">
+            <thead><th> Id</th><th>Name</th><th>Name (Ar)</th><th>Grade</th><th>Father's Name</th><th>Mother's Name</th><th>Father's Phone</th><th>Mother's Phone</th><th>&nbsp;</th></thead>
+  <?php  
+  foreach ($students as $student) {?>
+<tr>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->student_id);?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->full_name);?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->full_name_arabic);?></td>
+    <td><?php echo $student->standard."-".$student->division;?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->father_name);?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->mother_name);?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->father_mob);?> / <?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->father_tel);?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->mother_mob);?> / <?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$student->mother_tel);?></td>    
+    <td><a href="/profile/student/<?php echo base64_encode($student->student_id);?>"><i class="fa fa-child text-success"></i></a></td>
+</tr>
+<?php
+         } //foreach ($students as $students   
+     }//if($students)
+     else echo "<br><span class=\"badge badge-danger\"><strong>No matching results found....</strong></span>";
+}
+//---------------------------------------------------------------------------------------------------------------------------------------------            
     /**
      * Remove the specified resource from storage.
      *
