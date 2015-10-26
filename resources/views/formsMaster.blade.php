@@ -45,6 +45,29 @@
     <script type="text/javascript" src="/dist/js/formValidation.js"></script>
     <script type="text/javascript" src="/dist/js/framework/bootstrap.js"></script>
     <!-- =========================================================================== -->
+    <style type="text/css">
+	.onlyprint {display: none;}
+	.onlyprintCenter {display: none;}
+
+	@media print { 
+	  .onlyprint {display:table-cell;}
+	  .onlyprintCenter {display:block;  }
+	  .dataTables_filter label{display: none;}
+	  
+	  a[href]:after 
+	   {
+    	content: none !important;
+  		}
+
+	}
+	</style>
+<SCRIPT LANGUAGE="Javascript">
+		<!---
+		function decision(message, url){
+		if(confirm(message)) location.href = url;
+		}
+		// --->
+	</SCRIPT>
 </head>
 <body>
 	<!-- begin #page-loader -->

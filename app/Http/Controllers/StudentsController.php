@@ -17,6 +17,8 @@ use File;
 use Carbon\Carbon;
 
 use App\Http\Requests\EnrollFormRequest;
+use Session;
+
 
 class StudentsController extends Controller
 {
@@ -327,14 +329,46 @@ class StudentsController extends Controller
      else echo "<br><span class=\"badge badge-danger\"><strong>No matching results found....</strong></span>";
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------            
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+     
+    public function delete($studentId)
     {
-        //
+        $studentId = base64_decode($studentId);
+        $student = Student::select('students.*')
+            ->selectRaw("(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.student_id = ?   AND deleted=0)AS deleteFlag1,
+                         (SELECT COUNT(*) FROM subscriptions_hour WHERE subscriptions_hour.student_id = ?  AND deleted=0)AS deleteFlag2,
+                         (SELECT COUNT(*) FROM invoices WHERE invoices.student_id = ?  AND deleted=0)AS deleteFlag3")->setBindings([$studentId,$studentId,$studentId])
+            ->where('students.student_id',$studentId)             
+            ->first();            
+
+            if(($student->deleteFlag1+$student->deleteFlag2+$student->deleteFlag3)==0)
+            {
+                $student->deleted = 1;
+                $student->deleted_by = Auth::id();
+                $student->save();
+
+                Session::flash('status', 'Student deleted!');
+                return redirect()->back();
+            }
+            else
+                return redirect()->back()->withErrors('This student cannot be deleted!');
     }
+//---------------------------------------------------------------------------------------------------------------------------------------------            
+     
+    public function restore($studentId)
+    {
+        $studentId = base64_decode($studentId);
+        $student = Student::where('student_id',$studentId)->first();            
+        
+        if($student)
+        {
+                $student->deleted = 0;
+                $student->deleted_by = Auth::id();
+                $student->save();
+
+                Session::flash('status', 'Student restored!');
+                return redirect()->back();
+        }
+            else
+                return redirect()->back()->withErrors('Technical Error. Contact Administrator!');
+    }    
 }

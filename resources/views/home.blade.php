@@ -92,7 +92,7 @@ session(['subtitle' => '']); ?>
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
                                  
                             </div>
-                            <h4 class="panel-title">Admins</h4>
+                            <h4 class="panel-title">Active students - Today</h4>
                         </div>
                         <div class="panel-body">
                              <div class="table-responsive"> 

@@ -38,6 +38,7 @@ session(['subtitle' => 'grades']); ?>
                                     <th>Grade</th>
                                     <th>Strength</th>
                                     <th>Advisor</th> 
+                                    <th>&nbsp;</th>
                                     </tr>
                                 </thead>
                                 @foreach($grades as $grade)
@@ -45,6 +46,7 @@ session(['subtitle' => 'grades']); ?>
                                 <td><a href="{!! action('GradesController@students', array(base64_encode($grade->class_id),'active')) !!}">{{$grade->standard."-".ucwords($grade->division)}}</a></td>
                                 <td>{{$grade->strength}}</td>
                                 <td>{{$grade->fullname}}</td>
+                                <td><a title="Click here to edit the attendance of this grade" href="{!! action('GradesController@editAttendance', base64_encode($grade->class_id)) !!}">Attendance</a></td>
                                 </tr>
                                 @endforeach
                                 <tbody> 

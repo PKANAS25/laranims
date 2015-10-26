@@ -7,9 +7,13 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Classroom;
+use App\Student;
+
 use Auth;
 use DB;
 use Carbon\Carbon;
+
+use Session;
 
 class GradesController extends Controller
 {
@@ -47,6 +51,11 @@ class GradesController extends Controller
 
          $grade = Classroom::where('class_id',base64_decode($classId))->first();
 
+         $transferGrades = Classroom::where('class_id','!=',base64_decode($classId))
+                                      ->where('branch',Auth::user()->branch)
+                                      ->orderByRaw("CAST(classrooms.standard as UNSIGNED) ,classrooms.standard , classrooms.division")
+                                      ->get();
+
         if($filter=='active')
          $students = DB::table('subscriptions') 
             ->leftjoin('students', 'subscriptions.student_id', '=', 'students.student_id')
@@ -70,7 +79,7 @@ class GradesController extends Controller
         elseif($filter=='all' || $filter=='deleted')
         {
          ($filter=='all')?$deleted=0:$deleted=1;
-         
+           
          $students = DB::table('students') 
             ->leftjoin('nationality', 'students.nationality', '=', 'nationality.nation_id')
             ->select('students.*', 'nationality.nationality as nation')
@@ -79,37 +88,69 @@ class GradesController extends Controller
             ->selectRaw("(SELECT SUM(non_refundable_amount) FROM subscriptions WHERE subscriptions.student_id = students.student_id AND refunded=1 AND deleted=0)AS totalRefunded")
             ->selectRaw("(SELECT SUM(amount) FROM subscriptions_hour WHERE subscriptions_hour.student_id = students.student_id AND   deleted=0)AS totalHours")
             ->selectRaw("(SELECT SUM(subscriptions_amount) FROM invoices WHERE invoices.student_id = students.student_id   AND deleted=0 AND NOT(cheque=1 AND cheque_bounce=1))AS totalPaid")
+            ->selectRaw("(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.student_id = students.student_id   AND deleted=0)AS deleteFlag1")
+            ->selectRaw("(SELECT COUNT(*) FROM subscriptions_hour WHERE subscriptions_hour.student_id = students.student_id   AND deleted=0)AS deleteFlag2")
+            ->selectRaw("(SELECT COUNT(*) FROM invoices WHERE invoices.student_id = students.student_id   AND deleted=0)AS deleteFlag3")
             ->where('students.current_grade',base64_decode($classId)) 
             ->where('students.deleted',$deleted)            
             ->orderBy('students.student_id')            
             ->get();
         }
 
-             return view('students.studentsGrade',compact('students','classId','grade','filter'));
+             return view('students.studentsGrade',compact('students','classId','grade','filter','transferGrades'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+  //-----------------------------------------------------------------------------------------------------------------------------------
+
+    public function gradeTransfer(Request $request)
     {
-        //
+        $studentIds = $request->get('studentIds');
+        $newGrade = $request->get('newGrade');
+
+        if($studentIds && $request->get('newGrade'))
+        {
+            Student::whereIn("student_id", $studentIds)->update(array('current_grade' => $newGrade));
+            
+            Session::flash('status', 'Selected students are successfully transfered !');
+            return redirect()->back();
+        }
+
+         else
+                return redirect()->back()->withErrors('Invalid operation!');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+ //-----------------------------------------------------------------------------------------------------------------------------------
+
+
+    public function editAttendance($classId)
     {
-        //
-    }
+        $today = Carbon::now()->toDateString();
+        
+        $grade = Classroom::where('class_id',base64_decode($classId))->first();
 
+      //  SELECT * FROM attendance where student_id = '$student' and dated='".$_SESSION['current_date']."'");
+  
+        $students = DB::table('subscriptions') 
+            ->leftjoin('students', 'subscriptions.student_id', '=', 'students.student_id')
+            ->leftjoin('attendance',function($join) use($today)
+                {
+                    $join->on('attendance.student_id', '=', 'students.student_id')
+                    ->where('attendance.dated', '=', $today);
+                })
+            ->select('ssubscriptions.*','students.full_name','students.full_name_arabic')
+            ->selectRaw("count(attendance.attendance_id) AS saved , attendance.reason AS reason")
+            ->where('subscriptions.deleted',0 )
+            ->where('refunded',0) 
+            ->where('students.current_grade',base64_decode($classId)) 
+            ->where('students.deleted',0) 
+            ->whereRaw("'$today' Between subscriptions.start_date AND subscriptions.end_date")
+            ->orderBy('current_standard', 'ASC')
+            ->orderBy('students.student_id')            
+            ->get();
+
+            return view('students.attendanceEdit',compact('students','classId','grade'));
+    }
+ //-----------------------------------------------------------------------------------------------------------------------------------
     /**
      * Show the form for editing the specified resource.
      *

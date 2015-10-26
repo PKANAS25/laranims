@@ -34,6 +34,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/searchBind', 'StudentsController@searchBind');
 
     Route::get('/profile/student/{studentId}', 'StudentsController@profile');
+
+    Route::get('/student/{studentId}/delete', 'StudentsController@delete');
+    Route::get('/student/{studentId}/restore', 'StudentsController@restore');
 //---------------------------------------SubscriptionController---------------------------------------
     Route::get('/student/subscription/add/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@add']);
     Route::get('/subsCheck', 'SubscriptionController@subsCheck');
@@ -61,6 +64,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
  //---------------------------------------GradesController-------------------------------------------------------------
     Route::get('/students/grades', 'GradesController@index');
     Route::get('/students/grade/{classId}/students/{filter}', 'GradesController@students');    
+    Route::post('/students/grade/{classId}/students/{filter}', 'GradesController@gradeTransfer');
+
+    Route::get('/students/grade/{classId}/attendance', 'GradesController@editAttendance');
 //---------------------------------UsersController--------------------------------------------------------------------
     Route::get('users','UsersController@index');
 	Route::get('users/{id?}/edit', 'UsersController@edit');
