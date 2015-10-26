@@ -129,16 +129,11 @@ class GradesController extends Controller
         $grade = Classroom::where('class_id',base64_decode($classId))->first();
 
       //  SELECT * FROM attendance where student_id = '$student' and dated='".$_SESSION['current_date']."'");
-  
+         
         $students = DB::table('subscriptions') 
             ->leftjoin('students', 'subscriptions.student_id', '=', 'students.student_id')
-            ->leftjoin('attendance',function($join) use($today)
-                {
-                    $join->on('attendance.student_id', '=', 'students.student_id')
-                    ->where('attendance.dated', '=', $today);
-                })
-            ->select('ssubscriptions.*','students.full_name','students.full_name_arabic')
-            ->selectRaw("count(attendance.attendance_id) AS saved , attendance.reason AS reason")
+            ->select('subscriptions.*','students.full_name','students.full_name_arabic')
+            ->selectRaw("(SELECT COUNT(*)  FROM attendance WHERE attendance.student_id = students.student_id AND dated=?) AS saved ")->setBindings([$today])
             ->where('subscriptions.deleted',0 )
             ->where('refunded',0) 
             ->where('students.current_grade',base64_decode($classId)) 

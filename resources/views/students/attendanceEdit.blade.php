@@ -77,7 +77,7 @@ session(['subtitle' => 'grades']); ?>
                                    <option value="0">Present</option>
                                    <option value="1" @if($student->saved) selected @endif>Absent</option>
                                    </select>&nbsp;&nbsp;&nbsp;
-                                   <input type="text" class="input-medium" name="reason{{$student->student_id}}" value="{{$student->reason}}"></td>
+                                   <input type="text" class="input-medium" name="reason{{$student->student_id}}" value=""></td>
                                </tr>
                               @endforeach
                                                              
