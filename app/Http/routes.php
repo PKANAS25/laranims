@@ -67,6 +67,10 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/students/grade/{classId}/students/{filter}', 'GradesController@gradeTransfer');
 
     Route::get('/students/grade/{classId}/attendance', 'GradesController@editAttendance');
+    Route::post('/students/grade/{classId}/attendance', 'GradesController@saveAttendance');
+
+    Route::get('/students/reports/attendance', 'GradesController@attendanceReportView');
+    Route::post('/students/reports/attendance', 'GradesController@attendanceReport');
 //---------------------------------UsersController--------------------------------------------------------------------
     Route::get('users','UsersController@index');
 	Route::get('users/{id?}/edit', 'UsersController@edit');

@@ -1,4 +1,4 @@
-@extends('formsMaster') 
+@extends('master') 
 
 @section('urlTitles')
 <?php session(['title' => 'Students']);
@@ -70,14 +70,14 @@ session(['subtitle' => 'grades']); ?>
                                 <?php $i++;?>
                                 <tr>
                                 <td>{{$i}}</td>    
-                                <td>{{$student->student_id}}</td>
+                                <td><input type="hidden" name="studentIds[]" value="{{$student->student_id}}">{{$student->student_id}}</td>
                                 <td><a href="{!! action('StudentsController@profile', base64_encode($student->student_id)) !!}">{{$student->full_name}}</a></td>
                                 <td class="hidden-print">{{$student->full_name_arabic}}</td>
-                                <td><select class="input-medium" name="attend{{$student->student_id}}" id="attend{{$student->student_id}}">
+                                <td><select class="input-medium" name="attend[{{$student->student_id}}]" >
                                    <option value="0">Present</option>
                                    <option value="1" @if($student->saved) selected @endif>Absent</option>
                                    </select>&nbsp;&nbsp;&nbsp;
-                                   <input type="text" class="input-medium" name="reason{{$student->student_id}}" value=""></td>
+                                   <input type="text" class="input-medium" name="reason[{{$student->student_id}}]" value="{{$student->reason}}"></td>
                                </tr>
                               @endforeach
                                                              
@@ -102,44 +102,5 @@ session(['subtitle' => 'grades']); ?>
 		</div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            App.init();
-
-            $('#data-table').dataTable( {
-                "paging":   false,
-                "ordering": true,
-                "info":     false,
-
-            } );
-                                             
-            //$('#eForm').formValidation();
-
-            $('#eForm').formValidation({
-                framework: 'bootstrap',
-                err: {
-                    container: '#messages'
-                },
-                fields:{
-                    
-
-                'studentIds[]': {
-                  validators: {
-                    notEmpty: {
-                        message: 'Please select at least one student'
-                    }
-                }
-            } 
-
- 
-
-
-        }                
- 
-    }) 
-      
-        });
-
-                            
-    </script>
+    
         @endsection

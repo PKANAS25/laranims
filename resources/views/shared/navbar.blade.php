@@ -48,7 +48,7 @@
                             <li class="@if(session('subtitle') == 'grades')   active @endif"><a href="/students/grades">Grades</a></li>
                             <li class="@if(session('subtitle') == 'search')   active @endif"><a href="/students/search">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             @if(Auth::user()->hasRole('nursery_admin')) <li class="@if(session('subtitle') == 'enroll')   active @endif"><a href="/enroll">Enroll</a></li>@endif
-                            <li><a href="ui_unlimited_tabs.html">Attendance</a></li> 
+                            <li class="@if(session('subtitle') == 'attendance')   active @endif"><a href="/students/reports/attendance">Attendance Report</a></li> 
                         </ul>
                     </li>
                     <li class="has-sub">
