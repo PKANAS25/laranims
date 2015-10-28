@@ -89,10 +89,11 @@ session(['subtitle' => 'attendance']); ?>
                                     @endforeach
                                 </tbody>    
                                 </table>
+                                 <a href="javascript:;" onclick="window.print()" class="btn btn-sm btn-success m-b-10 hidden-print"><i class="fa fa-print m-r-5"></i> Print</a>
                               @endif
                               
                               
-                            <a href="javascript:;" onclick="window.print()" class="btn btn-sm btn-success m-b-10 hidden-print"><i class="fa fa-print m-r-5"></i> Print</a>
+                           
 <br>
                         </div> 
                          

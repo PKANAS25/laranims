@@ -16,6 +16,18 @@ Route::post('/', 'Auth\AuthController@authenticate');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 Route::get('/errorLogout', 'Auth\AuthController@errorLogout');
 
+// Password reset link request routes...
+Route::get('password/email', 'Auth\PasswordController@getEmail');
+Route::post('password/email', 'Auth\PasswordController@postEmail');
+
+// Password reset routes...
+Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
+Route::post('password/reset', 'Auth\PasswordController@postReset');
+
+
+
+
+
 Route::group(array('middleware' => 'auth'), function () {
 Route::get('/branching', 'BranchingController@branching');
 Route::post('/branching', 'BranchingController@updateCurrentBranch');
@@ -75,6 +87,12 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('users','UsersController@index');
 	Route::get('users/{id?}/edit', 'UsersController@edit');
 	Route::post('users/{id?}/edit','UsersController@update');
+
+    Route::get('users/register', function () {return view('users.register');});
+    Route::get('/duplicateCheck', 'UsersController@duplicateCheck');
+    Route::get('/branchLoader', 'UsersController@branchLoader'); 
+
+    Route::post('users/register','UsersController@add');
 //-------------------------------RolesController-----------------------------------------------
 	Route::get('roles', 'RolesController@index');
 	Route::get('roles/create', 'RolesController@create');

@@ -334,7 +334,7 @@ class StudentsController extends Controller
     {
         $studentId = base64_decode($studentId);
         $student = Student::select('students.*')
-            ->selectRaw("(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.student_id = ?   AND deleted=0)AS deleteFlag1,
+            ->selectRaw("(SELECT COUNT(*) FROM subscriptions WHERE subscriptions.student_id = ? AND deleted=0)AS deleteFlag1,
                          (SELECT COUNT(*) FROM subscriptions_hour WHERE subscriptions_hour.student_id = ?  AND deleted=0)AS deleteFlag2,
                          (SELECT COUNT(*) FROM invoices WHERE invoices.student_id = ?  AND deleted=0)AS deleteFlag3")->setBindings([$studentId,$studentId,$studentId])
             ->where('students.student_id',$studentId)             

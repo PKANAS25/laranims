@@ -142,6 +142,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li class="@if(session('subtitle') == 'users')   active @endif"><a href="/users">Users</a></li>
+                            <li class="@if(session('subtitle') == 'register')   active @endif"><a href="/users/register">Add Users</a></li>
                             <li class="@if(session('subtitle') == 'Roles')   active @endif"><a href="/roles">Roles</a></li>
                             <li class="@if(session('subtitle') == 'addRoles')   active @endif"><a href="/roles/create">Add Roles</a></li>
                              

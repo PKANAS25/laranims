@@ -23,7 +23,7 @@ class BranchingController extends Controller
        if(Auth::user()->admin_type==1)
         return redirect()->intended('home');
 
-       $branches = Branch::all();
+       $branches = Branch::orderBy('non_nursery')->orderBy('name')->get();
        return view('branching',compact('branches'));
     }
 
