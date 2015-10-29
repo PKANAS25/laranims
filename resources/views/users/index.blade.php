@@ -31,6 +31,11 @@ session(['subtitle' => 'users']); ?>
                             <h4 class="panel-title">Admins</h4>
                         </div>
                         <div class="panel-body">
+                             @if (session('status'))
+                                    <div class="alert alert-success">
+                                     {{ session('status') }} 
+                                    </div>
+                                @endif
                              <div class="table-responsive">
                             <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
@@ -38,6 +43,8 @@ session(['subtitle' => 'users']); ?>
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Username</th>
+                                        <th>Branch</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody> 
@@ -45,8 +52,16 @@ session(['subtitle' => 'users']); ?>
                                      @foreach($users as $user)
                                     <tr>
                                         <td>{!! $i; !!}</td>
-                                        <td><a href="{!! action('UsersController@edit', base64_encode($user->id)) !!}">{!! $user->name !!} </a></td>
+                                        <td>
+                                            @if(Auth::user()->hasRole('Superman'))<a href="{!! action('UsersController@edit', base64_encode($user->id)) !!}">{!! $user->name !!} </a>
+                                            @else{!! $user->name !!}@endif</td>
                                         <td>{!! $user->email !!}</td>
+                                        <td>{{ ($user->admin_type==1) ? $user->branch_name : "Office Staff" }} </td>
+                                        <td>
+                                            @if(Auth::user()->hasRole('user_add'))<a title="Click here to edit type or branch" href="{!! action('UsersController@typeEdit', base64_encode($user->id)) !!}"><i class="fa fa-edit"></i></a>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                             <a href="javascript:decision('Are you sure you want to disable this user?','{!! action('UsersController@disable', base64_encode($user->id)) !!}')"><i class="fa fa-ban"></i></a>
+                                            @endif</td>
                                     </tr>
                                     <?php $i++; ?>
                                 @endforeach

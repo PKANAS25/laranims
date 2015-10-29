@@ -10,7 +10,7 @@ use App\User;
 use App\Role;
 
 use DB;
-use Auth;
+use Auth; 
 
 use App\Http\Requests\UserEditFormRequest;
 use App\Http\Requests\UserRegisterRequest;
@@ -20,11 +20,9 @@ class UsersController extends Controller
     
     public function index()
     {
-        //$users = User::where('active',1)
-        //->where('id','!=','1')
-        //->get();
+        $users = User::where('active',1)->get();
 
-        $users = User::all();
+        //$users = User::all();
         return view('users.index',compact('users'));
     }
 
@@ -38,6 +36,7 @@ class UsersController extends Controller
         $selectedRoles = $user->roles->lists('id')->toArray();
         return view('users.edit', compact('user', 'roles', 'selectedRoles'));
     }
+ 
 //------------------------------------------------------------------------------------------------------------------------------------------
     public function update($id, UserEditFormRequest $request)
     {
@@ -45,6 +44,7 @@ class UsersController extends Controller
 
         $user = User::whereId($id)->firstOrFail();
         $user->name = $request->get('name');
+        $user->email = $request->get('email');
          
         $user->save();
         $user->saveRoles($request->get('role'));
@@ -52,7 +52,41 @@ class UsersController extends Controller
 
         return redirect(action('UsersController@edit', base64_encode($user->id)))->with('status', 'The user has been updated!');
     }
+//------------------------------------------------------------------------------------------------------------------------------------------
+    public function typeEdit($id)
+    {
+        $id = base64_decode($id);
+        $user = User::whereId($id)->firstOrFail();
 
+        $branches = DB::table('branches')
+                        ->where('non_nursery',0) 
+                        ->orderBy('name')
+                        ->get();
+         
+        return view('users.type', compact('user', 'branches'));
+    }
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+    public function typeUpdate($id, Request $request)
+    {
+        $id = base64_decode($id);
+
+        $branche = DB::table('branches')->where('id',$request->get('branch'))->first();
+
+        if($branche)
+        $branchName =  $branche->name; 
+        else
+        $branchName ="";
+
+        $user = User::whereId($id)->firstOrFail();
+        $user->admin_type = $request->get('admin_type');
+        $user->branch = $request->get('branch');
+        $user->branch_name =$branchName;
+        $user->save();
+
+
+        return redirect(action('UsersController@typeEdit', base64_encode($user->id)))->with('status', 'The user has been updated!');
+    }    
 //------------------------------------------------------------------------------------------------------------------------------------------
 
      public function duplicateCheck(Request $request)
@@ -76,10 +110,16 @@ class UsersController extends Controller
     {
        $branche = DB::table('branches')->where('id',$request->get('branch'))->first();
 
+        if($branche)
+        $branchName =  $branche->name; 
+        else
+        $branchName ="";
+
        $newUser = new User(array(
             'name' => ucwords(strtolower($request->get('name'))),
             'branch' => $request->get('branch'),
-            'branch_name' => $branche->name,
+            'admin_type' => $request->get('admin_type'),
+            'branch_name' => $branchName,
             'email' => $request->get('email'),
             'password' => bcrypt($request->get('password')),
             'added_by' => Auth::id()            
@@ -130,6 +170,15 @@ class UsersController extends Controller
     }
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+public function disable($id)
+    {
+        $id = base64_decode($id);
+        $user = User::whereId($id)->firstOrFail();
+        $user->active = 0; 
+        $user->save();
 
+         
+        return redirect()->back()->with('status', 'The user has been disabled!');
+    }
 
 }

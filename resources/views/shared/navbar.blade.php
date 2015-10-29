@@ -106,6 +106,7 @@
                             <li><a href="#" >Petty Cash</a></li>
                         </ul>
                     </li>
+                    @if (Auth::user()->admin_type>1)
                     <li class="has-sub">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
@@ -117,6 +118,7 @@
                             <li><a href="email_newsletter.html">Add Branch</a></li>
                         </ul>
                     </li>
+                    @endif
                     <li class="has-sub">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
@@ -133,7 +135,7 @@
                         </ul>
                     </li>
                      
-                    
+                    @if (Auth::user()->admin_type>1)
                     <li class="has-sub @if(session('title') == 'Administrator')   active @endif" >
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
@@ -141,14 +143,14 @@
                             <span>Administrator</span>
                         </a>
                         <ul class="sub-menu">
-                            <li class="@if(session('subtitle') == 'users')   active @endif"><a href="/users">Users</a></li>
-                            <li class="@if(session('subtitle') == 'register')   active @endif"><a href="/users/register">Add Users</a></li>
-                            <li class="@if(session('subtitle') == 'Roles')   active @endif"><a href="/roles">Roles</a></li>
-                            <li class="@if(session('subtitle') == 'addRoles')   active @endif"><a href="/roles/create">Add Roles</a></li>
+                            @if(Auth::user()->hasRole('user_view'))<li class="@if(session('subtitle') == 'users')   active @endif"><a href="/users">Users</a></li>@endif
+                            @if(Auth::user()->hasRole('user_add'))<li class="@if(session('subtitle') == 'register')   active @endif"><a href="/users/register">Add Users</a></li>@endif
+                            @if(Auth::user()->hasRole('Superman'))<li class="@if(session('subtitle') == 'Roles')   active @endif"><a href="/roles">Roles</a></li>
+                            <li class="@if(session('subtitle') == 'addRoles')   active @endif"><a href="/roles/create">Add Roles</a></li>@endif
                              
                         </ul>
                     </li>
-                    
+                    @endif
                     
                    <!-- <li><a href="calendar.html"><i class="fa fa-calendar"></i> <span>Calendar</span></a></li> -->
                     <li class="has-sub">

@@ -50,6 +50,13 @@ session(['subtitle' => 'user_edit']); ?>
                                         <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="col-lg-2 control-label">User name</label>
+                                   <div class="col-md-9">
+                                        <input type="text" class="form-control" id="email" name="email" value="{{ $user->email }}">
+                                    </div>
+                                </div>
                                 
                                 <div class="form-group">
                                     <label for="role" class="col-lg-2 control-label">Role</label>

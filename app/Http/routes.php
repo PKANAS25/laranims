@@ -49,6 +49,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/student/{studentId}/delete', 'StudentsController@delete');
     Route::get('/student/{studentId}/restore', 'StudentsController@restore');
+
 //---------------------------------------SubscriptionController---------------------------------------
     Route::get('/student/subscription/add/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@add']);
     Route::get('/subsCheck', 'SubscriptionController@subsCheck');
@@ -59,6 +60,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::post('/subscriptionDelete/{studentId}', 'SubscriptionController@delete');
     Route::get('/subsLockUnlock', 'SubscriptionController@lockUnlock');
+
 //-------------------------------------InvoiceController-----------------------------------------
     Route::get('/student/invoice/add/{studentId}', ['middleware' => 'nursery_admin','uses'=>'InvoiceController@add']); 
     Route::get('/invEventAdd', 'InvoiceController@eventAdd'); 
@@ -73,6 +75,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/invoice/{invoiceId}', 'InvoiceController@view');
 
     Route::post('/profile/student/{studentId}', 'InvoiceController@delete');
+
  //---------------------------------------GradesController-------------------------------------------------------------
     Route::get('/students/grades', 'GradesController@index');
     Route::get('/students/grade/{classId}/students/{filter}', 'GradesController@students');    
@@ -83,20 +86,27 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/students/reports/attendance', 'GradesController@attendanceReportView');
     Route::post('/students/reports/attendance', 'GradesController@attendanceReport');
+
 //---------------------------------UsersController--------------------------------------------------------------------
-    Route::get('users','UsersController@index');
-	Route::get('users/{id?}/edit', 'UsersController@edit');
-	Route::post('users/{id?}/edit','UsersController@update');
+    Route::get('users',['middleware' => 'OfficeStaff','uses'=>'UsersController@index']);
+	Route::get('users/{id?}/edit', ['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'UsersController@edit']);    
+	Route::post('users/{id?}/edit',['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'UsersController@update']);
 
-    Route::get('users/register', function () {return view('users.register');});
-    Route::get('/duplicateCheck', 'UsersController@duplicateCheck');
-    Route::get('/branchLoader', 'UsersController@branchLoader'); 
+    Route::get('users/register',['middleware' => 'OfficeStaff','middleware' => 'UserAdd', function () {return view('users.register');}]);
+    Route::get('/duplicateCheck', ['middleware' => 'OfficeStaff','uses'=>'UsersController@duplicateCheck']);
+    Route::get('/branchLoader', ['middleware' => 'OfficeStaff','uses'=>'UsersController@branchLoader']); 
+    Route::post('users/register',['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@add']);
 
-    Route::post('users/register','UsersController@add');
+    Route::get('users/{id?}/typeEdit', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@typeEdit']);
+    Route::post('users/{id?}/typeEdit', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@typeUpdate']);
+
+    Route::get('/users/{id?}/disable', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@disable']);
+    Route::get('/users/{id?}/restore', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@restore']);
+
 //-------------------------------RolesController-----------------------------------------------
-	Route::get('roles', 'RolesController@index');
-	Route::get('roles/create', 'RolesController@create');
-	Route::post('roles/create', 'RolesController@store');
+	Route::get('roles', ['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'RolesController@index']);
+	Route::get('roles/create', ['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'RolesController@create']);
+	Route::post('roles/create', ['middleware' => 'OfficeStaff','uses'=>'RolesController@store']);
 });
 
  

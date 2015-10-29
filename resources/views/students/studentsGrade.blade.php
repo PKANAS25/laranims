@@ -165,7 +165,8 @@ session(['subtitle' => 'grades']); ?>
                                          <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4"></label>
                                     <div class="col-md-6 col-sm-6">
-                                        <button type="submit" class="btn btn-primary">Transfer</button></div></div></td></tr></table>
+                                        @if(Auth::user()->hasRole('nursery_admin'))<button type="submit" class="btn btn-primary">Transfer</button>@endif
+                                    </div></div></td></tr></table>
                                     
                                     </fieldset>
                                     @endif

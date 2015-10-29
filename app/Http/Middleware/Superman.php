@@ -5,9 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use Session;
-
-
-class NurseryAdmin
+class Superman
 {
     /**
      * Handle an incoming request.
@@ -18,7 +16,8 @@ class NurseryAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->hasRole('nursery_admin'))
+        
+        if(Auth::user()->hasRole('Superman'))
             return $next($request);  
         
         else
