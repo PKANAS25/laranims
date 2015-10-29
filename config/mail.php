@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+    'host' => env('MAIL_HOST', 'smptp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 587),
+    'port' => env('MAIL_PORT', 465),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'anas.acmg@gmail.com', 'name' => 'Anas Test'],
+    'from' => ['address' => 'anas.acmg@gmail.com', 'name' => 'No Reply'],
 
     /*
     |--------------------------------------------------------------------------
@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +80,9 @@ return [
     |
     */
 
-    'username' => env('anas.acmg@gmail.com'),
+    //'username' => env('485706930376fa540'),
+    'username' => env('MAIL_USERNAME', 'anas.acmg@gmail.com'),
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +95,8 @@ return [
     |
     */
 
-    'password' => env('P0r0kk0t@25'),
+   // 'password' => env('1e0466b898fc74'),
+    'password' => env('MAIL_PASSWORD', 'P0r0kk0t@25'),
 
     /*
     |--------------------------------------------------------------------------
