@@ -36,7 +36,7 @@ session(['subtitle' => 'users']); ?>
                                      {{ session('status') }} 
                                     </div>
                                 @endif
-                                <a href="/users/disabled">Show Deactivated Users</a><br/>
+                               <a href="/users"> Show Active Users</a><br/>
                              <div class="table-responsive">
                             <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
@@ -59,13 +59,8 @@ session(['subtitle' => 'users']); ?>
                                         <td>{!! $user->email !!}</td>
                                         <td>{{ ($user->admin_type==1) ? $user->branch_name : "Office Staff" }} </td>
                                         <td>
-                                            @if(Auth::user()->hasRole('user_add'))<a title="Click here to edit type or branch" href="{!! action('UsersController@typeEdit', base64_encode($user->id)) !!}"><i class="fa fa-edit"></i></a>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                             <a title="Click here to disable this user" href="javascript:decision('Are you sure you want to disable this user?','{!! action('UsersController@disable', base64_encode($user->id)) !!}')"><i class="fa fa-ban"></i></a>
-                                            @endif
-                                            @if(Auth::user()->hasRole('Superman'))
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <a title="Click here to change password" href="{!! action('UsersController@passwordChangeView', base64_encode($user->id)) !!}"><i class="fa fa-key"></i></a>
+                                            @if(Auth::user()->hasRole('user_add')) 
+                                             <a title="Click here to restore this user" href="javascript:decision('Are you sure you want to restore this user?','{!! action('UsersController@restore', base64_encode($user->id)) !!}')"><i class="fa fa-refresh"></i></a>
                                             @endif</td>
                                     </tr>
                                     <?php $i++; ?>

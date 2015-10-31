@@ -181,4 +181,77 @@ public function disable($id)
         return redirect()->back()->with('status', 'The user has been disabled!');
     }
 
-}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+ public function usersDisabled()
+    {
+        $users = User::where('active',0)->get();
+
+        //$users = User::all();
+        return view('users.indexDisabled',compact('users'));
+    }
+
+  //------------------------------------------------------------------------------------------------------------------------------------------  
+    public function restore($id)
+    {
+        $id = base64_decode($id);
+        $user = User::whereId($id)->firstOrFail();
+        $user->active = 1; 
+        $user->save();
+
+         
+        return redirect()->back()->with('status', 'The user has been restored!');
+    }
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+    public function passwordChangeView()
+    {  
+        return view('users.passwordEdit');
+    }
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+    public function passwordChange(Request $request,$id)
+    {  
+         $id = base64_decode($id);
+
+         $user = User::whereId($id)->firstOrFail();
+         $user->password = bcrypt($request->get('password')); 
+         $user->save();
+
+         
+        return redirect()->back()->with('status', 'Password has been changed!');
+    }    
+
+  //------------------------------------------------------------------------------------------------------------------------------------------ 
+    
+    public function passwordSelfUpdate(Request $request)
+    {  
+
+        $check = auth()->validate([
+        'email'    => Auth::user()->email,
+        'password' => $request->current_password
+        ]);
+
+         if($check)
+         {
+
+             $user = User::whereId(Auth::id())->firstOrFail();
+             $user->password = bcrypt($request->get('password')); 
+             $user->save();
+             return redirect()->back()->with('status', 'Password has been changed!');
+        }
+
+        else
+        {
+            
+           return redirect()->back()->withErrors(['Authentication Failed.Current password entered is wrong']); 
+        }
+         
+        
+    }    
+
+  //------------------------------------------------------------------------------------------------------------------------------------------ 
+
+}    

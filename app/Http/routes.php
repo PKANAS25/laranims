@@ -101,8 +101,16 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('users/{id?}/typeEdit', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@typeUpdate']);
 
     Route::get('/users/{id?}/disable', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@disable']);
+
+    Route::get('users/disabled',['middleware' => 'OfficeStaff','uses'=>'UsersController@usersDisabled']);
     Route::get('/users/{id?}/restore', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@restore']);
 
+    Route::get('/users/{id?}/password', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@passwordChangeView']);
+    Route::post('/users/{id?}/password', ['middleware' => 'OfficeStaff','middleware' => 'UserAdd','uses'=>'UsersController@passwordChange']);
+
+
+    Route::get('users/password/edit/self',function () {return view('users.passwordSelfEdit');});
+    Route::post('users/password/edit/self', 'UsersController@passwordSelfUpdate');
 //-------------------------------RolesController-----------------------------------------------
 	Route::get('roles', ['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'RolesController@index']);
 	Route::get('roles/create', ['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'RolesController@create']);
