@@ -1,3 +1,4 @@
+<link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet" />
 <div id="sidebar" class="sidebar">
             <!-- begin sidebar scrollbar -->
             <div data-scrollbar="true" data-height="100%">
@@ -68,6 +69,7 @@
                             
                         </ul>
                     </li>
+                    
                     <li class="has-sub">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
@@ -80,19 +82,38 @@
                             <li><a href="table_basic.html">Salary Verification</a></li> 
                             <li><a href="table_basic.html">Approvals</a></li> 
                             <li><a href="table_basic.html">Salary Contents Report</a></li> 
-                            <li><a href="table_basic.html">Selected Fields</a></li> 
+                            <li><a href="table_basic.html">Bank Rejections</a></li> 
+                        </ul>
+                    </li>
+
+                    <li class="has-sub">
+                        <a href="javascript:;">
+                            <b class="caret pull-right"></b>
+                            <i class="ion-ios-people"></i>
+                            <span>HR</span>
+                        </a>
+                        <ul class="sub-menu">
                             <li><a href="table_basic.html">Employees Search</a></li> 
-                            <li><a href="table_basic.html">Import Attendance</a></li> 
-                            <li><a href="table_basic.html">IBAN Check</a></li> 
-                            <li><a href="table_basic.html">Labour Card Check</a></li> 
-                            <li><a href="table_basic.html">Boiometris Report</a></li> 
-                             
+                            <li><a href="table_basic.html">Customized Search</a></li> 
+                                                        
+                            <li class="has-sub">
+                                <a href="javascript:;"><b class="caret pull-right"></b> Reports</a>
+                                <ul class="sub-menu"> 
+                                <li><a href="table_basic.html">IBAN Check</a></li> 
+                                <li><a href="table_basic.html">Labour Card Check</a></li> 
+                                <li><a href="table_basic.html">Boiometris Report</a></li>
+                                </ul>
+                            </li>
+
+                            <li><a href="table_basic.html">Import Attendance</a></li>
+                            <li><a href="table_basic.html">Saturday Overtimes</a></li> 
+                            <li><a href="table_basic.html">Public Holidyas</a></li> 
                         </ul>
                     </li>
                     <li class="has-sub">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
-                            <i class="fa fa-user"></i> 
+                            <i class="ion-person-stalker"></i> 
                             <span>Employees</span>
                         </a>
                         <ul class="sub-menu">

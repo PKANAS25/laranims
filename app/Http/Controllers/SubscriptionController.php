@@ -8,11 +8,16 @@ use App\Http\Controllers\Controller;
 use DB;
 use App\Subscription;
 use App\SubscriptionHour;
+use App\Invoice;
 use Carbon\Carbon;
 use Auth;
 use Session;
  
 use  Validator;
+
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class subscriptionController extends Controller
 {
@@ -501,6 +506,223 @@ public function saveHours(Request $request,$studentId,$standard)
         }//else
     }
  //-----------------------------------------------------------------------------------------------   
+
+ public function refund($studentId,$standard)
+    {
+        $studentId = base64_decode($studentId);
+        $standard = base64_decode($standard);
+
+        
+        $notOk = Invoice::where('deleted',0)->where('cheque',1)->where('student_id',$studentId)->count();
+        $posted = 0;
+
+        return view('students.refund',compact('studentId','standard','notOk','posted'));
+    }
+ //-----------------------------------------------------------------------------------------------   
+
+public function subsCheckRefund(Request $request)
+    {
+         //$subscription = 
+         $last_date =$request->get('last_date');
+         $studentId =$request->get('studentId');
+
+
+         
+        $exists = Subscription::whereRaw('? BETWEEN `start_date` AND `end_date`')->setBindings([$last_date])
+                                            ->where('deleted',0)
+                                            ->where('refunded',0)
+                                            ->where('student_id',$studentId)
+                                            ->count(); 
+         
+
+        if($exists>0)
+           return response()->json(['valid' => 'true', 'message' => " ",'available'=>'true']);
+        
+        else
+           return response()->json(['valid' => 'false', 'message' => "Date conflicts. No subscriptions in the selected date",'available'=>'false']);
+
+        }
+ //-----------------------------------------------------------------------------------------------   
+
+public function refundPost($studentId,$standard,Request $request)
+    {
+        $studentId = base64_decode($studentId);
+        $standard = base64_decode($standard);
+
+        $last_date =$request->get('last_date');
+        
+        $notOk = Invoice::where('deleted',0)->where('cheque',1)->where('student_id',$studentId)->count();
+
+        $payable1 = DB::table('subscriptions')                    
+            ->where('student_id',$studentId ) 
+            ->where('deleted',0 )
+            ->where('refunded',0 )
+            ->sum('amount');
+
+         $payable2 = DB::table('subscriptions')                    
+            ->where('student_id',$studentId ) 
+            ->where('deleted',0 )
+            ->where('refunded',1 )
+            ->sum('non_refundable_amount');   
+
+        $payable3 = DB::table('subscriptions_hour')                    
+            ->where('student_id',$studentId ) 
+            ->where('deleted',0 )
+            ->sum('amount');
+
+        $totalPaid  = DB::table('invoices')                    
+            ->where('student_id',$studentId ) 
+            ->where('deleted',0 )
+            ->whereRaw("NOT(cheque='1' AND cheque_bounce='1')")
+            ->sum('subscriptions_amount');  
+
+            $totalPayable = $payable1+$payable2+$payable3; 
+
+            $balance = $totalPayable-$totalPaid;
+
+             
+
+        $subscription = DB::table('subscriptions') 
+                         ->leftjoin('payment_groups','subscriptions.subscription_type','=','payment_groups.group_id')
+                         ->select('subscriptions.*', 'payment_groups.group_name')
+                         ->where('student_id','?')
+                         ->where('deleted','?')
+                         ->where('refunded','?')                          
+                         ->whereRaw('? BETWEEN `start_date` AND `end_date`')->setBindings([$studentId,0,0,$last_date])
+                         ->first();
+      
+       $start_date = $subscription->start_date;
+       $stayed_days = ((strtotime($last_date) - strtotime($start_date)) / (60 * 60 * 24))+1;
+       
+       
+       $stayed_days = round($stayed_days);
+        
+       $holidays_count = 0;
+        
+       $start = date('Y-m-d',strtotime($start_date));
+       $end =  date('Y-m-d',strtotime($last_date));
+        
+       $start = new DateTime($start);
+       $end = new DateTime($end);
+       $interval = DateInterval::createFromDateString('1 day');
+       $period = new DatePeriod($start, $interval, $end);
+
+       foreach ($period as $dt)
+        {
+            if ($dt->format("N") == 5 || $dt->format("N") == 6)
+            {
+                $holidays_count++;
+            }
+        }
+        
+        $stayed_days = $stayed_days-$holidays_count;
+    
+        $settings = DB::table('payment_settings') 
+          ->select('payment_settings.*') 
+          ->where('standard',$standard ) 
+          ->where('group_id',5 ) 
+          ->where('branch',Auth::user()->branch ) 
+          ->first();
+
+            
+                      
+                         
+                         
+        $tuition_fee = $settings->{'Tuition Fee'};                                                
+        $bus_fee = $settings->{'Bus Fee'};
+        $bus_fee_oneway = $settings->{'Bus Fee Oneway'};
+                        
+                         
+        $thisSubscriptionPay =  $tuition_fee;
+                        
+        if($subscription->trans==1)
+        $thisSubscriptionPay = $thisSubscriptionPay+$bus_fee;
+        else if($subscription->trans==2)
+        $thisSubscriptionPay = $thisSubscriptionPay+$bus_fee_oneway;                        
+                        
+        $non_refundable_amount = $stayed_days*$thisSubscriptionPay;
+
+        ////////////////////////////////////Added Transportation//////////////////////////////////////////////////
+
+    $non_refundable_trans = 0;
+    if($subscription->subscription_type<3 && $subscription->trans==3) 
+    { 
+    
+
+
+    $addedTrans = DB::table('added_transportations') 
+                         ->where('subscription_id',$subscription->subscription_id) 
+                         ->whereRaw('? BETWEEN `start_date` AND `end_date`')->setBindings([$last_date])
+                         ->where('deleted',0)
+                         ->first();
+    
+        if($addedTrans)
+        {
+              
+            $start_trans = date('Y-m-d',strtotime($addedTrans->start_date));
+              
+            $stayed_days_trans = ((strtotime($last_date) - strtotime($addedTrans->start_date)) / (60 * 60 * 24))+1; 
+            $stayed_days_trans = round($stayed_days_trans);
+            
+            $start_trans = new DateTime($start_trans);
+            $holidays_count_trans = 0;
+            
+            
+            
+            $interval = DateInterval::createFromDateString('1 day');
+            $period = new DatePeriod($start_trans, $interval, $end);
+            
+            foreach ($period as $dt)
+            {
+                if ($dt->format("N") == 5 || $dt->format("N") == 6)
+                {  
+                    $holidays_count_trans++;
+                }
+            }
+             
+             $stayed_days_trans-=$holidays_count_trans;
+            
+            
+             if($addedTrans->trans==1)
+                $non_refundable_trans = $stayed_days_trans*$bus_fee;
+             
+             else if($addedTrans->trans==2)
+                $non_refundable_trans = $stayed_days_trans*$bus_fee_oneway;
+          
+        }//if($addedTrans)
+//////////////////////////////// Finished added trans/////////////////////////////////////////////////////
+ 
+
+    $addedTrans2 = DB::table('added_transportations') 
+                         ->where('subscription_id',$subscription->subscription_id) 
+                         ->whereRaw('? > `end_date`')->setBindings([$last_date])
+                         ->where('deleted',0)
+                         ->first();
+    
+    if($addedTrans2)
+    {
+          foreach($addedTrans2 as $added2)
+          $non_refundable_trans+=$added2->amount;
+    }
+    
+}//if($subscription->subscription_type<3 && $subscription->trans==3) 
+
+    $posted = 1;
+    $today = Carbon::now()->toDateString();
+    $non_refundable_grand = ($non_refundable_amount+$non_refundable_trans)+$subscription->registration_fee+$subscription->other_fee;
+    $refundable_grand = ($subscription->amount - ($non_refundable_amount+$non_refundable_trans))-($subscription->registration_fee+$subscription->other_fee);
+
+    $refundable_final = $refundable_grand-$balance;
+
+    $fullRefund =  $FullRefundable_grand = $subscription->amount-($subscription->registration_fee+$subscription->other_fee) ;
+    $fullRefundFinal = $FullRefundable_grand - $balance;
+    $fullNonRefund = ($subscription->registration_fee+$subscription->other_fee);
+
+    return view('students.refund',compact('studentId','standard','posted','notOk','today','totalPayable','totalPaid','balance','last_date','subscription','stayed_days','non_refundable_grand','refundable_grand','fullRefundFinal','fullNonRefund','refundable_final'));
+}     
+ //-----------------------------------------------------------------------------------------------   
+
+
 }
 
 

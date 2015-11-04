@@ -59,7 +59,7 @@ session(['subtitle' => '']); ?>
                             </div> 
                             
                             <div class="checkbox m-b-5 m-t-0">
-                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a href="javascript:;" class="btn btn-danger btn-xs m-r-5">Refund</a>
+                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a  href="{!! action('SubscriptionController@refund', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}" class="btn btn-danger btn-xs m-r-5">Refund</a>
                                 @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">Refund</a> @endif 
 
                             </div>
