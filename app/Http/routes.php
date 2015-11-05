@@ -65,6 +65,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/subsCheckRefund', 'SubscriptionController@subsCheckRefund');
     Route::post('/student/subscription/refund/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@refundPost']);
 
+    Route::post('/student/subscription/refundTicket/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@ticketSave']);
 //-------------------------------------InvoiceController-----------------------------------------
     Route::get('/student/invoice/add/{studentId}', ['middleware' => 'nursery_admin','uses'=>'InvoiceController@add']); 
     Route::get('/invEventAdd', 'InvoiceController@eventAdd'); 

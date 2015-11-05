@@ -479,10 +479,7 @@ public function saveHours(Request $request,$studentId,$standard)
             
             if($thisSubscriptionPay>=0)
             {
-               // INSERT INTO `subscriptions_hour` (`student_id`,  `enroll_date`, `dated`,`no_of_hours`,`notes`, `discount`, `discount_reason`, `subscribed_by`,`amount`,`current_standard`) VALUES (?,?,?,?,?,?,?,?,?,?)"))
-                       //   
-                                   // $insert_stmt->bind_param('ssssssssss', $student , $_SESSION['current_date'] , $dated, $no_of_hours,$notes,$discount,$discount_reason, $_SESSION['intLoggerIdAdmin'],$thisSubscriptionPay,$standard);  
-
+                
 
                                 $subscriptionHour = new SubscriptionHour(array(
                                'student_id' => $studentId,
@@ -718,9 +715,55 @@ public function refundPost($studentId,$standard,Request $request)
     $fullRefundFinal = $FullRefundable_grand - $balance;
     $fullNonRefund = ($subscription->registration_fee+$subscription->other_fee);
 
+    if($notOk)
+    {
+        $posted = 0;
+        return view('students.refund',compact('studentId','standard','notOk','posted'));
+    }
+
     return view('students.refund',compact('studentId','standard','posted','notOk','today','totalPayable','totalPaid','balance','last_date','subscription','stayed_days','non_refundable_grand','refundable_grand','fullRefundFinal','fullNonRefund','refundable_final'));
 }     
  //-----------------------------------------------------------------------------------------------   
+public function ticketSave($studentId,$standard,Request $request)
+    {
+        $studentId = base64_decode($studentId);
+        $standard = base64_decode($standard);
+
+        $last_date = $request->refund_date;
+        $ticket = $request->ticket;
+
+        $subscription_chosen = $request->subscription_chosen;
+
+        echo $ticket;
+
+        if($ticket=="Issue refund ticket")
+        {
+            $refundable_amount = $request->refundable_amount;
+            $non_refundable = $request->non_refundable; 
+             
+        }
+        elseif($ticket=="Issue Full Refund")
+        {
+            $refundable_amount = $request->full_refundable_amount;
+            $non_refundable = $request->full_non_refundable; 
+        }
+
+        DB::table('refund_tickets')->where('store',0)->where('student_id',$studentId)->delete();
+ 
+
+        DB::table('refund_tickets')->insert([
+                  'student_id' => $studentId,
+                  'subscription_id' => $subscription_chosen,
+                  'non_refundable_amount' => $non_refundable,
+                  'refundable_amount' => $refundable_amount,
+                  'last_date' => $last_date,
+                  'admin' => Auth::id()
+                  ]);
+
+         return redirect(action('StudentsController@profile', base64_encode($studentId)))->with('status', 'Refund Ticket Issued!. Contact Finance dept. for updates');
+    }
+ //-----------------------------------------------------------------------------------------------   
+
 
 
 }

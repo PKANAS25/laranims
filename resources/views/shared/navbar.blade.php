@@ -48,7 +48,9 @@
                         <ul class="sub-menu">
                             <li class="@if(session('subtitle') == 'grades')   active @endif"><a href="/students/grades">Grades</a></li>
                             <li class="@if(session('subtitle') == 'search')   active @endif"><a href="/students/search">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
-                            @if(Auth::user()->hasRole('nursery_admin')) <li class="@if(session('subtitle') == 'enroll')   active @endif"><a href="/enroll">Enroll</a></li>@endif
+                            @if(Auth::user()->hasRole('nursery_admin')) 
+                            <li class="@if(session('subtitle') == 'enroll')   active @endif"><a href="/enroll">Enroll</a></li> 
+                            @endif
                             <li class="@if(session('subtitle') == 'attendance')   active @endif"><a href="/students/reports/attendance">Attendance Report</a></li> 
                         </ul>
                     </li>
@@ -89,7 +91,7 @@
                     <li class="has-sub">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
-                            <i class="ion-ios-people"></i>
+                            <i class="ion-person-stalker"></i>
                             <span>HR</span>
                         </a>
                         <ul class="sub-menu">
@@ -113,7 +115,7 @@
                     <li class="has-sub">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
-                            <i class="ion-person-stalker"></i> 
+                            <i class="ion-person-add"></i> 
                             <span>Employees</span>
                         </a>
                         <ul class="sub-menu">
@@ -160,7 +162,7 @@
                     <li class="has-sub @if(session('title') == 'Administrator')   active @endif" >
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
-                            <i class="fa fa-gear (alias)"></i>
+                            <i class="ion-star"></i>
                             <span>Administrator</span>
                         </a>
                         <ul class="sub-menu">

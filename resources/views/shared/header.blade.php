@@ -18,24 +18,28 @@
 					<li class="dropdown">
 						<a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle f-s-14">
 							<i class="fa fa-bell-o"></i>
-							<span class="label">{{$composerCount1."-".$composerCount2}}</span>
+							@if(Auth::user()->hasRole('CallCenterManager')) <span class="label">{{$CallCenterManagerNotifications}}</span> @endif
 						</a>
 						<ul class="dropdown-menu media-list pull-right animated fadeInDown">
-                            <li class="dropdown-header">Notifications (5)</li>
+                            <li class="dropdown-header">Notifications</li>
+                            
+                            @if(Auth::user()->hasRole('CallCenterManager') && $CallCenterManagerCount1)
                             <li class="media">
                                 <a href="javascript:;">
-                                    <div class="media-left"><i class="fa fa-bug media-object bg-red"></i></div>
+                                    <div class="media-left"><i class="fa fa-headphones media-object bg-blue"></i></div>
                                     <div class="media-body">
-                                        <h6 class="media-heading">Server Error Reports</h6>
-                                        <div class="text-muted f-s-11">3 minutes ago</div>
+                                        <h6 class="media-heading">{{$CallCenterManagerCount1}} Unassigned Refund Tickets</h6>
+                                        <div class="text-muted f-s-11">Assign call center agents</div>
                                     </div>
                                 </a>
                             </li>
+                            @endif
+
                             <li class="media">
                                 <a href="javascript:;">
                                     <div class="media-left"><img src="/img/user-1.jpg" class="media-object" alt="" /></div>
                                     <div class="media-body">
-                                        <h6 class="media-heading">John Smith</h6>
+                                        <h6 class="media-heading">dsd</h6>
                                         <p>Quisque pulvinar tellus sit amet sem scelerisque tincidunt.</p>
                                         <div class="text-muted f-s-11">25 minutes ago</div>
                                     </div>

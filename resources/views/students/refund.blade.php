@@ -25,18 +25,17 @@ session(['subtitle' => '']); ?>
                         <div class="panel-heading">
                             <div class="panel-heading-btn">
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-                                
-                                
                             </div>
                             <h4 class="panel-title">Refund</h4>
                         </div>
                         <div class="panel-body">
+                        <a href="{!! action('StudentsController@profile', base64_encode($studentId)) !!}"><i class="fa fa-arrow-left"></i> Go back to student details</a><br>&nbsp;
 
                      @if($posted)
                      <table  class="table table-striped table-bordered">
                      <tr>
                         <td width="22%">Amount Payable</td>
-                        <td width="78%">{{$totalPayable}}</td>
+                        <td width="78%"><strong>{{$totalPayable}}</strong></td>
                       </tr>
                       <tr>
                         <td>Total Paid</td>
@@ -64,7 +63,7 @@ session(['subtitle' => '']); ?>
                             <th>Refundable</th>
                         </tr>
                     </thead>
-                    <tr>
+                    <tr >
                     <td>{{$subscription->group_name}}</td>
                     <td>{!!  $subscription->subscription_type==5 ? date("d-M-y",strtotime($subscription->start_date)) : date("d-M-y",strtotime($subscription->start_date))." To ".date("d-M-y",strtotime($subscription->end_date)) !!}</td>
                     <td>{{$stayed_days}}</td>
@@ -74,7 +73,8 @@ session(['subtitle' => '']); ?>
                     </tr>
                     <tr>
                      <td colspan="6">
-                     <form enctype="multipart/form-data" name="frmTkt" method="post" action="SubscriptionController@refundTicket" autocomplete="OFF">
+                     <form enctype="multipart/form-data" name="frmTkt" method="post" 
+                     action="{!! action('SubscriptionController@ticketSave', array(base64_encode($studentId),base64_encode($standard)) ) !!}" autocomplete="OFF">
                      
                      <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                      
@@ -88,8 +88,8 @@ session(['subtitle' => '']); ?>
                      
                      @if($refundable_final>0)
                      <div class="external-event bg-green" data-bg="bg-green" >
-                                    <h5><i class="fa fa-check fa-lg fa-fw"></i> Refundable</h5>
-                                    <p>Refundable amount including other balance = {{$refundable_final}} </p>
+                                    <h5><i class="fa fa-check-square-o fa-lg fa-fw"></i> Refundable</h5>
+                                    <p>Refundable amount including other balance = <strong>{{$refundable_final}}</strong> </p>
                                     <input class="btn btn-warning m-r-5 m-b-5"  type="submit" name="ticket" id="ticket"  value="Issue refund ticket">
                                 </div>
                      
@@ -97,7 +97,7 @@ session(['subtitle' => '']); ?>
                      @else
                      <div class="external-event bg-red" data-bg="bg-red" >
                                     <h5><i class="fa fa-ban fa-lg fa-fw"></i> No Refunds</h5>
-                                    <p>Refundable amount including previous balance = {{$refundable_final}}. No Refunds Possible</p>
+                                    <p>Refundable amount including previous balance = <strong>{{$refundable_final}}</strong>. No Refunds Possible</p>
                                 </div>
                      
                      @endif
@@ -107,15 +107,15 @@ session(['subtitle' => '']); ?>
                     @if($fullRefundFinal>0 && $today<$subscription->start_date)
                     <div class="external-event bg-purple" data-bg="bg-purple" >
                                     <h5><i class="fa fa-check-square-o fa-lg fa-fw"></i> Full Refund</h5>
-                                    <p>Refundable amount excluding registration & special fees = {{$fullRefundFinal}}  </p>
+                                    <p>Refundable amount excluding registration & special fees = <strong>{{$fullRefundFinal}}</strong>  </p>
                                     <input class="btn btn-success m-r-5 m-b-5"  type="Submit" name="ticket" id="ticket"  value="Issue Full Refund" >
-                                </div> 
+                    </div> 
                     @endif
                     </form>
                      
                      
                       </td>
-                                        </tr>
+                    </tr>
                     </table>
 
 
