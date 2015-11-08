@@ -18,64 +18,77 @@
 					<li class="dropdown">
 						<a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle f-s-14">
 							<i class="fa fa-bell-o"></i>
-							@if(Auth::user()->hasRole('CallCenterManager')) <span class="label">{{$CallCenterManagerNotifications}}</span> @endif
+							@if($TotalNotifications) <span class="label">{{$TotalNotifications}}</span> @endif
 						</a>
 						<ul class="dropdown-menu media-list pull-right animated fadeInDown">
                             <li class="dropdown-header">Notifications</li>
                             
-                            @if(Auth::user()->hasRole('CallCenterManager') && $CallCenterManagerCount1)
+                            @if(Auth::user()->hasRole('CallCenterManager') && $CallCenterManagerCallUnassigns)
                             <li class="media">
                                 <a href="javascript:;">
-                                    <div class="media-left"><i class="fa fa-headphones media-object bg-blue"></i></div>
+                                    <div class="media-left"><i class="fa fa-phone media-object bg-blue"></i></div>
                                     <div class="media-body">
-                                        <h6 class="media-heading">{{$CallCenterManagerCount1}} Unassigned Refund Tickets</h6>
+                                        <h6 class="media-heading">{{$CallCenterManagerCallUnassigns}} Unassigned Refund Tickets</h6>
                                         <div class="text-muted f-s-11">Assign call center agents</div>
                                     </div>
                                 </a>
                             </li>
                             @endif
 
+                            @if(Auth::user()->hasRole('PaymentsDeposit') && $NotDepositedCount)
                             <li class="media">
                                 <a href="javascript:;">
-                                    <div class="media-left"><img src="/img/user-1.jpg" class="media-object" alt="" /></div>
+                                    <div class="media-left"><i class="fa fa-money media-object bg-red"></i></div>
                                     <div class="media-body">
-                                        <h6 class="media-heading">dsd</h6>
-                                        <p>Quisque pulvinar tellus sit amet sem scelerisque tincidunt.</p>
-                                        <div class="text-muted f-s-11">25 minutes ago</div>
+                                        <h6 class="media-heading">{{$NotDepositedCount}} Uncashed in all branches</h6>
+                                        <div class="text-muted f-s-11">{{$NotDepositedChequeCount}} Cheques</div>
                                     </div>
                                 </a>
                             </li>
+                            @endif
+
+
+                            @if(Auth::user()->hasRole('StoreManager'))
+                           
+                            @if($StoreRequestsCount)
                             <li class="media">
                                 <a href="javascript:;">
-                                    <div class="media-left"><img src="/img/user-2.jpg" class="media-object" alt="" /></div>
+                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-orange"></i></div>
                                     <div class="media-body">
-                                        <h6 class="media-heading">Olivia</h6>
-                                        <p>Quisque pulvinar tellus sit amet sem scelerisque tincidunt.</p>
-                                        <div class="text-muted f-s-11">35 minutes ago</div>
+                                        <h6 class="media-heading">{{$StoreRequestsCount}} New Item Requests</h6>
+                                        <div class="text-muted f-s-11">Please verify and transfer</div>
                                     </div>
                                 </a>
                             </li>
+                            @endif
+
+                            @if($StoreReturnsCount)
                             <li class="media">
                                 <a href="javascript:;">
-                                    <div class="media-left"><i class="fa fa-plus media-object bg-green"></i></div>
+                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-red"></i></div>
                                     <div class="media-body">
-                                        <h6 class="media-heading"> New User Registered</h6>
-                                        <div class="text-muted f-s-11">1 hour ago</div>
+                                        <h6 class="media-heading">{{$StoreReturnsCount}} Store returns</h6>
+                                        <div class="text-muted f-s-11">Take immediate action</div>
                                     </div>
                                 </a>
                             </li>
+                            @endif
+
+                            @if($StoreRejectionsCount)
                             <li class="media">
                                 <a href="javascript:;">
-                                    <div class="media-left"><i class="fa fa-envelope media-object bg-blue"></i></div>
+                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-red"></i></div>
                                     <div class="media-body">
-                                        <h6 class="media-heading"> New Email From John</h6>
-                                        <div class="text-muted f-s-11">2 hour ago</div>
+                                        <h6 class="media-heading">{{$StoreRejectionsCount}} Store Rejections</h6>
+                                        <div class="text-muted f-s-11">Please View & Proceed</div>
                                     </div>
                                 </a>
                             </li>
-                            <li class="dropdown-footer text-center">
-                                <a href="javascript:;">View more</a>
-                            </li>
+                            @endif
+
+                            @endif
+
+                            
 						</ul>
 					</li>
 					<li class="dropdown navbar-user">

@@ -134,7 +134,7 @@ class subscriptionController extends Controller
             ->where('offer_id',$offer) 
             ->first();
 
-            $discount = $tuition_fee*($offering->percentage/100);
+            $discount = $offering->percentage;
             $discount_reason = "Offer - ".$offering->title;
             }
 
