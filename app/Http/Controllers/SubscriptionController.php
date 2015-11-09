@@ -734,7 +734,7 @@ public function ticketSave($studentId,$standard,Request $request)
 
         $subscription_chosen = $request->subscription_chosen;
 
-        echo $ticket;
+       // echo $ticket;
 
         if($ticket=="Issue refund ticket")
         {
@@ -764,7 +764,38 @@ public function ticketSave($studentId,$standard,Request $request)
     }
  //-----------------------------------------------------------------------------------------------   
 
+public function refundExcess($studentId,$amount)
+    {
+        $studentId = base64_decode($studentId);
+        $amount = base64_decode($amount);
 
+        $last_date = Carbon::now()->toDateString();
+         
+
+        $subscription_chosen = -1;
+ 
+
+         
+        $refundable_amount = $amount;
+        $non_refundable = 0; 
+        
+        
+
+        DB::table('refund_tickets')->where('store',0)->where('student_id',$studentId)->delete();
+ 
+
+        DB::table('refund_tickets')->insert([
+                  'student_id' => $studentId,
+                  'subscription_id' => $subscription_chosen,
+                  'non_refundable_amount' => $non_refundable,
+                  'refundable_amount' => $refundable_amount,
+                  'last_date' => $last_date,
+                  'admin' => Auth::id()
+                  ]);
+
+         return redirect(action('StudentsController@profile', base64_encode($studentId)))->with('status', 'Refund Ticket Issued!. Contact Finance dept. for updates');
+    }
+ //-----------------------------------------------------------------------------------------------   
 
 }
 

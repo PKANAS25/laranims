@@ -66,6 +66,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/student/subscription/refund/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@refundPost']);
 
     Route::post('/student/subscription/refundTicket/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@ticketSave']);
+
+    Route::get('/student/subscription/refund/excess/{studentId}/{amount}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@refundExcess']);
 //-------------------------------------InvoiceController-----------------------------------------
     Route::get('/student/invoice/add/{studentId}', ['middleware' => 'nursery_admin','uses'=>'InvoiceController@add']); 
     Route::get('/invEventAdd', 'InvoiceController@eventAdd'); 
@@ -116,10 +118,17 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('users/password/edit/self',function () {return view('users.passwordSelfEdit');});
     Route::post('users/password/edit/self', 'UsersController@passwordSelfUpdate');
+
 //-------------------------------RolesController-----------------------------------------------
 	Route::get('roles', ['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'RolesController@index']);
 	Route::get('roles/create', ['middleware' => 'OfficeStaff','middleware' => 'Superman','uses'=>'RolesController@create']);
 	Route::post('roles/create', ['middleware' => 'OfficeStaff','uses'=>'RolesController@store']);
+
+//-------------------------------CallCenterController-----------------------------------------------
+    Route::get('/refunds/tickets/{viewer}', ['middleware' => 'CallCenterManager','uses'=>'CallCenterController@unassigned']);
+    Route::post('/refunds/tickets/{viewer}', ['middleware' => 'CallCenterManager','uses'=>'CallCenterController@assignRefundAgents']);
+
+
 });
 
  

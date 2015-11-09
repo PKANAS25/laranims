@@ -44,28 +44,41 @@ session(['subtitle' => '']); ?>
 
                         <div class="profile-highlight"  >
                             <div class="checkbox m-b-5 m-t-0">
-                               @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch) <a  href="{!! action('SubscriptionController@add', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}"  class="btn btn-primary btn-xs m-r-5">New Subscription</a> 
+                               @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch) 
+                               <a  href="{!! action('SubscriptionController@add', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}"  class="btn btn-primary btn-xs m-r-5">New Subscription</a> 
                                @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">New Subscription</a> @endif 
                             </div>
                             
                             <div class="checkbox m-b-5 m-t-0">
-                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a href="{!! action('SubscriptionController@addHours', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}" class="btn btn-primary btn-xs m-r-5">Extra Hours</a>  
+                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)
+                                <a href="{!! action('SubscriptionController@addHours', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}" class="btn btn-primary btn-xs m-r-5">Extra Hours</a>  
                                 @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">Extra Hours</a>  @endif 
                             </div>
                             
                             <div class="checkbox m-b-5 m-t-0">
-                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a  href="{!! action('InvoiceController@add', base64_encode($student->student_id) ) !!}" class="btn btn-success btn-xs m-r-5">New Payment</a> 
+                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)
+                                <a  href="{!! action('InvoiceController@add', base64_encode($student->student_id) ) !!}" class="btn btn-success btn-xs m-r-5">New Payment</a> 
                                 @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">New Payment</a> @endif 
                             </div> 
                             
                             <div class="checkbox m-b-5 m-t-0">
-                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a  href="{!! action('SubscriptionController@refund', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}" class="btn btn-danger btn-xs m-r-5">Refund</a>
+                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)
+                                <a  href="{!! action('SubscriptionController@refund', array(base64_encode($student->student_id),base64_encode($student->standard)) ) !!}" class="btn btn-danger btn-xs m-r-5">Refund</a>
                                 @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">Refund</a> @endif 
 
                             </div>
+
+                            @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch && (round($totalPayable-$totalPaid))<0)
+                             <div class="checkbox m-b-5 m-t-0">
+                                
+                                <a  href="{!! action('SubscriptionController@refundExcess', array(base64_encode($student->student_id),base64_encode(abs(round($totalPayable-$totalPaid)))) ) !!}" class="btn btn-danger btn-xs m-r-5">Excess Refund</a>
+                               
+                            </div>
+                            @endif
                             
                             <div class="checkbox m-b-5 m-t-0">
-                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)<a href="javascript:;" class="btn btn-info btn-xs m-r-5">Transfer</a> 
+                                @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)
+                                <a href="javascript:;" class="btn btn-info btn-xs m-r-5">Transfer</a> 
                                 @else <a href="javascript:;" class="btn btn-default btn-xs m-r-5">Transfer</a>  @endif 
                             </div>
                              

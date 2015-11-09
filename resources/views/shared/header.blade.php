@@ -25,7 +25,7 @@
                             
                             @if(Auth::user()->hasRole('CallCenterManager') && $CallCenterManagerCallUnassigns)
                             <li class="media">
-                                <a href="javascript:;">
+                                <a href="/refunds/tickets/unassigned">
                                     <div class="media-left"><i class="fa fa-phone media-object bg-blue"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$CallCenterManagerCallUnassigns}} Unassigned Refund Tickets</h6>

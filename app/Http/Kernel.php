@@ -35,5 +35,6 @@ class Kernel extends HttpKernel
         'OfficeStaff' =>\App\Http\Middleware\OfficeStaff::class,
         'Superman' =>\App\Http\Middleware\Superman::class,
         'UserAdd' =>\App\Http\Middleware\UserAdd::class,
+        'CallCenterManager' =>\App\Http\Middleware\CallCenterManager::class,
     ];
 }

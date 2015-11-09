@@ -61,7 +61,7 @@ session(['subtitle' => 'user_edit']); ?>
                                 <div class="form-group">
                                     <label for="role" class="col-lg-2 control-label">Role</label>
                                    <div class="col-md-9">
-                                       <select class="form-control" id="role" name="role[]" multiple>
+                                       <select class="form-control" id="role" name="role[]" multiple size="20">
                                             @foreach($roles as $role)
                                                 <option value="{!! $role->id !!}"  @if(in_array($role->id, $selectedRoles))
                                                         selected="selected" @endif >{!! $role->display_name !!}

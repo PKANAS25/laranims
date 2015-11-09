@@ -17,16 +17,6 @@ class HeaderNotifications
      */
     public function handle($request, Closure $next)
     {
-        echo $request->input('token');
-        
-        if ($request->is("/") || $request->is("password/email") || $request->is("/logout") || $request->is("/errorLogout") ||  $request->is("password/reset/*"))
-           {
-                    return $next($request);
-           } 
-
-       elseif (Auth::check())
-       {
-        
         $TotalNotifications=0;
 
          
@@ -37,10 +27,20 @@ class HeaderNotifications
 
         $StoreRequestsCount=0;
         $StoreReturnsCount=0;
+        $StoreRejectionsCount =0;
+
+        
+        if ($request->is("/") || $request->is("password/email") || $request->is("/logout") || $request->is("/errorLogout") ||  $request->is("password/reset/*"))
+           {
+                    return $next($request);
+           } 
+
+       elseif (Auth::check())
+       { 
         
         if(Auth::user()->hasRole('CallCenterManager'))
         {
-           $CallCenterManagerCallUnassigns = DB::table('refund_tickets')->where('call_center_agent',0)->count(); 
+           $CallCenterManagerCallUnassigns = DB::table('refund_tickets')->where('call_center_agent',0)->where('subscription_id','>',0)->count(); 
            $TotalNotifications+=$CallCenterManagerCallUnassigns;
 
            
@@ -67,11 +67,14 @@ class HeaderNotifications
          $TotalNotifications+=$StoreRejectionsCount;
         }
 //-------------------------------------------------------------------------------------------------------------------------------------
-         if(Auth::user()->hasRole('PaymentsDeposit'))        
-        view()->composer('shared.header', function ($view) 
+         
+
+
+            view()->composer('shared.header', function ($view) 
             use($TotalNotifications,$CallCenterManagerCallUnassigns,$NotDepositedCount,$NotDepositedChequeCount,$StoreRequestsCount,$StoreReturnsCount,
-                $StoreRejectionsCount) {
-                     $view->with('TotalNotifications', $TotalNotifications)
+                $StoreRejectionsCount) 
+                {
+                           $view->with('TotalNotifications', $TotalNotifications)
 
                           ->with('CallCenterManagerCallUnassigns', $CallCenterManagerCallUnassigns)
 
@@ -81,7 +84,7 @@ class HeaderNotifications
                           ->with('StoreRequestsCount', $StoreRequestsCount)
                           ->with('StoreReturnsCount', $StoreReturnsCount)
                           ->with('StoreRejectionsCount', $StoreRejectionsCount);
-                         });
+                });
 
         return $next($request);
       }

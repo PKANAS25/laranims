@@ -16,12 +16,12 @@
                 <!-- begin sidebar nav -->
                 <ul class="nav">
                     <li class="nav-header">Navigation</li>
-                    <li class="@if(session('title') == 'Home')   active @endif"><a href="/home"><i class="fa fa-laptop"></i> <span>Dashboard</span></a></li>
+                    <li class="@if(session('title') == 'Home')   active @endif"><a href="/home"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
                      
                     <li class="has-sub">
                         <a href="javascript:;">
                              <b class="caret pull-right"></b>
-                            <i class="fa fa-money"></i> 
+                            <i class="fa fa-credit-card"></i> 
                             <span>Payments</span>
                         </a>
                         <ul class="sub-menu">
@@ -61,10 +61,12 @@
                             <span>Store</span></span> 
                         </a>
                         <ul class="sub-menu">
+                            @if(Auth::user()->hasRole('StoreManager'))
                             <li><a href="form_elements.html">Main Store</a></li>
                             <li><a href="form_plugins.html">Add Item</a></li>
                             <li><a href="form_slider_switcher.html">Categories</a></li>
                             <li><a href="form_validation.html">Suppliers</a></li>
+                            @endif
                             <li><a href="form_wizards.html">Branch Store</a></li>
                             <li><a href="form_wizards_validation.html">Non-Received Items</a></li>
                             <li><a href="form_wysiwyg.html">Exchanged Items</a></li>
@@ -166,15 +168,35 @@
                             <span>Administrator</span>
                         </a>
                         <ul class="sub-menu">
-                            @if(Auth::user()->hasRole('user_view'))<li class="@if(session('subtitle') == 'users')   active @endif"><a href="/users">Users</a></li>@endif
-                            @if(Auth::user()->hasRole('user_add'))<li class="@if(session('subtitle') == 'register')   active @endif"><a href="/users/register">Add Users</a></li>@endif
-                            @if(Auth::user()->hasRole('Superman'))<li class="@if(session('subtitle') == 'Roles')   active @endif"><a href="/roles">Roles</a></li>
+                            @if(Auth::user()->hasRole('user_view'))
+                            <li class="@if(session('subtitle') == 'users')   active @endif"><a href="/users">Users</a></li>@endif
+                            @if(Auth::user()->hasRole('user_add'))
+                            <li class="@if(session('subtitle') == 'register')   active @endif"><a href="/users/register">Add Users</a></li>@endif
+                            @if(Auth::user()->hasRole('Superman'))
+                            <li class="@if(session('subtitle') == 'Roles')   active @endif"><a href="/roles">Roles</a></li>
                             <li class="@if(session('subtitle') == 'addRoles')   active @endif"><a href="/roles/create">Add Roles</a></li>@endif
                              
                         </ul>
                     </li>
                     @endif
                     
+
+                     <li class="has-sub @if(session('title') == 'CallCenter')   active @endif" >
+                        <a href="javascript:;">
+                             <b class="caret pull-right"></b>
+                            <i class="fa fa-phone-square"></i> 
+                            <span>Call Center</span>
+                        </a>
+                        <ul class="sub-menu">
+                            @if(Auth::user()->hasRole('CallCenterManager'))
+                            <li class="@if(session('subtitle') == 'unassigned')   active @endif"><a href="/refunds/tickets/unassigned">Unassigned Refund Tickets</a></li>
+                            @endif
+                            <li><a href="email_inbox_v2.html">Receipt Book</a></li>
+                            <li><a href="email_compose.html">Paments Lock</a></li>                            
+                        </ul>
+                    </li>
+
+
                    <!-- <li><a href="calendar.html"><i class="fa fa-calendar"></i> <span>Calendar</span></a></li> -->
                     <li class="has-sub">
                         <a href="javascript:;">
@@ -207,6 +229,8 @@
                             <li><a href="gallery_v2.html">Wrong Numbers</a></li>
                         </ul>
                     </li>
+
+                   
                     
                     <li class="has-sub">
                         <a href="javascript:;">
