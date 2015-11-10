@@ -8,6 +8,11 @@ session(['subtitle' => 'grades']); ?>
 
 @section('content')
 <link href="/css/invoice-print.min.css" rel="stylesheet" />
+
+<link rel="stylesheet" type="text/css" href="/dist/msgbox/jquery.msgbox.css" />
+<script type="text/javascript" src="/dist/msgbox/jquery.msgbox.min.js"></script> 
+
+
  <script type="text/javascript">
  
     $(function(){
@@ -85,6 +90,11 @@ session(['subtitle' => 'grades']); ?>
                                             {{ session('status') }}   
                                         </div>
                                     @endif
+                                    @if (session('statusDel'))
+                                        <div class="alert alert-danger">
+                                            {{ session('statusDel') }}   
+                                        </div>
+                                    @endif
                                 </div>    
 
 
@@ -126,14 +136,64 @@ session(['subtitle' => 'grades']); ?>
                                 @if($filter=='all')
                                     <td class="hidden-print">
                                         @if(($student->deleteFlag1+$student->deleteFlag2+$student->deleteFlag3)==0)
-                                            <a href="javascript:decision('Are you sure you want to delete this student?','{!! action('StudentsController@delete', base64_encode($student->student_id)) !!}')"><i class="fa fa-trash"></i></a>
+                                            <!--<a href="javascript:decision('Are you sure you want to delete this student?','{!! action('StudentsController@delete', base64_encode($student->student_id)) !!}')"><i class="fa fa-trash"></i></a>-->
+                                             <button id="Xdel{{$i}}"><i  class="fa fa-trash text-danger"></i></button>
+                                        <script type="text/javascript">
+                                            $('#Xdel{{$i}}').click(function(ev) {
+                                            
+                                              $.msgbox("<p>Are you sure you want to delete this student?</p>", {
+                                                type    : "prompt",
+                                                 inputs  : [
+                                                  {type: "hidden", name: "no", value: "no"} 
+                                                ],
+                                                 
+                                                buttons : [
+                                                  {type: "submit", name: "delete", value: "Delete"},
+                                                  {type: "cancel", value: "Cancel"}
+                                                ],
+                                                form : {
+                                                  active: true,
+                                                  method: 'get',
+                                                  action: '{!! action('StudentsController@delete', base64_encode($student->student_id)) !!}'
+                                                }
+                                              });
+                                              
+                                              ev.preventDefault();
+                                            
+                                            });
+                                        </script>
                                         @else 
-                                            <i class="fa fa-trash"></i>
+                                          <button onclick='$.msgbox("You cannot delete this student. There are subscriptions or invoices assigned.", {type: "error"});'><i class="fa fa-trash"></i></button>
                                         @endif
                                     </td>
                                 @elseif($filter=='deleted')
                                     <td class="hidden-print">                                         
-                                            <a href="javascript:decision('Are you sure you want to restore this student?','{!! action('StudentsController@restore', base64_encode($student->student_id)) !!}')"><i class="fa fa-undo"></i></a>                                       
+                                           <!-- <a href="javascript:decision('Are you sure you want to restore this student?','{!! action('StudentsController@restore', base64_encode($student->student_id)) !!}')"><i class="fa fa-undo"></i></a> -->
+                                            <button id="XRef{{$i}}"><i  class="fa fa-undo text-info"></i></button>
+                                        <script type="text/javascript">
+                                            $('#XRef{{$i}}').click(function(ev) {
+                                            
+                                              $.msgbox("<p>Are you sure you want to restore this student?</p>", {
+                                                type    : "prompt",
+                                                 inputs  : [
+                                                  {type: "hidden", name: "no", value: "no"} 
+                                                ],
+                                                 
+                                                buttons : [
+                                                  {type: "submit", name: "delete", value: "Delete"},
+                                                  {type: "cancel", value: "Cancel"}
+                                                ],
+                                                form : {
+                                                  active: true,
+                                                  method: 'get',
+                                                  action: '{!! action('StudentsController@restore', base64_encode($student->student_id)) !!}'
+                                                }
+                                              });
+                                              
+                                              ev.preventDefault();
+                                            
+                                            });
+                                        </script>                                      
                                     </td>
                                 @endif
                                 @if($filter!='deleted')<td class="hidden-print"><input class="checkboxer" type="checkbox" name="studentIds[]"   value="{{$student->student_id}}"  ></td>@endif

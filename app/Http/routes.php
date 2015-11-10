@@ -128,6 +128,10 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/refunds/tickets/{viewer}', ['middleware' => 'CallCenterManager','uses'=>'CallCenterController@unassigned']);
     Route::post('/refunds/tickets/{viewer}', ['middleware' => 'CallCenterManager','uses'=>'CallCenterController@assignRefundAgents']);
 
+    Route::get('/refunds/agents/tickets/{viewer}', ['middleware' => 'CallCenterAgent','uses'=>'CallCenterController@feedbacks']);
+    Route::get('/refunds/agent/feedback/{studentId}/{ticketId}', ['middleware' => 'CallCenterAgent','uses'=>'CallCenterController@feedbackForm']);
+    Route::post('/refunds/agent/feedback/{studentId}/{ticketId}', ['middleware' => 'CallCenterAgent','uses'=>'CallCenterController@saveFeedback']);
+
 
 });
 

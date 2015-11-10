@@ -346,7 +346,7 @@ class StudentsController extends Controller
                 $student->deleted_by = Auth::id();
                 $student->save();
 
-                Session::flash('status', 'Student deleted!');
+                Session::flash('statusDel', 'Student deleted!');
                 return redirect()->back();
             }
             else

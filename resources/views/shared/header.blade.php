@@ -35,6 +35,18 @@
                             </li>
                             @endif
 
+                            @if(Auth::user()->hasRole('CallCenterAgent') && $CallCenterAgentCallAssigns)
+                            <li class="media">
+                                <a href="/refunds/agents/tickets/noreview">
+                                    <div class="media-left"><i class="fa fa-comments media-object bg-orange"></i></div>
+                                    <div class="media-body">
+                                        <h6 class="media-heading">{{$CallCenterAgentCallAssigns}}  Refund Tickets</h6>
+                                        <div class="text-muted f-s-11">Get parents feedback</div>
+                                    </div>
+                                </a>
+                            </li>
+                            @endif
+
                             @if(Auth::user()->hasRole('PaymentsDeposit') && $NotDepositedCount)
                             <li class="media">
                                 <a href="javascript:;">
@@ -53,7 +65,7 @@
                             @if($StoreRequestsCount)
                             <li class="media">
                                 <a href="javascript:;">
-                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-orange"></i></div>
+                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-green"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$StoreRequestsCount}} New Item Requests</h6>
                                         <div class="text-muted f-s-11">Please verify and transfer</div>

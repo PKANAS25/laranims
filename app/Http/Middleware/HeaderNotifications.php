@@ -21,6 +21,7 @@ class HeaderNotifications
 
          
         $CallCenterManagerCallUnassigns = 0;
+        $CallCenterAgentCallAssigns = 0;
 
         $NotDepositedCount =0;
         $NotDepositedChequeCount=0;
@@ -42,6 +43,15 @@ class HeaderNotifications
         {
            $CallCenterManagerCallUnassigns = DB::table('refund_tickets')->where('call_center_agent',0)->where('subscription_id','>',0)->count(); 
            $TotalNotifications+=$CallCenterManagerCallUnassigns;
+
+           
+        }//if(Auth::user()->hasRole('CallCenterManager'))
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+         if(Auth::user()->hasRole('CallCenterAgent'))
+        {
+           $CallCenterAgentCallAssigns = DB::table('refund_tickets')->where('call_center_agent',Auth::id())->whereNull('review')->count(); 
+           $TotalNotifications+=$CallCenterAgentCallAssigns;
 
            
         }//if(Auth::user()->hasRole('CallCenterManager'))
@@ -72,11 +82,13 @@ class HeaderNotifications
 
             view()->composer('shared.header', function ($view) 
             use($TotalNotifications,$CallCenterManagerCallUnassigns,$NotDepositedCount,$NotDepositedChequeCount,$StoreRequestsCount,$StoreReturnsCount,
-                $StoreRejectionsCount) 
+                $StoreRejectionsCount,$CallCenterAgentCallAssigns) 
                 {
                            $view->with('TotalNotifications', $TotalNotifications)
 
                           ->with('CallCenterManagerCallUnassigns', $CallCenterManagerCallUnassigns)
+
+                          ->with('CallCenterAgentCallAssigns', $CallCenterAgentCallAssigns)
 
                           ->with('NotDepositedChequeCount', $NotDepositedChequeCount)
                           ->with('NotDepositedCount', $NotDepositedCount)

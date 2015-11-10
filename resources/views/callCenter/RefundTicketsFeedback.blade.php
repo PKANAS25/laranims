@@ -1,7 +1,7 @@
 @extends('master') 
  
 <?php session(['title' => 'CallCenter']);
-session(['subtitle' => 'unassigned']); ?> 
+session(['subtitle' => 'feedbacksPending']); ?> 
 
 @section('content') 
   
@@ -34,14 +34,14 @@ session(['subtitle' => 'unassigned']); ?>
                         <div class="panel-body">
                               <div class="hidden-print">
                                 <span class="text-success">Showing {{$viewer}} </span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/tickets/unassigned">Show Unassigned</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/tickets/assigned">Show Assigned</a><hr><br/></div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/agents/tickets/noreview">Show not reviewed</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/agents/tickets/reviewed">Show reviewed</a><hr><br/></div>
                                @if (session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   
                                         </div>
                                     @endif
-                                @if($viewer=="unassigned") 
+                                @if($viewer=="noreview") 
                                 
 
                               <table id="data-table" class="table table-striped table-bordered">
@@ -57,7 +57,7 @@ session(['subtitle' => 'unassigned']); ?>
                                         <th>Non Refundable</th>
                                         <th>Refundable</th>
                                         <th>Issued By</th>
-                                        <th>CallCenterAgent</th>
+                                        <th>FeedBack</th>
                                     </tr>
                                     </thead>
                                     <?php $i=1;?>
@@ -73,28 +73,17 @@ session(['subtitle' => 'unassigned']); ?>
                                         <td>{{$refundTicket->non_refundable_amount}}</td>
                                         <td>{{$refundTicket->refundable_amount}}</td>
                                         <td>{{$refundTicket->name}}</td>
-                                        <td>  
-                                        <input type="hidden" name="ticketIds[]" value="{{$refundTicket->request_id}}">
-                                            <select name="newAgents[]">
-                                                <option value="0">Please Choose</option>
-                                                @foreach($agents AS $agent)
-                                                <option value="{{$agent->id}}">{{$agent->name}}</option>
-                                                @endforeach
-                                            </select>                                       
-                                        </td>
+                                        <td><a href="{!! action('CallCenterController@feedbackForm', array(base64_encode($refundTicket->student_id),base64_encode($refundTicket->request_id)) ) !!}" class="btn btn-primary btn-xs m-r-5"><i class="fa fa-comment-o"></i></a></td>
                                     </tr>
                                     <?php $i++;?>
                                     @endforeach
-                                <tfoot>
-                                    <tr><td colspan="10"></td>
-                                        <td><button type="submit" class="btn btn-primary">Save</button></td></tr>
-                                </tfoot>
+                                 
                                 
                             </table>
                             @endif
 
                             <!------------------------------------------------------------------------------------------------------------------------------------ -->
-                                @if($viewer=="assigned") 
+                                @if($viewer=="reviewed") 
                                 
 
                               <table id="data-table" class="table table-striped table-bordered">
@@ -109,7 +98,8 @@ session(['subtitle' => 'unassigned']); ?>
                                         <th>Last Date</th>
                                         <th>Non Refundable</th>
                                         <th>Refundable</th>                                         
-                                        <th>CallCenterAgent</th>
+                                        <th>Feedback</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <?php $i=1;?>
@@ -125,25 +115,12 @@ session(['subtitle' => 'unassigned']); ?>
                                         <td>{{$refundTicket->non_refundable_amount}}</td>
                                         <td>{{$refundTicket->refundable_amount}}</td>
                                          
-                                        <td> 
-                                        @if(!$refundTicket->review) 
-                                        <input type="hidden" name="ticketIds[]" value="{{$refundTicket->request_id}}">
-                                            <select name="newAgents[]">
-                                                <option value="{{$refundTicket->call_center_agent}}">{{$refundTicket->name}}</option>
-                                                @foreach($agents AS $agent)
-                                                <option value="{{$agent->id}}">{{$agent->name}}</option>
-                                                @endforeach
-                                            </select>
-                                            @else Feedback Added
-                                          @endif                                       
-                                        </td>
+                                        <td>{{$refundTicket->review}}</td>
+                                        <td><a href="{!! action('CallCenterController@feedbackForm', array(base64_encode($refundTicket->student_id),base64_encode($refundTicket->request_id)) ) !!}" class="btn btn-primary btn-xs m-r-5"><i class="fa fa-comment-o"></i></a></td>
                                     </tr>
                                     <?php $i++;?>
                                     @endforeach
-                                <tfoot>
-                                    <tr><td colspan="9"></td>
-                                        <td><button type="submit" class="btn btn-primary">Save</button></td></tr>
-                                </tfoot>
+                                
                                 
                             </table>
                             @endif                           
