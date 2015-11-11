@@ -56,7 +56,7 @@ session(['subtitle' => '']); ?>
                 <!-- begin col-3 -->
                 <div class="col-md-3 col-sm-6">
                     <div class="widget widget-stats bg-purple">
-                        <div class="stats-icon"><i class="fa fa-users"></i></div>
+                        <div class="stats-icon"><i class="fa fa-child"></i></div>
                         <div class="stats-info">
                             <h4>NEW ENROLMENTS</h4>
                             <p>7</p>    

@@ -2,7 +2,7 @@
 
 @section('urlTitles')
 <?php session(['title' => 'Students']);
-session(['subtitle' => 'enroll']); ?>
+session(['subtitle' => '']); ?>
 @endsection
 
 
@@ -10,13 +10,13 @@ session(['subtitle' => 'enroll']); ?>
 <div id="content" class="content">
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right">
-				<li><a href="javascript:;">Students</a></li>
-				<li class="active"><a href="javascript:;">Enroll</a></li>
+				<li><a href="javascript:;">Student</a></li>
+				<li class="active"><a href="javascript:;">Edit</a></li>
 				 
 			</ol> 
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header">Enroll <small> new student</small></h1>
+			<h1 class="page-header">Edit <small> student</small></h1>
 			<!-- end page-header -->
 			<!-- begin row -->
 			 <div class="col-md-12">
@@ -28,7 +28,7 @@ session(['subtitle' => 'enroll']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">Enroll</h4>
+                            <h4 class="panel-title">{{ucwords(strtolower($student->full_name))}}</h4>
                         </div>
                         <div class="panel-body">
 
@@ -58,7 +58,7 @@ session(['subtitle' => 'enroll']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="fullname">Full Name in English :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="fullname" name="fullname"   data-fv-notempty="true"   data-fv-remote="true"  value="{{ old('fullname') }}" />
+                                        <input class="form-control" type="text" id="fullname" name="fullname"   data-fv-notempty="true"   data-fv-remote="true"  value="{{ $student->full_name }}" />
                                         <div id="live" class=></div>  
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@ session(['subtitle' => 'enroll']); ?>
                                  <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="full_name_arabic">Full Name in Arabic :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="full_name_arabic" name="full_name_arabic"  data-fv-notempty="true"   data-fv-remote="true" value="{{ old('full_name_arabic') }}" />
+                                        <input class="form-control" type="text" id="full_name_arabic" name="full_name_arabic"  data-fv-notempty="true"   data-fv-remote="true" value="{{ $student->full_name_arabic }}" />
                                     </div>
                                 </div>
 
@@ -74,7 +74,7 @@ session(['subtitle' => 'enroll']); ?>
                                     <label class="control-label col-md-4 col-sm-4">Grade :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control" id="select-required" name="current_grade" data-fv-notempty="true">
-                                            <option value="">Please choose</option>
+                                            <option value="{{$student->current_grade}}">{{$student->standard." - ".$student->division}}</option>
                                             @foreach($grades as $grade)
                                             <option value="{!! $grade->class_id !!}">{!! $grade->standard." - ".$grade->division !!}</option>
                                             @endforeach
@@ -87,11 +87,13 @@ session(['subtitle' => 'enroll']); ?>
                                     <div class="col-md-6 col-sm-6">
                                         <div class="radio-inline">
                                             <label>
-                                                <input type="radio" name="gender" value="m" id="radio-required" data-fv-notempty="true" /> Boy
+                                                <input type="radio" name="gender" value="m" id="radio-required" data-fv-notempty="true" 
+                                                @if($student->gender=="m") checked @endif /> Boy
                                         </div>
                                         <div class="radio-inline">
                                             <label>
-                                                <input type="radio" name="gender" id="radio-required2" value="f" /> Girl
+                                                <input type="radio" name="gender" id="radio-required2" value="f" 
+                                                @if($student->gender=="f") checked @endif /> Girl
                                             </label>
                                         </div>
                                     </div>
@@ -100,7 +102,7 @@ session(['subtitle' => 'enroll']); ?>
                                  <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="dob">Date of birth :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="dob"   name="dob" data-fv-notempty="true"   value="{{ old('dob') }}" />
+                                        <input class="form-control" type="text" id="dob"   name="dob" data-fv-notempty="true"   value="{{ $student->dob }}" />
                                     </div>
                                 </div>
 
@@ -108,7 +110,7 @@ session(['subtitle' => 'enroll']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="joining_date">Joining date :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="joining_date"   name="joining_date"  data-fv-notempty="true"  value="{{ old('joining_date') }}" />
+                                        <input class="form-control" type="text" id="joining_date"   name="joining_date"  data-fv-notempty="true"  value="{{ $student->joining_date }}" />
                                     </div>
                                 </div>
 
@@ -117,7 +119,7 @@ session(['subtitle' => 'enroll']); ?>
                                     <label class="control-label col-md-4 col-sm-4">Nationality :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control" id="select-required" name="nationality" data-fv-notempty="true">
-                                            <option value="">Please choose</option>
+                                            <option value="{{$student->nationality}}">{{$student->nation}}</option>
                                             @foreach($nations as $nation)
                                             <option value="{!! $nation->nation_id !!}">{!! $nation->nationality !!}</option>
                                             @endforeach
@@ -129,7 +131,7 @@ session(['subtitle' => 'enroll']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="address">Address :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <textarea class="form-control" id="address" name="address" rows="3" data-fv-notempty="true"   >{{ old('address') }}</textarea>
+                                        <textarea class="form-control" id="address" name="address" rows="3" data-fv-notempty="true"   >{{ $student->address }}</textarea>
                                     </div>
                                 </div>
 
@@ -137,7 +139,7 @@ session(['subtitle' => 'enroll']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="map">Address in Google Maps</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="map" name="map"   value="{{ old('map') }}" />
+                                        <input class="form-control" type="text" id="map" name="map"   value="{{ $student->map }}" />
                                         <span class="text-info">Open google maps. Right click on exact location. Choose What's here?. In the search box, you'll get Longitude & Latitude seperated by a comma. Copy & paste it here.</span>
                                     </div>
                                 </div>
@@ -155,21 +157,21 @@ session(['subtitle' => 'enroll']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="father_name">Father's Name in English :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="father_name" name="father_name"  data-fv-notempty="true" value="{{ old('father_name') }}" />
+                                        <input class="form-control" type="text" id="father_name" name="father_name"  data-fv-notempty="true" value="{{ $student->father_name }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="father_tel">Father's Tel :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="father_tel" name="father_tel"   data-fv-notempty="true" value="{{ old('father_tel') }}" />
+                                        <input class="form-control" type="text" id="father_tel" name="father_tel"   data-fv-notempty="true" value="{{ $student->father_tel }}" />
                                     </div>
                                 </div>
 
                                <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="father_mob">Father's Mobile :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="father_mob" name="father_mob"   data-fv-notempty="true" value="{{ old('father_mob') }}" />
+                                        <input class="form-control" type="text" id="father_mob" name="father_mob"   data-fv-notempty="true" value="{{ $student->father_mob }}" />
                                     </div>
                                 </div>
 
@@ -177,7 +179,7 @@ session(['subtitle' => 'enroll']); ?>
                                     <label class="control-label col-md-4 col-sm-4" for="father_email">Father's Email :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <input class="form-control" type="text" id="father_email" name="father_email"   data-fv-notempty="true"  data-fv-emailaddress="true"
-                data-fv-emailaddress-message="The value is not a valid email address" value="{{ old('father_email') }}" />
+                data-fv-emailaddress-message="The value is not a valid email address" value="{{ $student->father_email }}" />
                                     </div>
                                 </div>
 
@@ -186,35 +188,35 @@ session(['subtitle' => 'enroll']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="father_job">Father's Job :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="father_job" name="father_job"   data-fv-notempty="true" value="{{ old('father_job') }}" />
+                                        <input class="form-control" type="text" id="father_job" name="father_job"   data-fv-notempty="true" value="{{ $student->father_job }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="father_workplace">Father's Workplace :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="father_workplace" name="father_workplace"   data-fv-notempty="true" value="{{ old('father_workplace') }}" />
+                                        <input class="form-control" type="text" id="father_workplace" name="father_workplace"   data-fv-notempty="true" value="{{ $student->father_workplace }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="mother_name">Mother's Name in English :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="mother_name" name="mother_name"   data-fv-notempty="true" value="{{ old('mother_name') }}" />
+                                        <input class="form-control" type="text" id="mother_name" name="mother_name"   data-fv-notempty="true" value="{{ $student->mother_name }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="mother_tel">Mother's Tel :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="mother_tel" name="mother_tel"   data-fv-notempty="true" value="{{ old('mother_tel') }}" />
+                                        <input class="form-control" type="text" id="mother_tel" name="mother_tel"   data-fv-notempty="true" value="{{ $student->mother_tel }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="mother_mob">Mother's Mob :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="mother_mob" name="mother_mob"   data-fv-notempty="true" value="{{ old('mother_mob') }}" />
+                                        <input class="form-control" type="text" id="mother_mob" name="mother_mob"   data-fv-notempty="true" value="{{ $student->mother_mob }}" />
                                     </div>
                                 </div>
 
@@ -222,35 +224,35 @@ session(['subtitle' => 'enroll']); ?>
                                     <label class="control-label col-md-4 col-sm-4" for="mother_email">Mother's Email :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <input class="form-control" type="text" id="mother_email" name="mother_email"   data-fv-notempty="true"  data-fv-emailaddress="true"
-                data-fv-emailaddress-message="The value is not a valid email address"  value="{{ old('mother_email') }}" />
+                data-fv-emailaddress-message="The value is not a valid email address"  value="{{ $student->mother_email }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="mother_job">Mother's Job :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="mother_job" name="mother_job"   data-fv-notempty="true" value="{{ old('mother_job') }}" />
+                                        <input class="form-control" type="text" id="mother_job" name="mother_job"   data-fv-notempty="true" value="{{ $student->mother_job }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="mother_workplace">Mother's Work Place :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="mother_workplace" name="mother_workplace"   data-fv-notempty="true" value="{{ old('mother_workplace') }}" />
+                                        <input class="form-control" type="text" id="mother_workplace" name="mother_workplace"   data-fv-notempty="true" value="{{ $student->mother_workplace }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="emergency_phone">Emergency Phone :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="emergency_phone" name="emergency_phone"   data-fv-notempty="true" value="{{ old('emergency_phone') }}" />
+                                        <input class="form-control" type="text" id="emergency_phone" name="emergency_phone"   data-fv-notempty="true" value="{{ $student->emergency_phone }}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="ABCD">Authorized & non authorized persons to take the child :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <textarea class="form-control" id="authorities" name="authorities" rows="3"   >{{ old('authorities') }}</textarea>
+                                        <textarea class="form-control" id="authorities" name="authorities" rows="3"   >{{ $student->authorities }}</textarea>
                                     </div>
                                 </div>
 
@@ -423,9 +425,16 @@ session(['subtitle' => 'enroll']); ?>
                      verbose: false,
                      
                      validators: {
+                     
                      notEmpty: {},
                      remote: {
-                        url: '/enrollCheck'
+                        url: '/studentEditCheck' ,
+                        data: function(validator, $field, value) {
+                            return {                                 
+                                studentId: {{$studentId}}
+                            };
+                        }
+
                     }
                 }
             },
@@ -434,9 +443,16 @@ session(['subtitle' => 'enroll']); ?>
                      verbose: false,
                      
                      validators: {
+                     
                      notEmpty: {},
                      remote: {
-                        url: '/enrollCheck'
+                        url: '/studentEditCheck' ,
+                        data: function(validator, $field, value) {
+                            return { 
+                                studentId: {{$studentId}}
+                            };
+                        }
+
                     }
                 }
             }

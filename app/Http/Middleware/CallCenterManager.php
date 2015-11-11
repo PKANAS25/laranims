@@ -22,7 +22,7 @@ class CallCenterManager
         else
         {
               
-              return redirect()->intended('/home')->with('warning', 'Tried to enter restricted area!');; 
+              return redirect()->intended('/home')->with('warning', 'Tried to enter restricted area!');
         }
     }
 }

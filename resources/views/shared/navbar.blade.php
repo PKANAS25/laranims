@@ -59,18 +59,20 @@
                     </li>
 
 <!-- *******************************************************************Store********************************************************************* -->                    @if(Auth::user()->hasRole('nursery_admin') || Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))                    
-                    <li class="has-sub">
+                    <li class="has-sub @if(session('title') == 'Store')   active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
-                            <i class="fa fa-shopping-cart"></i>
+                            <i class="ion-ios-cart"></i>
                             <span>Store</span></span> 
                         </a>
                         <ul class="sub-menu">
                             @if(Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))
-                            <li><a href="form_elements.html">Main Store</a></li>
-                            @if(Auth::user()->hasRole('StoreManager') )
-                            <li><a href="form_plugins.html">Add Item</a></li>
-                            @endif
+                            <li class="@if(session('subtitle') == 'main')   active @endif"><a href="/store/main">Main Store</a></li>
+                               
+                                @if(Auth::user()->hasRole('StoreManager') )
+                                <li><a href="form_plugins.html">Add Item</a></li>
+                                @endif
+
                             <li><a href="form_slider_switcher.html">Categories</a></li>
                             <li><a href="form_validation.html">Suppliers</a></li>
                             @endif                           

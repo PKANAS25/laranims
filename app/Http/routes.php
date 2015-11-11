@@ -50,6 +50,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/student/{studentId}/delete', 'StudentsController@delete');
     Route::get('/student/{studentId}/restore', 'StudentsController@restore');
 
+    Route::get('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editForm']);
+    Route::post('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editSave']); 
+    Route::get('/studentEditCheck', 'StudentsController@studentEditCheck');
 //---------------------------------------SubscriptionController---------------------------------------
     Route::get('/student/subscription/add/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@add']);
     Route::get('/subsCheck', 'SubscriptionController@subsCheck');
@@ -131,6 +134,11 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/refunds/agents/tickets/{viewer}', ['middleware' => 'CallCenterAgent','uses'=>'CallCenterController@feedbacks']);
     Route::get('/refunds/agent/feedback/{studentId}/{ticketId}', ['middleware' => 'CallCenterAgent','uses'=>'CallCenterController@feedbackForm']);
     Route::post('/refunds/agent/feedback/{studentId}/{ticketId}', ['middleware' => 'CallCenterAgent','uses'=>'CallCenterController@saveFeedback']);
+
+//-------------------------------StoreController---------------------------------
+    Route::get('/store/main', ['middleware' => 'StoreManagerOrView','uses'=>'StoreController@mainStore']);
+    Route::get('/store/main/item/{itemId}', ['middleware' => 'StoreManagerOrView','uses'=>'StoreController@itemView']);
+
 
 
 });

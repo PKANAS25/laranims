@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 
-class CallCenterAgent
+class StoreManagerOrView
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class CallCenterAgent
      */
     public function handle($request, Closure $next)
     {
-       if(Auth::user()->hasRole('CallCenterAgent') || Auth::user()->hasRole('CallCenterManager'))
+         if(Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))
             return $next($request);  
         
         else

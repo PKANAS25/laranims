@@ -115,6 +115,7 @@ class StudentsController extends Controller
             'mother_job' => $request->get('mother_job'),
             'mother_workplace' => $request->get('mother_workplace'),
             'emergency_phone' => $request->get('emergency_phone'),
+            'authorities' => $request->get('authorities'),
             'enrolled_by' => $enrolledBy,
             'enrolled_on' => $today
             
@@ -165,23 +166,9 @@ class StudentsController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public function profile($studentId)
     {
         $studentId = base64_decode($studentId);
@@ -370,5 +357,128 @@ class StudentsController extends Controller
         }
             else
                 return redirect()->back()->withErrors('Technical Error. Contact Administrator!');
-    }    
+    }   
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------            
+
+   public function editForm($studentId)
+    {
+        
+        $studentId = base64_decode($studentId);
+        $today = Carbon::now()->toDateString();
+
+        $branch = Auth::user()->branch;
+        $grades = Classroom::where('branch',$branch)
+                             ->orderByRaw('CAST(`classrooms`.`standard` as UNSIGNED) ,`classrooms`.`standard` , classrooms.division')
+                             ->get();
+        $nations = Nationality::all();
+
+
+
+        $student = DB::table('students') 
+            ->leftjoin('nationality', 'students.nationality', '=', 'nationality.nation_id')
+            ->leftjoin('classrooms','students.current_grade','=','classrooms.class_id') 
+            ->select('students.*', 'nationality.nationality as nation','classrooms.standard', 'classrooms.division')             
+            ->where('students.student_id',$studentId ) 
+            ->first();
+ 
+
+        return view('students.edit',compact('student','grades','nations','studentId'));
+    }
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------            
+
+
+public function editSave(EnrollFormRequest $request,$studentId)
+    {
+        
+        $studentId = base64_decode($studentId);
+
+        Student::where('student_id', $studentId)
+            ->update([
+                        'full_name' => ucwords(strtolower($request->get('fullname'))),
+                        'full_name_arabic' => $request->get('full_name_arabic'),
+                        'current_grade' => $request->get('current_grade'),
+                        'gender' => $request->get('gender'),
+                        'dob' => $request->get('dob'),
+                        'joining_date' => $request->get('joining_date'),
+                        'nationality' => $request->get('nationality'),
+                        'address' => $request->get('address'),
+                        'map' => $request->get('map'),
+                        'father_name' => $request->get('father_name'),
+                        'father_tel' => $request->get('father_tel'),
+                        'father_mob' => $request->get('father_mob'),
+                        'father_email' => $request->get('father_email'),
+                        'father_job' => $request->get('father_job'),
+                        'father_workplace' => $request->get('father_workplace'),
+                        'mother_name' => $request->get('mother_name'),
+                        'mother_tel' => $request->get('mother_tel'),
+                        'mother_mob' => $request->get('mother_mob'),
+                        'mother_email' => $request->get('mother_email'),
+                        'mother_job' => $request->get('mother_job'),
+                        'mother_workplace' => $request->get('mother_workplace'),
+                        'emergency_phone' => $request->get('emergency_phone'),
+                        'authorities' => $request->get('authorities') 
+                        ]);
+            
+       
+        if($request->file('fileToUpload'))
+        {
+ 
+             if (File::exists(base_path().'/public/uploads/student_pics/'.$studentId.'.jpg'))
+                 File::delete(base_path().'/public/uploads/student_pics/'.$studentId.'.jpg');
+            
+            $imageName = $studentId.'.jpg';
+            $request->file('fileToUpload')->move(base_path().
+                 '/public/uploads/student_pics/', $imageName );
+
+        }
+                                    
+
+       return redirect()->action('StudentsController@profile', [base64_encode($studentId)]) ;
+
+    }
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------            
+
+ public function studentEditCheck(Request $request)
+    {
+          $branch = Auth::user()->branch;
+
+
+         $studentId =$request->get('studentId');
+
+          if($request->get('fullname'))
+          {
+          $fullname = $request->get('fullname'); 
+
+          $count = Student::where('branch',$branch)
+                            ->where('student_id','!=',$studentId)
+                            ->whereRAW("full_name LIKE '%".$fullname."%'")
+                            ->count();
+            }
+
+        elseif($request->get('full_name_arabic'))
+          {
+          $fullname_arabic =  ($request->get('full_name_arabic')); 
+
+          $count = Student::where('branch',$branch)
+                            ->where('student_id','!=',$studentId)
+                            ->whereRAW("full_name_arabic LIKE '%".$fullname_arabic."%'")
+                            ->count();
+            }
+
+        if($count)
+        return response()->json(['valid' => 'true', 'message' => 'Name exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+         
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------            
+
 }

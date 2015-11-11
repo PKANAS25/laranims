@@ -168,7 +168,9 @@ session(['subtitle' => '']); ?>
                                         <tr>
                                             <td class="field"> </td>
                                             <td >
-                                                Edit
+                                               @if(Auth::user()->hasRole('nursery_admin'))
+                                               <a href="{!! action('StudentsController@editForm', array(base64_encode($student->student_id)) ) !!}"><i class="fa fa-edit"></i> Edit</a>
+                                               @endif
                                             </td>
                                         </tr>
                                          
@@ -781,6 +783,22 @@ session(['subtitle' => '']); ?>
                                             <td><a  >{{$student->mother_workplace}} as {{$student->mother_job}}</a></td>
                                         </tr>
                                          
+                                         <tr>
+                                            <td class="field"> </td>
+                                            <td>
+                                                <hr>
+                                            </td>
+                                        </tr>
+
+                                         <tr class="highlight">
+                                            <td class="field">Emergency</td>
+                                            <td><i class="fa fa-mobile fa-lg m-r-5"></i> {{$student->emergency_phone}} </td>
+                                        </tr>
+
+                                        <tr class="highlight">
+                                            <td class="field">Authorities</td>
+                                            <td>{{$student->authorities}} </td>
+                                        </tr>
                                          
                                     </tbody>
                                 </table>
