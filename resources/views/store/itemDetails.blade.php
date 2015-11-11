@@ -37,7 +37,7 @@ session(['subtitle' => 'main']); ?>
                                 <i class="fa fa-list-alt fa-2x pull-left fa-fw"></i>                             
                                 <div class="m-t-4  ">Current Stock:</div>
                             </td>
-                            <td class="p-t-10"> <span class="label label-warning f-s-11"><strong>{{$item->stock}}</strong></span></td>
+                            <td class="p-t-10"> <span class="label label-warning f-s-11"><strong>{{$item->stock}}</strong></span> </td>
                         </tr>
                         
 
@@ -66,6 +66,7 @@ session(['subtitle' => 'main']); ?>
                         </tr>
 
                         
+
 
                         @if($pic)
                         <tr>
@@ -148,25 +149,44 @@ session(['subtitle' => 'main']); ?>
                         </div>
                         <div class="tab-content">
                             <div class="tab-pane fade active in" id="nav-tab-1">
-                                <h3 class="m-t-10">Nav Tab 1</h3>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                    Integer ac dui eu felis hendrerit lobortis. Phasellus elementum, nibh eget adipiscing porttitor, 
-                                    est diam sagittis orci, a ornare nisi quam elementum tortor. 
-                                    Proin interdum ante porta est convallis dapibus dictum in nibh. 
-                                    Aenean quis massa congue metus mollis fermentum eget et tellus. 
-                                    Aenean tincidunt, mauris ut dignissim lacinia, nisi urna consectetur sapien, 
-                                    nec eleifend orci eros id lectus.
-                                </p>
-                                <p>
-                                    Aenean eget odio eu justo mollis consectetur non quis enim. 
-                                    Vivamus interdum quam tortor, et sollicitudin quam pulvinar sit amet. 
-                                    Donec facilisis auctor lorem, quis mollis metus dapibus nec. Donec interdum tellus vel mauris vehicula, 
-                                    at ultrices ex gravida. Maecenas at elit tincidunt, vulputate augue vitae, vulputate neque.
-                                    Aenean vel quam ligula. Etiam faucibus aliquam odio eget condimentum. 
-                                    Cras lobortis, orci nec eleifend ultrices, orci elit pellentesque ex, eu sodales felis urna nec erat. 
-                                    Fusce lacus est, congue quis nisi quis, sodales volutpat lorem.
-                                </p>
+                                 
+                        <a class="btn btn-primary btn-xs m-r-5" href = "" title="Click here to add new stock"><i class="fa fa-plus"></i>  Add stock</a>        
+                    <p> </p>
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-success overflow-hidden">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                        <i class="fa fa-plus-circle pull-right"></i> 
+                                        Added Stocks
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-danger overflow-hidden">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                        <i class="fa fa-plus-circle pull-right"></i> 
+                                        Deleted Stocks
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
+                        </div>
+                         
+                    </div>
+
+
                             </div>
                             <div class="tab-pane fade" id="nav-tab-2">
                                 <h3 class="m-t-10">Nav Tab 2</h3>
