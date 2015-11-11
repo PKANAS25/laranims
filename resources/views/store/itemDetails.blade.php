@@ -153,7 +153,10 @@ session(['subtitle' => 'main']); ?>
                         <a class="btn btn-primary btn-xs m-r-5" href = "" title="Click here to add new stock"><i class="fa fa-plus"></i>  Add stock</a>        
                     <p> </p>
                     <div class="panel-group" id="accordion">
-                        <div class="panel panel-success overflow-hidden">
+                        
+                <!--------------------------------------------------Added Stock------------------------------------------------------------------>
+
+                        <div class="panel panel-info overflow-hidden">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
                                     <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
@@ -164,10 +167,40 @@ session(['subtitle' => 'main']); ?>
                             </div>
                             <div id="collapseOne" class="panel-collapse collapse in">
                                 <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                    <table   class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                            <th>Cost</th>
+                                            <th>Total Cost</th>
+                                            <th>Supplier</th>
+                                            <th>Added By</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($stocks as $stock)
+                                        @if($stock->deleted==0)
+                                        <tr>
+                                            <td>{{$stock->stocked_date}}</td>
+                                            <td>{{$stock->item_count}}</td>
+                                            <td>{{$stock->cost}}</td>
+                                            <td>{{$stock->cost*$stock->item_count}}</td>
+                                            <td>{{$stock->supplier_name}}</td>
+                                            <td>{{$stock->added_by}}</td>
+                                            <td></td>
+                                        </tr>
+                                        @endif
+                                        @endforeach
+                                    </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
+
+
+                        <!--------------------------------------------------Deleted Stock------------------------------------------------------------------>
                         <div class="panel panel-danger overflow-hidden">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
@@ -185,7 +218,7 @@ session(['subtitle' => 'main']); ?>
                         </div>
                          
                     </div>
-
+                    <!----------------------------------------------------------------------------------------------------------------------------------- -->
 
                             </div>
                             <div class="tab-pane fade" id="nav-tab-2">

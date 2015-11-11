@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 
 use App\Item;
+use App\Stock;
 use DB;
 
 use File;
@@ -60,6 +61,18 @@ class StoreController extends Controller
                                      ->where('item_id',$itemId)
                                      ->where('approval',1)
                                      ->sum('count');
+
+        // $sqlStock = mysql_query("SELECT stocks.*, admin_users.name , suppliers.name AS supplier_name,branches.name AS branch_name 
+        //     FROM stocks LEFT JOIN admin_users ON(stocks.admin_id = admin_users.admin_id)   LEFT JOIN suppliers ON(stocks.supplier_id = suppliers.supplier_id)  
+        //      LEFT JOIN branches ON(stocks.branch_id = branches.id) WHERE stocks.item_id = '$item_id' AND stocks.deleted='0' ORDER BY stocked_date DESC"); 
+        
+        $stocks = Stock::select('stocks.*','users.name AS added_by','suppliers.name AS supplier_name')
+                     ->leftjoin('users','stocks.admin_id','=','users.id')
+                     ->leftjoin('suppliers','stocks.supplier_id','=','suppliers.supplier_id')
+                     ->where('item_id',$itemId) 
+                     ->where('branch_id',0)
+                     ->orderBy('stocked_date')
+                     ->get();                                    
         
         if (File::exists(base_path().'/public/uploads/store_items/'.$itemId.'_s.jpg'))
         {
@@ -68,7 +81,7 @@ class StoreController extends Controller
         }
         
 
-        return view('store.itemDetails',compact('item','pending','transfered','pic','picBig'));
+        return view('store.itemDetails',compact('item','pending','transfered','pic','picBig','stocks'));
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
