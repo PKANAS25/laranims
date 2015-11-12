@@ -108,20 +108,13 @@ session(['subtitle' => 'main']); ?>
                         <i class="fa fa-info-circle fa-lg m-r-5 pull-left m-t-2"></i> There are <b class="text-inverse">{{$pending}}</b> branch transfers pending for this item.
                     </div>
                     @endif
-
+  
                     <div class="hidden-print">
-                                     @if (count($errors) > 0)
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                    @endif
+                                    
                                     @if (session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   
+                                            <span class="close" data-dismiss="alert">×</span>
                                         </div>
                                     @endif
                                 </div>  
@@ -142,32 +135,34 @@ session(['subtitle' => 'main']); ?>
                                     <li class="prev-button"><a href="javascript:;" data-click="prev-tab" class="text-success"><i class="fa fa-arrow-left"></i></a></li>
                                     <li class="active"><a href="#nav-tab-1" data-toggle="tab">Stock Management</a></li>
                                     <li class=""><a href="#nav-tab-2" data-toggle="tab">Transfers</a></li>
-                                    <li class=""><a href="#nav-tab-3" data-toggle="tab">History</a></li> 
-                                     
+                                   
                                 </ul>
                             </div>
                         </div>
                         <div class="tab-content">
                             <div class="tab-pane fade active in" id="nav-tab-1">
-                                 
-                        <a class="btn btn-primary btn-xs m-r-5" href = "" title="Click here to add new stock"><i class="fa fa-plus"></i>  Add stock</a>        
+                        
+                        @if(Auth::user()->hasRole('StoreManager'))         
+                        <div align="right"><a class="btn btn-primary btn-xs m-r-5" href = "{{action('StoreController@addStock',base64_encode($item->item_id))}}" title="Click here to add new stock"><i class="fa fa-plus"></i>  Add stock</a> </div>    
+                        @endif   
+
                     <p> </p>
                     <div class="panel-group" id="accordion">
                         
                 <!--------------------------------------------------Added Stock------------------------------------------------------------------>
 
-                        <div class="panel panel-info overflow-hidden">
+                        <div class="panel panel-success overflow-hidden">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
-                                    <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                                         <i class="fa fa-plus-circle pull-right"></i> 
                                         Added Stocks
                                     </a>
                                 </h3>
                             </div>
-                            <div id="collapseOne" class="panel-collapse collapse in">
+                            <div id="collapseOne" class="panel-collapse collapse">
                                 <div class="panel-body">
-                                    <table   class="table table-striped table-bordered">
+                                    <table   class="table  ">
                                     <thead>
                                         <tr>
                                             <th>Date</th>
@@ -181,7 +176,7 @@ session(['subtitle' => 'main']); ?>
                                     </thead>
                                     <tbody>
                                         @foreach($stocks as $stock)
-                                        @if($stock->deleted==0)
+                                        @if($stock->deleted==0 && $stock->branch_id==0)
                                         <tr>
                                             <td>{{$stock->stocked_date}}</td>
                                             <td>{{$stock->item_count}}</td>
@@ -189,7 +184,30 @@ session(['subtitle' => 'main']); ?>
                                             <td>{{$stock->cost*$stock->item_count}}</td>
                                             <td>{{$stock->supplier_name}}</td>
                                             <td>{{$stock->added_by}}</td>
-                                            <td></td>
+                                            <td>@if($stock->file)
+                                                <a href="#modal-dialog{{$stock->stock_id}}"  data-toggle="modal"><i class="fa fa-download text-info"></i></a>
+                                                <div class="modal fade" id="modal-dialog{{$stock->stock_id}}">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                <h4 class="modal-title">Stock Invoice</h4> <a href="/store/upload/invoice/{{base64_encode($stock->stock_id)}}" title="Click here to upload an invoice">
+                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                            </div>
+                                                            <div class="modal-body" >
+                                                                <img height="100%" width="100%" src="/uploads/stock_invoices/{{$stock->stock_id}}.jpg"  />
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                @else
+                                                @if(Auth::user()->hasRole('StoreManager'))
+                                                <a href="/store/upload/invoice/{{base64_encode($stock->stock_id)}}" title="Click here to upload an invoice">
+                                                <i class="fa fa-upload text-inverse"></i></a>
+                                                @endif                                               
+                                                @endif
+                                            </td>
                                         </tr>
                                         @endif
                                         @endforeach
@@ -198,29 +216,98 @@ session(['subtitle' => 'main']); ?>
                                 </div>
                             </div>
                         </div>
-
-
-                        <!--------------------------------------------------Deleted Stock------------------------------------------------------------------>
-                        <div class="panel panel-danger overflow-hidden">
+            <!-------------------------------------------------- Branch Returns ------------------------------------------------------------------>
+                        <div class="panel panel-info overflow-hidden">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
                                     <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
                                         <i class="fa fa-plus-circle pull-right"></i> 
-                                        Deleted Stocks
+                                        Branch Returns
                                     </a>
                                 </h3>
                             </div>
                             <div id="collapseTwo" class="panel-collapse collapse">
                                 <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                   <div class="panel-body">
+                                    <table   class="table  ">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Quantity</th> 
+                                            <th>Branch</th>
+                                            <th>Returned By</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($stocks as $stock)
+                                        @if($stock->deleted==0 && $stock->branch_id>0)                                        
+                                        <tr>
+                                            <td>{{$stock->stocked_date}}</td>
+                                            <td>{{$stock->item_count}}</td> 
+                                            <td>{{$stock->branch_name}}</td>
+                                            <td>{{$stock->added_by}}</td>
+                                            <td></td>
+                                        </tr>
+                                        @endif                                         
+                                        @endforeach
+                                    </tbody>
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-------------------------------------------------- Deleted Stock ------------------------------------------------------------------>
+                        <div class="panel panel-danger overflow-hidden">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                        <i class="fa fa-plus-circle pull-right"></i> 
+                                        Deleted Stocks
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                   <div class="panel-body">
+                                    <table   class="table  ">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                            <th>Cost</th>
+                                            <th>Total Cost</th>
+                                            <th>Supplier</th>
+                                            <th>Reason</th>                                             
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($stocks as $stock)
+                                        @if($stock->deleted==1)
+                                        <tr>
+                                            <td>{{$stock->stocked_date}}</td>
+                                            <td>{{$stock->item_count}}</td>
+                                            <td>{{$stock->cost}}</td>
+                                            <td>{{$stock->cost*$stock->item_count}}</td>
+                                            <td>{{$stock->supplier_name.$stock->branch_name}}</td>
+                                            <td>{{$stock->delete_reason}}</td> 
+                                        </tr>
+                                        @endif
+                                        @endforeach
+                                    </tbody>
+                                    </table>
+                                </div>
                                 </div>
                             </div>
                         </div>
                          
                     </div>
+
+                    </div>
                     <!----------------------------------------------------------------------------------------------------------------------------------- -->
 
-                            </div>
+                            
                             <div class="tab-pane fade" id="nav-tab-2">
                                 <h3 class="m-t-10">Nav Tab 2</h3>
                                 <p>
@@ -241,29 +328,8 @@ session(['subtitle' => 'main']); ?>
                                     Cras lobortis, orci nec eleifend ultrices, orci elit pellentesque ex, eu sodales felis urna nec erat. 
                                     Fusce lacus est, congue quis nisi quis, sodales volutpat lorem.
                                 </p>
-                            </div>
-                            <div class="tab-pane fade" id="nav-tab-3">
-                                <h3 class="m-t-10">Nav Tab 3</h3>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                    Integer ac dui eu felis hendrerit lobortis. Phasellus elementum, nibh eget adipiscing porttitor, 
-                                    est diam sagittis orci, a ornare nisi quam elementum tortor. 
-                                    Proin interdum ante porta est convallis dapibus dictum in nibh. 
-                                    Aenean quis massa congue metus mollis fermentum eget et tellus. 
-                                    Aenean tincidunt, mauris ut dignissim lacinia, nisi urna consectetur sapien, 
-                                    nec eleifend orci eros id lectus.
-                                </p>
-                                <p>
-                                    Aenean eget odio eu justo mollis consectetur non quis enim. 
-                                    Vivamus interdum quam tortor, et sollicitudin quam pulvinar sit amet. 
-                                    Donec facilisis auctor lorem, quis mollis metus dapibus nec. Donec interdum tellus vel mauris vehicula, 
-                                    at ultrices ex gravida. Maecenas at elit tincidunt, vulputate augue vitae, vulputate neque.
-                                    Aenean vel quam ligula. Etiam faucibus aliquam odio eget condimentum. 
-                                    Cras lobortis, orci nec eleifend ultrices, orci elit pellentesque ex, eu sodales felis urna nec erat. 
-                                    Fusce lacus est, congue quis nisi quis, sodales volutpat lorem.
-                                </p>
-                            </div>
-                             
+                            </div> 
+
                              
                              
                         </div>

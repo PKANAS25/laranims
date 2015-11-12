@@ -437,7 +437,7 @@ public function editSave(EnrollFormRequest $request,$studentId)
         }
                                     
 
-       return redirect()->action('StudentsController@profile', [base64_encode($studentId)])->with('status', 'Student details Updated!'); ;
+       return redirect()->action('StudentsController@profile', [base64_encode($studentId)])->with('status', 'Student details Updated!');
 
     }
 

@@ -139,6 +139,13 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/main', ['middleware' => 'StoreManagerOrView','uses'=>'StoreController@mainStore']);
     Route::get('/store/main/item/{itemId}', ['middleware' => 'StoreManagerOrView','uses'=>'StoreController@itemView']);
 
+    Route::get('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@addStock']);
+    Route::post('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@saveStock']);
+
+    Route::get('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager',function () {return view('store.uploadStockInvoice');}]);
+    Route::post('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager','uses'=>'StoreController@uploadInvoice']);
+
+
 
 
 });
