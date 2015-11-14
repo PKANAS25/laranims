@@ -49,8 +49,7 @@ session(['subtitle' => 'main']); ?>
                                         <th>Item</th>
                                         <th>Product Code</th>
                                         <th>Price</th>
-                                        <th>Stock</th>
-                                        <th>Returned</th>
+                                        <th>Stock</th>                                        
                                         <th>Pending</th>
                                         <th>Category</th>
                                         <th>Descripiton</th>
@@ -65,7 +64,6 @@ session(['subtitle' => 'main']); ?>
                                         <td>{{$item->product_code}}</td>
                                         <td>{{$item->price}}</td>
                                         <td>{{$item->stock}}</td>
-                                        <td>{{$item->returned}}</td>
                                         <td>{{$item->pending}}</td>
                                         <td>{{$item->category_name}}</td>
                                         <td>{{$item->descripiton}}</td>

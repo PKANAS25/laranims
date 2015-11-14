@@ -10,6 +10,7 @@ use Auth;
 
 use App\Item;
 use App\Stock;
+use App\Branch;
 use DB;
 
 use File;
@@ -81,8 +82,17 @@ class StoreController extends Controller
                          else
                             $stock->file=0;
                      }
+ 
 
-                                                               
+    $transfers = DB::table('item_transfers')
+                   ->select('item_transfers.*', 'transferer.name AS transfered_by','approver.name AS approved_by','branches.name AS branch_name')
+                   ->leftjoin('users AS transferer','item_transfers.accountant','=','transferer.id')
+                   ->leftjoin('users AS approver','item_transfers.approved_admin','=','approver.id')
+                   ->leftjoin('branches','item_transfers.branch','=','branches.id')
+                   ->where('item_id',$itemId)
+                   ->orderBy('transfer_id','DESC')
+                   ->get(); 
+                                                                                               
         
         if (File::exists(base_path().'/public/uploads/store_items/'.$itemId.'_s.jpg'))
         {
@@ -91,7 +101,7 @@ class StoreController extends Controller
         }
         
 
-        return view('store.itemDetails',compact('item','pending','transfered','pic','picBig','stocks'));
+        return view('store.itemDetails',compact('item','pending','transfered','pic','picBig','stocks','transfers'));
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -208,19 +218,64 @@ class StoreController extends Controller
 
     //----------------------------------------------------------------------------------------------------------------------------------------
 
-    public function update(Request $request, $id)
+    public function itemTransfer($itemId)
     {
-        //
+        $itemId = base64_decode($itemId);
+
+         $item = Item::where('item_id',$itemId)->first();  
+
+         $branches = Branch::where('non_nursery',0)->orderBy('name')->get();            
+         
+         return view('store.itemTransfer',compact('item','branches'));   
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    //----------------------------------------------------------------------------------------------------------------------------------------
+    public function itemTransferSave($itemId,Request $request)
     {
-        //
+        
+        $itemId = base64_decode($itemId);
+        
+        $item = Item::where('item_id',$itemId)->first();  
+
+        $validator = Validator::make($request->all(),[
+            'branch' => 'required',
+            'count' => 'required|numeric|min:1|max:'.$item->stock,
+         ]    
+        );
+
+         if($validator->fails())
+        {
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+
+        else
+        {
+            $currentStock = $item->stock;                 
+            $updatedStock = $currentStock-$request->count;
+
+
+            DB::table('item_transfers')->insert([
+                  'item_id' => $itemId,
+                  'branch' => $request->branch,
+                  'count' => $request->count,
+                  'dated' => Carbon::now()->toDateString(),
+                  'message' => $request->message,
+                  'accountant' => Auth::id()
+                  ]);
+
+             Item::where('item_id',$itemId)->update(['stock' => $updatedStock]);  
+
+            return redirect()->action('StoreController@itemView', [base64_encode($itemId)])->with('status', 'Item transfer initiated!');   
+        }
     }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+public function itemTransferCallback($transferId)
+    {
+
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+
 }

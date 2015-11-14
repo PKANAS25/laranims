@@ -4,7 +4,10 @@
 session(['subtitle' => 'main']); ?> 
 
 @section('content') 
-  
+
+<link rel="stylesheet" type="text/css" href="/dist/msgbox/jquery.msgbox.css" />
+<script type="text/javascript" src="/dist/msgbox/jquery.msgbox.min.js"></script> 
+
 <div id="content" class="content">
             <!-- begin breadcrumb -->
             <ol class="breadcrumb pull-right">
@@ -105,7 +108,7 @@ session(['subtitle' => 'main']); ?>
 
                     @if($pending)
                     <div class="alert alert-warning">
-                        <i class="fa fa-info-circle fa-lg m-r-5 pull-left m-t-2"></i> There are <b class="text-inverse">{{$pending}}</b> branch transfers pending for this item.
+                        <i class="fa fa-info-circle fa-lg m-r-5 pull-left m-t-2"></i> Total pending branch transfer count for this item is <b class="text-inverse">{{$pending}}</b>.
                     </div>
                     @endif
   
@@ -309,25 +312,65 @@ session(['subtitle' => 'main']); ?>
 
                             
                             <div class="tab-pane fade" id="nav-tab-2">
-                                <h3 class="m-t-10">Nav Tab 2</h3>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                    Integer ac dui eu felis hendrerit lobortis. Phasellus elementum, nibh eget adipiscing porttitor, 
-                                    est diam sagittis orci, a ornare nisi quam elementum tortor. 
-                                    Proin interdum ante porta est convallis dapibus dictum in nibh. 
-                                    Aenean quis massa congue metus mollis fermentum eget et tellus. 
-                                    Aenean tincidunt, mauris ut dignissim lacinia, nisi urna consectetur sapien, 
-                                    nec eleifend orci eros id lectus.
-                                </p>
-                                <p>
-                                    Aenean eget odio eu justo mollis consectetur non quis enim. 
-                                    Vivamus interdum quam tortor, et sollicitudin quam pulvinar sit amet. 
-                                    Donec facilisis auctor lorem, quis mollis metus dapibus nec. Donec interdum tellus vel mauris vehicula, 
-                                    at ultrices ex gravida. Maecenas at elit tincidunt, vulputate augue vitae, vulputate neque.
-                                    Aenean vel quam ligula. Etiam faucibus aliquam odio eget condimentum. 
-                                    Cras lobortis, orci nec eleifend ultrices, orci elit pellentesque ex, eu sodales felis urna nec erat. 
-                                    Fusce lacus est, congue quis nisi quis, sodales volutpat lorem.
-                                </p>
+                                @if(Auth::user()->hasRole('StoreManager'))         
+                        <div align="right"><a class="btn btn-primary btn-xs m-r-5" href = "{{action('StoreController@itemTransfer',base64_encode($item->item_id))}}" title="Click here to initiate a transfer"><i class="fa fa-plus"></i>  New Transfer</a> </div><br> 
+                        @endif 
+                                <table   class="table  ">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Branch</th>
+                                            <th>No. of items</th>
+                                            <th>Transfered on</th>
+                                            <th>Transfered By</th>
+                                            <th>Approval</th>
+                                            <th> </th>                                             
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($transfers as $index => $transfer)
+                                        <tr>
+                                            <td>{{$index+1}}</td>
+                                            <td>{{$transfer->branch_name}}</td>
+                                            <td>{{$transfer->count}}</td>
+                                            <td>{{$transfer->dated}}</td>
+                                            <td>{{$transfer->transfered_by}}</td>
+                                            <td>@if($transfer->approval==0)<span class="text-warning">Pending <i class="fa fa-exclamation-circle"></i></span>
+                                                @elseif($transfer->approval==1)<span class="text-success">{{$transfer->approved_by}} <i class="fa fa-check-circle-o"></i></span>
+                                                @elseif($transfer->approval<0)<span class="text-danger"><a class="text-danger" title="{{$transfer->rejection_reason}}">{{$transfer->approved_by}}</a> <i class="fa fa-times-circle"></i></span>
+                                                @endif
+                                            </td>
+                                            <td>@if($transfer->approval==0)
+                                                <button id="XRes{{$index+1}}"><i  class="fa fa-undo text-info"></i></button>
+                                                <script type="text/javascript">
+                                                    $('#XRes{{$index+1}}').click(function(ev) {
+                                                    
+                                                      $.msgbox("<p>Are you sure you want to callback this transfer?</p>", {
+                                                        type    : "prompt",
+                                                         inputs  : [
+                                                          {type: "hidden", name: "no", value: "no"} 
+                                                        ],
+                                                         
+                                                        buttons : [
+                                                          {type: "submit", name: "Callback", value: "Callback"},
+                                                          {type: "cancel", value: "Cancel"}
+                                                        ],
+                                                        form : {
+                                                          active: true,
+                                                          method: 'get',
+                                                          action: '{!! action('StoreController@itemTransferCallback', base64_encode($transfer->transfer_id)) !!}'
+                                                        }
+                                                      });
+                                                      
+                                                      ev.preventDefault();
+                                                    
+                                                    });
+                                                </script>
+                                                @endif
+                                            </td> 
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
                             </div> 
 
                              

@@ -145,6 +145,10 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager',function () {return view('store.uploadStockInvoice');}]);
     Route::post('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager','uses'=>'StoreController@uploadInvoice']);
 
+    Route::get('/store/transfer/item/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransfer']);
+    Route::post('/store/transfer/item/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferSave']);
+    Route::get('/store/transfer/callback/{transferId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferCallback']);
+
 
 
 
