@@ -142,12 +142,18 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@addStock']);
     Route::post('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@saveStock']);
 
+    Route::get('/store/delete/stock/{stockId}', ['middleware' => 'StoreManager','uses'=>'StoreController@deleteStock']);
+
     Route::get('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager',function () {return view('store.uploadStockInvoice');}]);
     Route::post('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager','uses'=>'StoreController@uploadInvoice']);
 
     Route::get('/store/transfer/item/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransfer']);
     Route::post('/store/transfer/item/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferSave']);
     Route::get('/store/transfer/callback/{transferId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferCallback']);
+
+    Route::get('/store/branch/transfers/pending', ['middleware' => 'BranchStore','uses'=>'StoreController@pendingTransfers']);
+    Route::get('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);
+    Route::get('/store/branch/transfers/reject/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@rejectTransfer']);
 
 
 

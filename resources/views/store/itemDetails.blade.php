@@ -57,7 +57,7 @@ session(['subtitle' => 'main']); ?>
                                  <i class="fa fa-folder-open-o fa-2x pull-left fa-fw"></i>   
                                 <div class="m-t-4">Category: </div>
                             </td>
-                            <td class="p-t-10"><span class="label label-success f-s-11"><strong>{{$item->category_name}}</strong></span></td>
+                            <td class="p-t-10"><span class="label label-success f-s-11"><strong>{{$item->category_name}}</strong></span> </td>
                         </tr>
                         
                         <tr>
@@ -108,13 +108,21 @@ session(['subtitle' => 'main']); ?>
 
                     @if($pending)
                     <div class="alert alert-warning">
-                        <i class="fa fa-info-circle fa-lg m-r-5 pull-left m-t-2"></i> Total pending branch transfer count for this item is <b class="text-inverse">{{$pending}}</b>.
+                        <i class="fa fa-info-circle fa-lg m-r-5 pull-left m-t-2"></i> Total count of pending branch transfer is <b class="text-inverse">{{$pending}}</b>.
                     </div>
                     @endif
   
                     <div class="hidden-print">
-                                    
-                                    @if (session('status'))
+                                     @if (count($errors) > 0)
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
+                                    @if(session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   
                                             <span class="close" data-dismiss="alert">×</span>
@@ -127,25 +135,24 @@ session(['subtitle' => 'main']); ?>
                 <div class="col-md-9">
 
                     <!-- begin panel -->
-                    <div class="panel panel-inverse panel-with-tabs" data-sortable-id="ui-unlimited-tabs-1">
-                        <div class="panel-heading p-0">
-                            <div class="panel-heading-btn m-r-10 m-t-10">
-                                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-                            </div>
-                            <!-- begin nav-tabs -->
-                            <div class="tab-overflow">
-                                <ul class="nav nav-tabs nav-tabs-inverse">
-                                    <li class="prev-button"><a href="javascript:;" data-click="prev-tab" class="text-success"><i class="fa fa-arrow-left"></i></a></li>
-                                    <li class="active"><a href="#nav-tab-1" data-toggle="tab">Stock Management</a></li>
-                                    <li class=""><a href="#nav-tab-2" data-toggle="tab">Transfers</a></li>
-                                   
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="tab-content">
-                            <div class="tab-pane fade active in" id="nav-tab-1">
+                    <div class="row">
+                        <!-- begin col-4 -->
+                    <div class="panel panel-inverse" >
                         
-                        @if(Auth::user()->hasRole('StoreManager'))         
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a> 
+                            </div> 
+                        
+                    <ul class="nav nav-tabs nav-tabs-inverse">
+                        <li class="active"><a href="#default-tab-1" data-toggle="tab"><i class="fa fa-list-alt"></i> Stock Management</a></li>
+                        <li><a href="#default-tab-2" data-toggle="tab"><i class="fa fa-random"></i> Transfers</a></li>
+                         
+                    </ul>
+                        <div class="tab-content">
+                        
+                        
+                            <div class="tab-pane fade active in" id="default-tab-1">
+                                @if(Auth::user()->hasRole('StoreManager'))         
                         <div align="right"><a class="btn btn-primary btn-xs m-r-5" href = "{{action('StoreController@addStock',base64_encode($item->item_id))}}" title="Click here to add new stock"><i class="fa fa-plus"></i>  Add stock</a> </div>    
                         @endif   
 
@@ -175,10 +182,11 @@ session(['subtitle' => 'main']); ?>
                                             <th>Supplier</th>
                                             <th>Added By</th>
                                             <th></th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($stocks as $stock)
+                                        @foreach($stocks as $index => $stock)
                                         @if($stock->deleted==0 && $stock->branch_id==0)
                                         <tr>
                                             <td>{{$stock->stocked_date}}</td>
@@ -211,6 +219,31 @@ session(['subtitle' => 'main']); ?>
                                                 @endif                                               
                                                 @endif
                                             </td>
+                                            <td><button id="XDel{{$index+1}}"><i  class="fa fa-trash text-danger"></i></button>
+                                                <script type="text/javascript">                                                
+                                                    $('#XDel{{$index+1}}').click(function(ev) {
+                                                    
+                                                      $.msgbox("<p>Are you sure you want to delete this stock?</p>", {
+                                                        type    : "prompt",
+                                                         inputs  : [
+                                                          {type: "text", name: "delete_reason", value: "", label: "Reason:", required: true} 
+                                                        ],
+                                                         
+                                                        buttons : [
+                                                          {type: "submit", name: "Delete", value: "Delete"},
+                                                          {type: "cancel", value: "Cancel"}
+                                                        ],
+                                                        form : {
+                                                          active: true,
+                                                          method: 'get',
+                                                          action: '{!! action('StoreController@deleteStock', base64_encode($stock->stock_id)) !!}'
+                                                        }
+                                                      });
+                                                      
+                                                      ev.preventDefault();
+                                                    
+                                                    });
+                                                </script></td>
                                         </tr>
                                         @endif
                                         @endforeach
@@ -303,15 +336,12 @@ session(['subtitle' => 'main']); ?>
                                 </div>
                                 </div>
                             </div>
-                        </div>
+                       </div>
                          
                     </div>
-
-                    </div>
-                    <!----------------------------------------------------------------------------------------------------------------------------------- -->
-
-                            
-                            <div class="tab-pane fade" id="nav-tab-2">
+                            </div>
+                            <!----------------------------------------------------------------------------------------------------------------------------------- -->
+                             <div class="tab-pane fade" id="default-tab-2">
                                 @if(Auth::user()->hasRole('StoreManager'))         
                         <div align="right"><a class="btn btn-primary btn-xs m-r-5" href = "{{action('StoreController@itemTransfer',base64_encode($item->item_id))}}" title="Click here to initiate a transfer"><i class="fa fa-plus"></i>  New Transfer</a> </div><br> 
                         @endif 
@@ -342,7 +372,7 @@ session(['subtitle' => 'main']); ?>
                                             </td>
                                             <td>@if($transfer->approval==0)
                                                 <button id="XRes{{$index+1}}"><i  class="fa fa-undo text-info"></i></button>
-                                                <script type="text/javascript">
+                                                <script type="text/javascript">                                                
                                                     $('#XRes{{$index+1}}').click(function(ev) {
                                                     
                                                       $.msgbox("<p>Are you sure you want to callback this transfer?</p>", {
@@ -371,11 +401,10 @@ session(['subtitle' => 'main']); ?>
                                         </tr>
                                         @endforeach
                                     </tbody>
-                            </div> 
-
-                             
-                             
+                             </div>
                         </div>
+
+                    </div>
                     </div>
                     <!-- end panel -->
                      

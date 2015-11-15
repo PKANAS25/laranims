@@ -30,6 +30,8 @@ class HeaderNotifications
         $StoreReturnsCount=0;
         $StoreRejectionsCount =0;
 
+        $StoreTransferCount=0;
+
         
         if ($request->is("/") || $request->is("password/email") || $request->is("/logout") || $request->is("/errorLogout") ||  $request->is("password/reset/*"))
            {
@@ -77,12 +79,18 @@ class HeaderNotifications
          $TotalNotifications+=$StoreRejectionsCount;
         }
 //-------------------------------------------------------------------------------------------------------------------------------------
-         
+         if(Auth::user()->hasRole('BranchStore'))
+        {
+             
+          
+         $StoreTransferCount = DB::table('item_transfers')->where('approval',0)->where('branch',Auth::user()->branch)->count();
+         $TotalNotifications+=$StoreTransferCount;
+        }
 
 
             view()->composer('shared.header', function ($view) 
             use($TotalNotifications,$CallCenterManagerCallUnassigns,$NotDepositedCount,$NotDepositedChequeCount,$StoreRequestsCount,$StoreReturnsCount,
-                $StoreRejectionsCount,$CallCenterAgentCallAssigns) 
+                $StoreRejectionsCount,$CallCenterAgentCallAssigns,$StoreTransferCount) 
                 {
                            $view->with('TotalNotifications', $TotalNotifications)
 
@@ -95,7 +103,9 @@ class HeaderNotifications
 
                           ->with('StoreRequestsCount', $StoreRequestsCount)
                           ->with('StoreReturnsCount', $StoreReturnsCount)
-                          ->with('StoreRejectionsCount', $StoreRejectionsCount);
+                          ->with('StoreRejectionsCount', $StoreRejectionsCount)
+
+                          ->with('StoreTransferCount', $StoreTransferCount);
                 });
 
         return $next($request);

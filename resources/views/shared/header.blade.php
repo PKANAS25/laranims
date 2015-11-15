@@ -97,7 +97,22 @@
                                 </a>
                             </li>
                             @endif
+                            @endif
 
+                            
+
+                            @if(Auth::user()->hasRole('BranchStore'))                           
+                            @if($StoreTransferCount)
+                            <li class="media">
+                                <a href="/store/branch/transfers/pending">
+                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-green"></i></div>
+                                    <div class="media-body">
+                                        <h6 class="media-heading">{{$StoreTransferCount}} New Item Transfers</h6>
+                                        <div class="text-muted f-s-11">Please verify and accept</div>
+                                    </div>
+                                </a>
+                            </li>
+                            @endif
                             @endif
 
                             

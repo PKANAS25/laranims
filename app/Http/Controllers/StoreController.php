@@ -122,6 +122,8 @@ class StoreController extends Controller
     }
 
 
+
+
 //----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -180,7 +182,32 @@ class StoreController extends Controller
 
     }
 
+//----------------------------------------------------------------------------------------------------------------------------------------
 
+    public function deleteStock(Request $request,$stockId)
+    {
+        $stockId = base64_decode($stockId);
+        
+         $this->validate($request, [
+        'delete_reason' => 'required|min:4',]); 
+        
+        $stock = Stock::select('stocks.*','items.stock')
+                      ->leftjoin('items','stocks.item_id','=','items.item_id')
+                      ->where('stock_id',$stockId)
+                      ->first(); 
+        
+        $updatedStock = $stock->stock-$stock->item_count;  
+
+        Stock::where('stock_id',$stockId)->update(['deleted' => 1,
+                                                   'delete_date' => Carbon::now()->toDateString(),
+                                                   'deleted_by' => Auth::id(),
+                                                   'delete_reason' => $request->delete_reason]); 
+
+        Item::where('item_id',$stock->item_id)->update(['stock' => $updatedStock]); 
+ 
+
+       return redirect()->action('StoreController@itemView', [base64_encode($stock->item_id)])->with('status', 'Stock removed!');                
+    }
 
   //----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -273,9 +300,54 @@ class StoreController extends Controller
 
 public function itemTransferCallback($transferId)
     {
+        $transferId = base64_decode($transferId);
 
+        $transfer = DB::table('item_transfers')
+                        ->select('item_transfers.*','items.stock')
+                        ->leftjoin('items','item_transfers.item_id','=','items.item_id')
+                        ->where('transfer_id',$transferId)
+                        ->first();
+
+        $updatedStock = $transfer->stock+$transfer->count;  
+
+         if($transfer->approval==0) 
+             {
+                DB::table('item_transfers')->where('transfer_id',$transferId)->delete();
+                Item::where('item_id',$transfer->item_id)->update(['stock' => $updatedStock]);    
+
+                return redirect()->action('StoreController@itemView', [base64_encode($transfer->item_id)])->with('status', 'Item transfer reverted!'); 
+             }  
+         
+         else   
+         return redirect()->action('StoreController@itemView', [base64_encode($transfer->item_id)])->withErrors('Can\'t revert an approved transfer!');           
+
+    }
+
+    //----------------------------------------------------------------------------------------------------------------------------------------
+
+public function pendingTransfers()
+    {
+        $transfers = DB::table('item_transfers')
+                        ->select('item_transfers.*','users.name AS transfered_by','items.item_name')
+                        ->leftjoin('users','item_transfers.accountant','=','users.id')
+                        ->leftjoin('items','item_transfers.item_id','=','items.item_id')
+                        ->where('approval',0)
+                        ->where('item_transfers.branch',Auth::user()->branch)
+                        ->get();
+ 
+        return view('store.transfersPending',compact('transfers'));   
+        
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
+public function approveTransfer()
+    {
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+public function rejectTransfer()
+    {
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
 
 }

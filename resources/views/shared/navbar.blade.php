@@ -58,7 +58,7 @@
                         </ul>
                     </li>
 
-<!-- *******************************************************************Store********************************************************************* -->                    @if(Auth::user()->hasRole('nursery_admin') || Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))                    
+<!-- *******************************************************************Store********************************************************************* -->                    @if(Auth::user()->hasRole('BranchStore') || Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))                    
                     <li class="has-sub @if(session('title') == 'Store')   active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>

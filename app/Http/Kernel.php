@@ -39,5 +39,6 @@ class Kernel extends HttpKernel
         'CallCenterAgent' =>\App\Http\Middleware\CallCenterAgent::class,
         'StoreManagerOrView' =>\App\Http\Middleware\StoreManagerOrView::class,
         'StoreManager' =>\App\Http\Middleware\StoreManager::class,
+        'BranchStore' =>\App\Http\Middleware\BranchStore::class,
     ];
 }
