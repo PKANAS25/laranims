@@ -77,7 +77,7 @@
                             <li><a href="form_validation.html">Suppliers</a></li>
                             @endif                           
                             
-                            <li><a href="form_wizards.html">Branch Store</a></li>
+                            <li class="@if(session('subtitle') == 'branchStore')   active @endif"><a href="/store/branch/items">Branch Store</a></li>
                             <li><a href="form_wizards_validation.html">Non-Received Items</a></li>
                             <li><a href="form_wysiwyg.html">Exchanged Items</a></li>
                             

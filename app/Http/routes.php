@@ -152,10 +152,15 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/transfer/callback/{transferId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferCallback']);
 
     Route::get('/store/branch/transfers/pending', ['middleware' => 'BranchStore','uses'=>'StoreController@pendingTransfers']);
-    Route::get('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);
-    Route::get('/store/branch/transfers/reject/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@rejectTransfer']);
+    Route::get('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);//not finished
+    Route::get('/store/branch/transfers/reject/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@rejectTransfer']);//not finished
 
+    Route::get('/store/branch/items', ['middleware' => 'StoreAnyRole','uses'=>'StoreController@branchStore']); 
+    Route::get('/store/branch/items/{itemId}', ['middleware' => 'StoreAnyRole','uses'=>'StoreController@itemViewBranch']); 
 
+    Route::get('/store/return/item/{itemId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturn']);
+    Route::post('/store/return/item/{itemId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturnSave']);
+    Route::get('/store/return/callback/{returnId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturnCallback']);
 
 
 });

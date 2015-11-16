@@ -40,5 +40,6 @@ class Kernel extends HttpKernel
         'StoreManagerOrView' =>\App\Http\Middleware\StoreManagerOrView::class,
         'StoreManager' =>\App\Http\Middleware\StoreManager::class,
         'BranchStore' =>\App\Http\Middleware\BranchStore::class,
+        'StoreAnyRole' =>\App\Http\Middleware\StoreAnyRole::class,
     ];
 }
