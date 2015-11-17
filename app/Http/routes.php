@@ -53,6 +53,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editForm']);
     Route::post('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editSave']); 
     Route::get('/studentEditCheck', 'StudentsController@studentEditCheck');
+
 //---------------------------------------SubscriptionController---------------------------------------
     Route::get('/student/subscription/add/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@add']);
     Route::get('/subsCheck', 'SubscriptionController@subsCheck');
@@ -71,6 +72,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/student/subscription/refundTicket/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@ticketSave']);
 
     Route::get('/student/subscription/refund/excess/{studentId}/{amount}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@refundExcess']);
+
 //-------------------------------------InvoiceController-----------------------------------------
     Route::get('/student/invoice/add/{studentId}', ['middleware' => 'nursery_admin','uses'=>'InvoiceController@add']); 
     Route::get('/invEventAdd', 'InvoiceController@eventAdd'); 
@@ -152,8 +154,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/transfer/callback/{transferId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferCallback']);
 
     Route::get('/store/branch/transfers/pending', ['middleware' => 'BranchStore','uses'=>'StoreController@pendingTransfers']);
-    Route::get('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);//not finished
-    Route::get('/store/branch/transfers/reject/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@rejectTransfer']);//not finished
+    Route::get('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);
+    Route::get('/store/branch/transfers/reject/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@rejectTransfer']);
 
     Route::get('/store/branch/items', ['middleware' => 'StoreAnyRole','uses'=>'StoreController@branchStore']); 
     Route::get('/store/branch/items/{itemId}', ['middleware' => 'StoreAnyRole','uses'=>'StoreController@itemViewBranch']); 
@@ -162,6 +164,12 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/store/return/item/{itemId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturnSave']);
     Route::get('/store/return/callback/{returnId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturnCallback']);
 
+    Route::get('/store/main/rejections/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreController@transferRejections']);
+    Route::get('/transferRejectRead', ['middleware' => 'StoreManager','uses'=>'StoreController@transferRejectRead']);
+
+    Route::get('/store/main/returns/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreController@storeReturns']);
+    Route::get('/store/main/returns/approve/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnApprove']);
+    Route::get('/store/main/returns/reject/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnReject']);
 
 });
 

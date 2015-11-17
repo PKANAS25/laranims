@@ -71,6 +71,8 @@
                                
                                 @if(Auth::user()->hasRole('StoreManager') )
                                 <li><a href="form_plugins.html">Add Item</a></li>
+                                <li class="@if(session('subtitle') == 'rejections')   active @endif"><a href="/store/main/rejections/unread">Store Rejections</a></li>
+                                <li class="@if(session('subtitle') == 'returns')   active @endif"><a href="/store/main/returns/pending">Store Returns</a></li>
                                 @endif
 
                             <li><a href="form_slider_switcher.html">Categories</a></li>

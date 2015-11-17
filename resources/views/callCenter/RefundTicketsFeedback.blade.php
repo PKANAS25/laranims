@@ -34,8 +34,8 @@ session(['subtitle' => 'feedbacksPending']); ?>
                         <div class="panel-body">
                               <div class="hidden-print">
                                 <span class="text-success">Showing {{$viewer}} </span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/agents/tickets/noreview">Show not reviewed</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/agents/tickets/reviewed">Show reviewed</a><hr><br/></div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="/refunds/agents/tickets/noreview">Show not reviewed</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-success" href="/refunds/agents/tickets/reviewed">Show reviewed</a><hr><br/></div>
                                @if (session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   

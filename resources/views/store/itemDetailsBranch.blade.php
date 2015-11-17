@@ -175,22 +175,18 @@ session(['subtitle' => 'branchStore']); ?>
                                     <thead>
                                         <tr>
                                             <th>Date</th>
-                                            <th>Quantity</th>
-                                            <th>Cost</th>
-                                            <th>Total Cost</th>
-                                            <th>Supplier</th>
-                                            <th>Added By</th>
+                                            <th>Quantity</th> 
+                                            <th>Transfered By</th>
+                                            <th>Approved By</th>
                                         </tr>
                                     </thead>
                                     <tbody><?php $total=0;?>
                                         @foreach($stocks as $index => $stock) 
                                         <tr>
                                             <td>{{$stock->transfered_date}}</td>
-                                            <td>{{$stock->item_count}}</td><?php $total+=$stock->item_count?>
-                                            <td>{{$stock->cost}}</td>
-                                            <td>{{$stock->cost*$stock->item_count}}</td>
-                                            <td>{{$stock->supplier_name}}</td>
-                                            <td>{{$stock->added_by}}</td>
+                                            <td>{{$stock->item_count}}</td><?php $total+=$stock->item_count?> 
+                                            <td>{{$stock->transfered_by}}</td>
+                                            <td>{{$stock->approved_by}}</td>
                                             
                                         </tr> 
                                         @endforeach

@@ -226,7 +226,7 @@ session(['subtitle' => 'main']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this stock?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "text", name: "delete_reason", value: "", label: "Reason:", required: true} 
+                                                          {type: "text", name: "delete_reason", value: "",  required: true} 
                                                         ],
                                                          
                                                         buttons : [

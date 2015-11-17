@@ -75,7 +75,7 @@ class HeaderNotifications
          $StoreReturnsCount = DB::table('item_returns')->where('approval',0)->count();
          $TotalNotifications+=$StoreReturnsCount;
 
-         $StoreRejectionsCount = DB::table('notifications')->where('read_status',0)->where('admin_type',2)->count();
+         $StoreRejectionsCount = DB::table('item_transfers')->where('approval',-1)->where('reject_read',0)->count();
          $TotalNotifications+=$StoreRejectionsCount;
         }
 //-------------------------------------------------------------------------------------------------------------------------------------

@@ -345,14 +345,90 @@ public function pendingTransfers()
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
-public function approveTransfer()
+public function approveTransfer($transferId)
     {
+        $transferId = base64_decode($transferId);
+
+        $transfer = DB::table('item_transfers')
+                        ->select('item_transfers.*','items.price')
+                        ->leftjoin('items','item_transfers.item_id','=','items.item_id')
+                        ->where('transfer_id',$transferId)
+                        ->first();
+
+        $count = $transfer->count;
+        $item_id = $transfer->item_id;
+
+        if($transfer->approval==0)
+        {    
+            $branchItemExists = BranchItem::where('item_id',$item_id)->where('branch',Auth::user()->branch)->first();
+
+                if($branchItemExists==null) 
+                {
+                    $branchItemInsert = new BranchItem(array(
+                                       'item_id' => $item_id, 
+                                       'branch' => Auth::user()->branch,
+                                       'price' => $transfer->price 
+                                       ));
+                    $branchItemInsert->save();
+                }     
+            
+            $branchItem = BranchItem::where('item_id',$item_id)->where('branch',Auth::user()->branch)->first();  
+            $updatedBranchStock = $branchItem->stock+$count;
+            $branchItem->stock=$updatedBranchStock;
+            $branchItem->save();
+
+            $branchStock = new BranchStock(array(
+                                       'item_id' => $item_id, 
+                                       'branch' => Auth::user()->branch,
+                                       'transfered_date' => $transfer->dated,
+                                       'item_count' => $count,
+                                       'accountant' => $transfer->accountant,
+                                       'accepted_admin' => Auth::id() 
+                                       ));
+            $branchStock->save();
+
+            DB::table('item_transfers')->where('transfer_id',$transferId)->update(['approval' => 1,'approved_admin' => Auth::id()]);
+
+            
+
+        }//if($transfer->approval==0)
+        return redirect()->back()->withErrors('Something went wrong!');
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
-public function rejectTransfer()
+public function rejectTransfer(Request $request,$transferId)
     {
+        $transferId = base64_decode($transferId);
+
+        $this->validate($request, [
+        'reject_reason' => 'required|min:4',]); 
+
+        $transfer = DB::table('item_transfers')
+                        ->select('item_transfers.*','items.price')
+                        ->leftjoin('items','item_transfers.item_id','=','items.item_id')
+                        ->where('transfer_id',$transferId)
+                        ->first();
+
+        $count = $transfer->count;
+        $item_id = $transfer->item_id;
+
+        if($transfer->approval==0)
+        {
+                
+             $item = Item::where('item_id',$item_id)->first(); 
+             $revertedStock = $item->stock+$count;   
+             $item->stock=$revertedStock;
+             $item->save(); 
+
+             DB::table('item_transfers')->where('transfer_id',$transferId)->update(['approval' => -1,'approved_admin' => Auth::id(),'rejection_reason' => $request->reject_reason]);
+
+             return redirect()->back()->with('status', 'Item backed to main store!');
+        }
+        return redirect()->back()->withErrors('Something went wrong!');
     }
+
+    
+                         
 //----------------------------------------------------------------------------------------------------------------------------------------
 
 public function branchStore()
@@ -514,5 +590,135 @@ public function itemReturnCallback($returnId)
 
     }
 
-    //----------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function transferRejections($viewer)
+    {
+        ($viewer=="unread")?$read=0:$read=1;
+
+        $transfers = DB::table('item_transfers')
+                   ->select('item_transfers.*', 'transferer.name AS transfered_by','approver.name AS rejected_by','branches.name AS branch_name','items.item_name')
+                   ->leftjoin('users AS transferer','item_transfers.accountant','=','transferer.id')
+                   ->leftjoin('users AS approver','item_transfers.approved_admin','=','approver.id')
+                   ->leftjoin('branches','item_transfers.branch','=','branches.id')
+                   ->leftjoin('items','item_transfers.item_id','=','items.item_id')
+                   ->where('reject_read',$read)
+                   ->where('approval',-1)
+                   ->orderBy('transfer_id','DESC')
+                   ->get(); 
+
+        return view('store.transferRejections',compact('transfers','viewer'));          
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+    
+    public function transferRejectRead(Request $request)
+    {
+                 
+        $transferId =  $request->transferId;         
+
+        $transfer = DB::table('item_transfers')->where('transfer_id',$transferId)->first();
+        
+        DB::table('item_transfers')->where('transfer_id',$transferId)->update(['reject_read' => 1]);
+
+        echo $transfer->rejection_reason;    
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+    
+    public function storeReturns($viewer)
+    {
+        if($viewer=="approved") $approval=1;
+        elseif($viewer=="rejected") $approval=-1;
+        else  $approval=0;    
+
+        $returns = DB::table('item_returns')
+                       ->select('item_returns.*', 'transferer.name AS transfered_by','approver.name AS approved_by','branches.name AS branch_name','items.item_name')
+                       ->leftjoin('users AS approver','item_returns.approved_accountant','=','approver.id')
+                       ->leftjoin('users AS transferer','item_returns.admin','=','transferer.id')  
+                       ->leftjoin('branches','item_returns.branch','=','branches.id')
+                       ->leftjoin('items','item_returns.item_id','=','items.item_id')
+                       ->where('approval',$approval)
+                       ->orderBy('return_id','DESC')
+                       ->get();
+
+        return view('store.storeReturns',compact('returns','viewer'));                  
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function itemReturnApprove($returnId)
+    {
+            $returnId = base64_decode($returnId); 
+            $return = DB::table('item_returns')->where('return_id',$returnId)->first();;
+            
+            if($return->approval==0)
+            {
+                $count = $return->count;
+                $item_id = $return->item_id;
+                $branch =  $return->branch; 
+                 
+                $item = Item::where('item_id',$item_id)->first(); 
+                        
+                $updatedMainReturned = $item->returned+$count;            
+                $updatedMainStock = $item->stock+$count; 
+                
+                $branchItem = BranchItem::where('item_id',$item_id)->where('branch',$branch)->first();
+            
+                $updatedBranchReturn = $branchItem->returned+$count;
+                $updatedBranchReturnPending = $branchItem->pending_returns-$count;
+
+                DB::table('item_returns')->where('return_id',$returnId)->update(['approval' => 1,'approved_accountant' => Auth::id()]);
+
+                $stocker = new Stock(array(
+                               'item_id' => $item_id, 
+                               'dated' => Carbon::now()->toDateString(),
+                               'branch_id' => $branch,                               
+                               'item_count' => $count,
+                               'cost' => 0,
+                               'stocked_date' => Carbon::now()->toDateString(),
+                               'admin_id' => Auth::id() 
+                               ));
+
+                $stocker->save();
+
+                $item->stock=$updatedMainStock;
+                $item->returned=$updatedMainReturned;
+                $item->save();
+
+                $branchItem->pending_returns=$updatedBranchReturnPending;
+                $branchItem->returned=$updatedBranchReturn;
+                $branchItem->save();   
+                
+                return redirect()->back()->with('status', 'Items stored in main store!');
+          
+            }//if($return->approval==0)
+            return redirect()->back()->withErrors('Something went wrong!');
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function itemReturnReject($returnId)
+    {
+        // $returnId = base64_decode($returnId);
+
+        // $return = DB::table('item_returns')->where('return_id',$returnId)->first();
+        
+        // $item = BranchItem::where('item_id',$return->item_id)->where('branch',Auth::user()->branch)->first();    
+                     
+
+        // $updatedStock = $item->stock+$return->count;   
+        // $updatedPendingReturns = $item->pending_returns-$return->count;
+
+        //  if($return->approval==0) 
+        //      {
+        //         DB::table('item_returns')->where('return_id',$returnId)->delete();
+        //         BranchItem::where('item_id',$return->item_id)->where('branch',Auth::user()->branch)->update(['stock' => $updatedStock,'pending_returns' => $updatedPendingReturns]);    
+
+        //         return redirect()->action('StoreController@itemViewBranch', [base64_encode($return->item_id)])->with('status', 'Item return reverted!'); 
+        //      }  
+         
+        //  else   
+        //  return redirect()->action('StoreController@itemViewBranch', [base64_encode($return->item_id)])->withErrors('Can\'t revert an approved transfer!');                 
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+
 }

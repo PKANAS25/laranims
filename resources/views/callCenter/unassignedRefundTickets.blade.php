@@ -34,8 +34,8 @@ session(['subtitle' => 'unassigned']); ?>
                         <div class="panel-body">
                               <div class="hidden-print">
                                 <span class="text-success">Showing {{$viewer}} </span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/tickets/unassigned">Show Unassigned</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/refunds/tickets/assigned">Show Assigned</a><hr><br/></div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="/refunds/tickets/unassigned">Show Unassigned</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-success" href="/refunds/tickets/assigned">Show Assigned</a><hr><br/></div>
                                @if (session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   

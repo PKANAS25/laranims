@@ -108,7 +108,7 @@ session(['subtitle' => '']); ?>
                                         type    : "prompt",
                                          
                                         inputs  : [
-                                          {type: "text", name: "reason", value: "", label: "Reason:", required: true}
+                                          {type: "text", name: "reject_reason", value: "", required: true}
                                           
                                         ],
                                         buttons : [

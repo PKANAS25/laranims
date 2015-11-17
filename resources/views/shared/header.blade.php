@@ -76,7 +76,7 @@
 
                             @if($StoreReturnsCount)
                             <li class="media">
-                                <a href="javascript:;">
+                                <a href="/store/main/returns/pending">
                                     <div class="media-left"><i class="fa fa-shopping-cart media-object bg-red"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$StoreReturnsCount}} Store returns</h6>
@@ -88,7 +88,7 @@
 
                             @if($StoreRejectionsCount)
                             <li class="media">
-                                <a href="javascript:;">
+                                <a href="/store/main/rejections/unread">
                                     <div class="media-left"><i class="fa fa-shopping-cart media-object bg-red"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$StoreRejectionsCount}} Store Rejections</h6>

@@ -62,9 +62,9 @@ session(['subtitle' => 'grades']); ?>
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="panel-body">
                              <div class="hidden-print">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{!! action('GradesController@students', array($classId,'active')) !!}">Show Active</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{!! action('GradesController@students', array($classId,'all')) !!}">Show All</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{!! action('GradesController@students', array($classId,'deleted')) !!}">Show Deleted</a><hr><br/></div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-info" href="{!! action('GradesController@students', array($classId,'active')) !!}">Show Active</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="{!! action('GradesController@students', array($classId,'all')) !!}">Show All</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-inverse" href="{!! action('GradesController@students', array($classId,'deleted')) !!}">Show Deleted</a><hr><br/></div>
                                
                                 <div class="invoice-header onlyprintCenter">
                                     <div class="invoice-from" >
