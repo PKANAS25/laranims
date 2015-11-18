@@ -31,6 +31,7 @@ class HeaderNotifications
         $StoreRejectionsCount =0;
 
         $StoreTransferCount=0;
+        $ReturnRejectionsCount=0;
 
         
         if ($request->is("/") || $request->is("password/email") || $request->is("/logout") || $request->is("/errorLogout") ||  $request->is("password/reset/*"))
@@ -85,12 +86,15 @@ class HeaderNotifications
           
          $StoreTransferCount = DB::table('item_transfers')->where('approval',0)->where('branch',Auth::user()->branch)->count();
          $TotalNotifications+=$StoreTransferCount;
+
+         $ReturnRejectionsCount = DB::table('item_returns')->where('approval',-1)->where('reject_read',0)->count();
+         $TotalNotifications+=$ReturnRejectionsCount;
         }
 
 
             view()->composer('shared.header', function ($view) 
             use($TotalNotifications,$CallCenterManagerCallUnassigns,$NotDepositedCount,$NotDepositedChequeCount,$StoreRequestsCount,$StoreReturnsCount,
-                $StoreRejectionsCount,$CallCenterAgentCallAssigns,$StoreTransferCount) 
+                $StoreRejectionsCount,$CallCenterAgentCallAssigns,$StoreTransferCount,$ReturnRejectionsCount) 
                 {
                            $view->with('TotalNotifications', $TotalNotifications)
 
@@ -105,7 +109,8 @@ class HeaderNotifications
                           ->with('StoreReturnsCount', $StoreReturnsCount)
                           ->with('StoreRejectionsCount', $StoreRejectionsCount)
 
-                          ->with('StoreTransferCount', $StoreTransferCount);
+                          ->with('StoreTransferCount', $StoreTransferCount)
+                          ->with('ReturnRejectionsCount', $ReturnRejectionsCount);
                 });
 
         return $next($request);

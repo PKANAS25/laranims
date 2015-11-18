@@ -219,7 +219,8 @@ session(['subtitle' => 'main']); ?>
                                                 @endif                                               
                                                 @endif
                                             </td>
-                                            <td><button id="XDel{{$index+1}}"><i  class="fa fa-trash text-danger"></i></button>
+                                            <td> @if(Auth::user()->hasRole('StoreManager')) 
+                                                <button id="XDel{{$index+1}}"><i  class="fa fa-trash text-danger"></i></button>
                                                 <script type="text/javascript">                                                
                                                     $('#XDel{{$index+1}}').click(function(ev) {
                                                     
@@ -243,7 +244,9 @@ session(['subtitle' => 'main']); ?>
                                                       ev.preventDefault();
                                                     
                                                     });
-                                                </script></td>
+                                                </script>
+                                                @endif
+                                            </td>
                                         </tr>
                                         @endif
                                         @endforeach
@@ -370,7 +373,7 @@ session(['subtitle' => 'main']); ?>
                                                 @elseif($transfer->approval<0)<span class="text-danger"><a class="text-danger" title="{{$transfer->rejection_reason}}">{{$transfer->approved_by}}</a> <i class="fa fa-times-circle"></i></span>
                                                 @endif
                                             </td>
-                                            <td>@if($transfer->approval==0)
+                                            <td>@if(Auth::user()->hasRole('StoreManager') && $transfer->approval==0)
                                                 <button id="XRes{{$index+1}}"><i  class="fa fa-undo text-info"></i></button>
                                                 <script type="text/javascript">                                                
                                                     $('#XRes{{$index+1}}').click(function(ev) {

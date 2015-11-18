@@ -7,7 +7,10 @@
                     <li class="nav-profile">
                          
                         <div class="info">
-                           <a @if (Auth::user()->admin_type>1) href="/branching"  @endif style="text-decoration:none; color:#FFF !important;"> {!! Auth::user()->branch_name; !!}</a>
+                           <a @if (Auth::user()->admin_type>1) 
+                            href="/branching"  
+                            @endif 
+                            style="text-decoration:none; color:#FFF !important;"> {!! Auth::user()->branch_name; !!}</a>
                             <small></small>
                         </div>
                     </li>
@@ -70,9 +73,17 @@
                             <li class="@if(session('subtitle') == 'main')   active @endif"><a href="/store/main">Main Store</a></li>
                                
                                 @if(Auth::user()->hasRole('StoreManager') )
-                                <li><a href="form_plugins.html">Add Item</a></li>
-                                <li class="@if(session('subtitle') == 'rejections')   active @endif"><a href="/store/main/rejections/unread">Store Rejections</a></li>
+                                <li><a href="form_plugins.html">Add Item</a></li> 
+                                
+                                <li class="has-sub @if(session('subtitle') == 'returns' || session('subtitle') == 'rejections' || session('subtitle') == 'storeRequestsMain')   active @endif">
+                                <a href="javascript:;"><b class="caret pull-right"></b> Reports</a>
+                                <ul class="sub-menu">                                
                                 <li class="@if(session('subtitle') == 'returns')   active @endif"><a href="/store/main/returns/pending">Store Returns</a></li>
+                                <li class="@if(session('subtitle') == 'rejections') active @endif"><a href="/store/main/rejections/unread">Transfer Rejections</a></li>
+                                <li class="@if(session('subtitle') == 'storeRequestsMain') active @endif"><a href="/store/main/requests/unread">Store Requests</a></li>
+                                </ul>
+                                </li>
+                                
                                 @endif
 
                             <li><a href="form_slider_switcher.html">Categories</a></li>
@@ -82,6 +93,10 @@
                             <li class="@if(session('subtitle') == 'branchStore')   active @endif"><a href="/store/branch/items">Branch Store</a></li>
                             <li><a href="form_wizards_validation.html">Non-Received Items</a></li>
                             <li><a href="form_wysiwyg.html">Exchanged Items</a></li>
+                            @if(Auth::user()->hasRole('BranchStore') )
+                             <li class="@if(session('subtitle') == 'returnRejections') active @endif"><a href="/store/branch/returns/rejections/unread">Return Rejections</a></li>
+                             <li class="@if(session('subtitle') == 'storeRequests') active @endif"><a href="/store/branch/requests">Store Requests</a></li>
+                            @endif
                             
                         </ul>
                     </li>

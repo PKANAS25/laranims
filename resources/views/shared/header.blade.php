@@ -64,7 +64,7 @@
                            
                             @if($StoreRequestsCount)
                             <li class="media">
-                                <a href="javascript:;">
+                                <a href="/store/main/requests/unread">
                                     <div class="media-left"><i class="fa fa-shopping-cart media-object bg-green"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$StoreRequestsCount}} New Item Requests</h6>
@@ -105,10 +105,21 @@
                             @if($StoreTransferCount)
                             <li class="media">
                                 <a href="/store/branch/transfers/pending">
-                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-green"></i></div>
+                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-purple"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$StoreTransferCount}} New Item Transfers</h6>
                                         <div class="text-muted f-s-11">Please verify and accept</div>
+                                    </div>
+                                </a>
+                            </li>
+                            @endif
+                            @if($ReturnRejectionsCount)
+                            <li class="media">
+                                <a href="/store/branch/returns/rejections/unread">
+                                    <div class="media-left"><i class="fa fa-shopping-cart media-object bg-red"></i></div>
+                                    <div class="media-body">
+                                        <h6 class="media-heading">{{$ReturnRejectionsCount}} Returns Rejected</h6>
+                                        <div class="text-muted f-s-11">Please View & Proceed</div>
                                     </div>
                                 </a>
                             </li>

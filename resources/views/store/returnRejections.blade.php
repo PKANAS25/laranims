@@ -1,7 +1,7 @@
 @extends('master') 
  
 <?php session(['title' => 'Store']);
-session(['subtitle' => 'rejections']); ?> 
+session(['subtitle' => 'returnRejections']); ?> 
 
 @section('content') 
 
@@ -12,12 +12,12 @@ session(['subtitle' => 'rejections']); ?>
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right hidden-print">
 				<li><a href="javascript:;">Store</a></li>
-				<li class="active"><a href="javascript:;">Main</a></li>
+				<li class="active"><a href="javascript:;">Branch</a></li>
 				 
 			</ol> 
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header hidden-print">Store Rejections <small> {{$viewer}}</small></h1>
+			<h1 class="page-header hidden-print">Return Rejections <small> {{$viewer}}</small></h1>
 			<!-- end page-header -->
 			<!-- begin row -->
 			 <div class="col-md-12">
@@ -29,7 +29,7 @@ session(['subtitle' => 'rejections']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">Store Rejections</h4>
+                            <h4 class="panel-title">Returns Rejections</h4>
                         </div>
                           
                         <div class="panel-body">
@@ -53,9 +53,9 @@ session(['subtitle' => 'rejections']); ?>
                                     @endif
                                 </div>    
                                 
-                                <div><a class="btn btn-sm btn-warning" href="/store/main/rejections/unread">Rejections Unseen</a>
+                                <div><a class="btn btn-sm btn-warning" href="/store/branch/returns/rejections/unread">Rejections Unseen</a>
                                      &nbsp;&nbsp;&nbsp;&nbsp;
-                                     <a class="btn btn-sm  btn-success" href="/store/main/rejections/read">Rejections Seen</a>
+                                     <a class="btn btn-sm  btn-success" href="/store/branch/returns/rejections/read">Rejections Seen</a>
                                 </div>
 
                               <table id="data-table" class="table table-striped table-bordered">
@@ -65,33 +65,33 @@ session(['subtitle' => 'rejections']); ?>
                                         <th>Item</th>
                                         <th>No. of Items</th>
                                         <th>Transfered On</th>
-                                        <th>Transfered By</th>
+                                        <th>Returned By</th>
                                         <th>Rejected By</th> 
                                         <th>Reason</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($transfers AS $index => $transfer)
+                                @foreach($returns AS $index => $return)
                                 <tr>
                                 <td>{{$index+1}}</td>
-                                <td>{{$transfer->item_name}}</td>
-                                <td>{{$transfer->count}}</td>
-                                <td>{{$transfer->dated}}</td>
-                                <td>{{$transfer->transfered_by}}</td>
-                                <td>{{$transfer->rejected_by}}</td>
+                                <td>{{$return->item_name}}</td>
+                                <td>{{$return->count}}</td>
+                                <td>{{$return->dated}}</td>
+                                <td>{{$return->transfered_by}}</td>
+                                <td>{{$return->rejected_by}}</td>
                                 <td>
 
-                                  @if($transfer->reject_read==0)
+                                  @if($return->reject_read==0)
                                   
                                     <div id="divRead{{ $index}}">
-                                        <button class="btn btn-sm btn-icon   btn-default" id="rejRead{{ $index}}" value="{{ $transfer->transfer_id}}"> <i class="fa fa-eye text-inverse"></i></button>
+                                        <button class="btn btn-sm btn-icon   btn-default" id="rejRead{{ $index}}" value="{{ $return->return_id}}"> <i class="fa fa-eye text-inverse"></i></button>
                                     </div>
                                     <script type="text/javascript">
                                             $(document.body).on('click', '#rejRead{{ $index}}', function(e){
                                                 e.preventDefault();
-                                                transferId = $(this).val();
+                                                returnId = $(this).val();
 
-                                                 $.get('/transferRejectRead',{transferId:transferId }, function(actionBlade){                      
+                                                 $.get('/returnRejectRead',{returnId:returnId }, function(actionBlade){                      
                                                     $("#divRead{{ $index}}").html(actionBlade);
                                                      
                                                 });
@@ -99,7 +99,7 @@ session(['subtitle' => 'rejections']); ?>
                                     </script>        
 
                                   @else
-                                  {{$transfer->rejection_reason}}
+                                  {{$return->rejection_reason}}
                                   @endif
                                 </td>
                                 </tr>

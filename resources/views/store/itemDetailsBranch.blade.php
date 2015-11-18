@@ -194,9 +194,7 @@ session(['subtitle' => 'branchStore']); ?>
                                             <td></td>
                                             <td>{{$total}}</td>
                                             <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td></td> 
                                         </tr>
                                     </tbody>
                                     </table>
@@ -229,7 +227,7 @@ session(['subtitle' => 'branchStore']); ?>
                                                 @elseif($return->approval<0)<span class="text-danger"><a class="text-danger" title="{{$return->rejection_reason}}">{{$return->approved_by}}</a> <i class="fa fa-times-circle"></i></span>
                                                 @endif
                                             </td>
-                                            <td>@if($return->approval==0)
+                                            <td>@if(Auth::user()->hasRole('BranchStore') && $return->approval==0)
                                                 <button id="XRes{{$index+1}}"><i  class="fa fa-undo text-info"></i></button>
                                                 <script type="text/javascript">                                                
                                                     $('#XRes{{$index+1}}').click(function(ev) {

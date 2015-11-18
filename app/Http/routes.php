@@ -171,6 +171,13 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/main/returns/approve/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnApprove']);
     Route::get('/store/main/returns/reject/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnReject']);
 
+    Route::get('/store/branch/returns/rejections/{viewer}', ['middleware' => 'BranchStore','uses'=>'StoreController@returnRejections']);
+    Route::get('/returnRejectRead', ['middleware' => 'BranchStore','uses'=>'StoreController@returnRejectRead']);
+
+    Route::get('/store/branch/requests', ['middleware' => 'BranchStore','uses'=>'StoreController@storeRequestsBranch']);
+    Route::get('/store/main/requests/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreController@storeRequestsMain']);
+    Route::get('/store/requestReader', ['middleware' => 'StoreManager','uses'=>'StoreController@storeRequestRead']);
+
 });
 
  

@@ -21,7 +21,7 @@ class BranchingController extends Controller
     public function branching()
     {
        if(Auth::user()->admin_type==1)
-        return redirect()->intended('home');
+        return redirect()->intended('home')->with('warning', 'Tried to enter restricted area!');
 
        $branches = Branch::orderBy('non_nursery')->orderBy('name')->get();
        return view('branching',compact('branches'));

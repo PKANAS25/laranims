@@ -695,30 +695,153 @@ public function itemReturnCallback($returnId)
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
-    public function itemReturnReject($returnId)
+    public function itemReturnReject($returnId,Request $request)
     {
-        // $returnId = base64_decode($returnId);
+        $returnId = base64_decode($returnId);
 
-        // $return = DB::table('item_returns')->where('return_id',$returnId)->first();
-        
-        // $item = BranchItem::where('item_id',$return->item_id)->where('branch',Auth::user()->branch)->first();    
-                     
+        $this->validate($request, [
+        'rejection_reason' => 'required|min:4',]); 
 
-        // $updatedStock = $item->stock+$return->count;   
-        // $updatedPendingReturns = $item->pending_returns-$return->count;
-
-        //  if($return->approval==0) 
-        //      {
-        //         DB::table('item_returns')->where('return_id',$returnId)->delete();
-        //         BranchItem::where('item_id',$return->item_id)->where('branch',Auth::user()->branch)->update(['stock' => $updatedStock,'pending_returns' => $updatedPendingReturns]);    
-
-        //         return redirect()->action('StoreController@itemViewBranch', [base64_encode($return->item_id)])->with('status', 'Item return reverted!'); 
-        //      }  
          
-        //  else   
-        //  return redirect()->action('StoreController@itemViewBranch', [base64_encode($return->item_id)])->withErrors('Can\'t revert an approved transfer!');                 
+        $return = DB::table('item_returns')->where('return_id',$returnId)->first();
+         
+        if($return->approval==0)
+            {
+                $count = $return->count;
+                $item_id = $return->item_id;
+                $branch =  $return->branch; 
+
+                $branchItem = BranchItem::where('item_id',$item_id)->where('branch',$branch)->first(); 
+
+                $changedStock = $branchItem->stock+$count;          
+                $changedPending = $branchItem->pending_returns-$count;
+
+                DB::table('item_returns')->where('return_id',$returnId)->update(['approval' => -1,'approved_accountant' => Auth::id(),'rejection_reason' => $request->rejection_reason]);
+
+                $branchItem->stock=$changedStock;
+                $branchItem->pending_returns=$changedPending;
+                $branchItem->save();
+
+                return redirect()->back()->with('status', 'Items returned to branch store!');
+            } 
+         return redirect()->back()->withErrors('Something went wrong!');              
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
+    public function returnRejections($viewer)
+    {
+        ($viewer=="unread")?$read=0:$read=1;
+
+        $returns = DB::table('item_returns')
+                   ->select('item_returns.*', 'transferer.name AS transfered_by','approver.name AS rejected_by','items.item_name')
+                   ->leftjoin('users AS transferer','item_returns.admin','=','transferer.id')
+                   ->leftjoin('users AS approver','item_returns.approved_accountant','=','approver.id') 
+                   ->leftjoin('items','item_returns.item_id','=','items.item_id')
+                   ->where('reject_read',$read)
+                   ->where('approval',-1) 
+                   ->orderBy('return_id','DESC')
+                   ->get(); 
+
+        return view('store.returnRejections',compact('returns','viewer'));          
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+    
+    public function returnRejectRead(Request $request)
+    {
+                 
+        $returnId =  $request->returnId;         
+
+        $return = DB::table('item_returns')->where('return_id',$returnId)->first();
+        
+        DB::table('item_returns')->where('return_id',$returnId)->update(['reject_read' => 1]);
+
+        echo $return->rejection_reason;    
+    }    
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function storeRequestsBranch()
+    {
+ 
+        $requests = DB::table('store_requests')
+                     ->select('store_requests.*', 'users.name')
+                     ->leftjoin('users','store_requests.admin','=','users.id')
+                     ->where('store_requests.branch',Auth::user()->branch)
+                     ->orderBy('store_requests.request_date','DESC')
+                     ->get();
+
+        
+       
+       foreach($requests AS $index => $request)  
+       {
+          
+            $requestItems[$index] = DB::table('store_request_items')
+                             ->select('store_request_items.*', 'items.item_name')
+                             ->leftjoin('items','store_request_items.item_id','=','items.item_id') 
+                             ->where('request_id',$request->request_id)
+                             ->orderBy('custom_id')
+                             ->get();
+
+            
+       }         // echo "<pre>"; print_r($requestItems); echo "</pre>";
+
+        return view('store.storeRequestsBranch',compact('requests','requestItems')); 
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function storeRequestsMain($viewer)
+    {
+        ($viewer=="unread")?$read=0:$read=1;
+
+        $requests = DB::table('store_requests')
+                     ->select('store_requests.*', 'users.name','branches.name AS branch_name')
+                     ->leftjoin('users','store_requests.admin','=','users.id')
+                     ->leftjoin('branches','store_requests.branch','=','branches.id')
+                     ->where('store_requests.read_status',$read)
+                     ->orderBy('store_requests.request_date','DESC')
+                     ->get();
+
+        
+       
+       foreach($requests AS $index => $request)  
+       {
+          
+            $requestItems[$index] = DB::table('store_request_items')
+                             ->select('store_request_items.*', 'items.item_name')
+                             ->leftjoin('items','store_request_items.item_id','=','items.item_id') 
+                             ->where('request_id',$request->request_id)
+                             ->orderBy('custom_id')
+                             ->get();
+
+            
+       }         // echo "<pre>"; print_r($requestItems); echo "</pre>";
+
+        return view('store.storeRequestsMain',compact('requests','requestItems','viewer')); 
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function storeRequestRead(Request $request)
+    {
+         
+        $requestItems = DB::table('store_request_items')
+                         ->select('store_request_items.*', 'items.item_name')
+                         ->leftjoin('items','store_request_items.item_id','=','items.item_id') 
+                         ->where('request_id',$request->requestId)
+                         ->orderBy('custom_id')
+                         ->get();
+                         
+        DB::table('store_requests')->where('request_id',$request->requestId)->update(['read_status' => 1]);
+                         
+        echo '<table class="table"><thead><tr><th>Item</th><th>Quantity</th></tr></thead><tbody>';
+        foreach ($requestItems as $requestItem) 
+        {
+            echo '<tr><td>'.$requestItem->item_name.$requestItem->new_item.'</td><td>'.$requestItem->qty.'</td></tr>';
+        }  
+        echo '</tbody></table>';
+         
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
 
 }
