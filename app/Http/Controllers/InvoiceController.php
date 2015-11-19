@@ -352,7 +352,7 @@ class InvoiceController extends Controller
                                     </tr><?php $i++; } ?>
                                     <tr>
   <td colspan="6" style="text-align:right !important"><strong>Store Total</strong></td><td colspan="2" ><?php echo $itemTotal;?>
-  <input type="hidden" name="event_total" id="store_total" value="<?php echo $itemTotal;?>"></td></tr>                                  
+  <input type="hidden" name="store_total" id="store_total" value="<?php echo $itemTotal;?>"></td></tr>                                  
                                     </tbody>
                                 </table>
         
@@ -403,7 +403,7 @@ class InvoiceController extends Controller
                                     </tr><?php $i++; } ?>
                                     <tr>
   <td colspan="6" style="text-align:right !important"><strong>Store Total</strong></td><td colspan="2" ><?php echo $itemTotal;?>
-  <input type="hidden" name="event_total" id="store_total" value="<?php echo $itemTotal;?>"></td></tr>                                  
+  <input type="hidden" name="store_total" id="store_total" value="<?php echo $itemTotal;?>"></td></tr>                                  
                                     </tbody>
                                 </table>
                                 <?php } else {?>

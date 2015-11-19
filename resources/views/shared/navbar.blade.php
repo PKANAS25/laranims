@@ -73,14 +73,15 @@
                             <li class="@if(session('subtitle') == 'main')   active @endif"><a href="/store/main">Main Store</a></li>
                                
                                 @if(Auth::user()->hasRole('StoreManager') )
-                                <li><a href="form_plugins.html">Add Item</a></li> 
+                                <li class="@if(session('subtitle') == 'addItem')   active @endif"><a href="/store/add/item/new">Add Item</a></li> 
                                 
-                                <li class="has-sub @if(session('subtitle') == 'returns' || session('subtitle') == 'rejections' || session('subtitle') == 'storeRequestsMain')   active @endif">
+                                <li class="has-sub @if(session('subtitle') == 'returns' || session('subtitle') == 'rejections' || session('subtitle') == 'storeRequestsMain' || session('subtitle') == 'RequestsNTransfers')   active @endif">
                                 <a href="javascript:;"><b class="caret pull-right"></b> Reports</a>
                                 <ul class="sub-menu">                                
                                 <li class="@if(session('subtitle') == 'returns')   active @endif"><a href="/store/main/returns/pending">Store Returns</a></li>
                                 <li class="@if(session('subtitle') == 'rejections') active @endif"><a href="/store/main/rejections/unread">Transfer Rejections</a></li>
-                                <li class="@if(session('subtitle') == 'storeRequestsMain') active @endif"><a href="/store/main/requests/unread">Store Requests</a></li>
+                                <li class="@if(session('subtitle') == 'storeRequestsMain') active @endif"><a href="/store/main/requests/unread">Store Requests</a></li> 
+                                <li class="@if(session('subtitle') == 'RequestsNTransfers') active @endif"><a href="/store/main/report/requests/transfers">Requests & Transfers</a></li>
                                 </ul>
                                 </li>
                                 

@@ -47,8 +47,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/profile/student/{studentId}', 'StudentsController@profile');
 
-    Route::get('/student/{studentId}/delete', 'StudentsController@delete');
-    Route::get('/student/{studentId}/restore', 'StudentsController@restore');
+    Route::get('/student/{studentId}/delete', ['middleware' => 'nursery_admin','uses'=>'StudentsController@delete']);
+    Route::get('/student/{studentId}/restore',['middleware' => 'nursery_admin','uses'=>'StudentsController@restore']);
 
     Route::get('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editForm']);
     Route::post('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editSave']); 
@@ -62,7 +62,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/student/subscription/addHours/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@addHours']);
     Route::post('/student/subscription/addHours/{studentId}/{standard}', 'SubscriptionController@saveHours');
 
-    Route::post('/subscriptionDelete/{studentId}', 'SubscriptionController@delete');
+    Route::post('/subscriptionDelete/{studentId}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@delete']);
     Route::get('/subsLockUnlock', 'SubscriptionController@lockUnlock');
 
     Route::get('/student/subscription/refund/{studentId}/{standard}', ['middleware' => 'nursery_admin','uses'=>'SubscriptionController@refund']);
@@ -86,7 +86,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/student/invoice/add/{studentId}', 'InvoiceController@save');
     Route::get('/invoice/{invoiceId}', 'InvoiceController@view');
 
-    Route::post('/profile/student/{studentId}', 'InvoiceController@delete');
+    Route::post('/profile/student/{studentId}', ['middleware' => 'nursery_admin','uses'=>'InvoiceController@delete']);
 
  //---------------------------------------GradesController-------------------------------------------------------------
     Route::get('/students/grades', 'GradesController@index');
@@ -141,6 +141,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/main', ['middleware' => 'StoreManagerOrView','uses'=>'StoreController@mainStore']);
     Route::get('/store/main/item/{itemId}', ['middleware' => 'StoreManagerOrView','uses'=>'StoreController@itemView']);
 
+    Route::get('/store/add/item/new', ['middleware' => 'StoreManager','uses'=>'StoreController@addNewItem']);
+    Route::post('/store/add/item/new', ['middleware' => 'StoreManager','uses'=>'StoreController@saveNewItem']);
+
     Route::get('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@addStock']);
     Route::post('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@saveStock']);
 
@@ -175,8 +178,20 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/returnRejectRead', ['middleware' => 'BranchStore','uses'=>'StoreController@returnRejectRead']);
 
     Route::get('/store/branch/requests', ['middleware' => 'BranchStore','uses'=>'StoreController@storeRequestsBranch']);
+
+    Route::get('/store/branch/requests/add', ['middleware' => 'BranchStore','uses'=>'StoreControllerExtra@addStoreRequest']);
+    Route::get('/storeItemLoader', 'StoreControllerExtra@itemLoader');
+    Route::get('/storeItemAdd', 'StoreControllerExtra@itemAdd');
+    Route::get('/storeItemRemove', 'StoreControllerExtra@itemRemove');
+    Route::post('/store/branch/requests/add', ['middleware' => 'BranchStore','uses'=>'StoreControllerExtra@saveStoreRequest']);
+
+
     Route::get('/store/main/requests/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreController@storeRequestsMain']);
     Route::get('/store/requestReader', ['middleware' => 'StoreManager','uses'=>'StoreController@storeRequestRead']);
+    Route::get('/store/main/report/requests/transfers', ['middleware' => 'StoreManager','uses'=>'StoreController@storeRequestsTransfers']);
+    Route::post('/store/main/report/requests/transfers', ['middleware' => 'StoreManager','uses'=>'StoreController@RequestsTransfersReport']);
+
+
 
 });
 

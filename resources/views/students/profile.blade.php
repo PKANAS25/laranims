@@ -168,7 +168,7 @@ session(['subtitle' => '']); ?>
                                         <tr>
                                             <td class="field"> </td>
                                             <td >
-                                               @if(Auth::user()->hasRole('nursery_admin'))
+                                               @if(Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)
                                                <a href="{!! action('StudentsController@editForm', array(base64_encode($student->student_id)) ) !!}"><i class="fa fa-edit"></i> Edit</a>
                                                @endif
                                             </td>
@@ -257,7 +257,8 @@ session(['subtitle' => '']); ?>
                                          ?>
 
                                         <td><a title="{{$detailing}}">{{ $subscription->amount}}</a></td>
-                                        <td>@if($subscription->locked==0)&nbsp;&nbsp; &nbsp;&nbsp; <a title="Delete suscription" href="#modal-dialogs{{$subscription->subscription_id}}" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>@endif</td>
+                                        <td>@if($subscription->locked==0 && Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)
+                                            &nbsp;&nbsp; &nbsp;&nbsp; <a title="Delete suscription" href="#modal-dialogs{{$subscription->subscription_id}}" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>@endif</td>
                                             <td>
                                                 <div id="divUnlock{{ $subscription->subscription_id}}">
                                                     @if(Auth::user()->hasRole('subscriptionUnlock') && $subscription->locked==1)&nbsp;&nbsp; &nbsp;&nbsp;
@@ -536,7 +537,7 @@ session(['subtitle' => '']); ?>
                                                     <td>{{$invoice->service_charge}}</td>
                                                     <td>{{$invoice->amount_paid}}</td>
                                                     <td><a title="Print receipt"  href="{!! action('InvoiceController@view', base64_encode($invoice->invoice_id) ) !!}" class="btn btn-sm btn-primary"><i class="fa fa-print"></i></a>
-                                                     @if($invoice->locked==0)&nbsp;&nbsp; &nbsp;&nbsp; <a title="Delete receipt" href="#modal-dialog{{$invoice->invoice_id}}" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>@endif
+                                                     @if($invoice->locked==0 && Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)&nbsp;&nbsp; &nbsp;&nbsp; <a title="Delete receipt" href="#modal-dialog{{$invoice->invoice_id}}" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>@endif
                                                     </td>
 
                                                  </tr>

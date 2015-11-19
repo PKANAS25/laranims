@@ -110,6 +110,58 @@ class StoreController extends Controller
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
+    public function addNewItem()
+    {
+        $categories = DB::table('categories')->orderBy('category')->get(); 
+
+        return view('store.addItem',compact('categories'));              
+    } 
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function saveNewItem(Request $request)
+    {
+         
+        // $validator = Validator::make($request->all(),[
+        //     'item_name' => 'required',
+        //     'category' => 'required',
+        //     'product_code' => 'required',
+        //     'price' => 'required|numeric|min:1',
+        //     'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',
+        //  ]    
+        // );
+
+        // if($validator->fails()){
+        //     return redirect()->back()->withErrors($validator->messages())->withInput();
+        // }
+
+        // else
+        // {  
+        //     $item = new Item(array(
+        //                        'item_name' => $request->item_name, 
+        //                        'category' => $request->category,
+        //                        'product_code' => $request->product_code,                               
+        //                        'description' => $request->description,
+        //                        'price' => $request->price,
+        //                        'accountant' => Auth::id() 
+        //                        ));
+        //     $item->save();
+        //     $itemId = $item->item_id; 
+
+        $itemId=200;
+           
+           if($request->file('fileToUpload') && $itemId)
+            {
+             $imageName = $itemId.'.jpg';
+             $request->file('fileToUpload')->move(base_path().'/public/uploads/store_items/', $imageName);
+            } 
+
+            return redirect()->action('StoreController@mainStore')->with('status', 'New Item added!');
+        }
+
+                         
+    }    
+//----------------------------------------------------------------------------------------------------------------------------------------
+
     public function addStock($itemId)
     {
         $itemId = base64_decode($itemId);
@@ -125,8 +177,6 @@ class StoreController extends Controller
 
         return view('store.addStock',compact('suppliers','item'));                 
     }
-
-
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------
@@ -389,7 +439,7 @@ public function approveTransfer($transferId)
 
             DB::table('item_transfers')->where('transfer_id',$transferId)->update(['approval' => 1,'approved_admin' => Auth::id()]);
 
-            
+            return redirect()->back()->with('status', 'Stock added to the store!');
 
         }//if($transfer->approval==0)
         return redirect()->back()->withErrors('Something went wrong!');
@@ -766,7 +816,7 @@ public function itemReturnCallback($returnId)
                      ->select('store_requests.*', 'users.name')
                      ->leftjoin('users','store_requests.admin','=','users.id')
                      ->where('store_requests.branch',Auth::user()->branch)
-                     ->orderBy('store_requests.request_date','DESC')
+                     ->orderBy('store_requests.request_id','DESC')
                      ->get();
 
         
@@ -830,10 +880,10 @@ public function itemReturnCallback($returnId)
                          ->where('request_id',$request->requestId)
                          ->orderBy('custom_id')
                          ->get();
-                         
+
         DB::table('store_requests')->where('request_id',$request->requestId)->update(['read_status' => 1]);
                          
-        echo '<table class="table"><thead><tr><th>Item</th><th>Quantity</th></tr></thead><tbody>';
+        echo '<table  class="table"><thead><tr><th>Item</th><th>Quantity</th></tr></thead><tbody>';
         foreach ($requestItems as $requestItem) 
         {
             echo '<tr><td>'.$requestItem->item_name.$requestItem->new_item.'</td><td>'.$requestItem->qty.'</td></tr>';
@@ -844,4 +894,55 @@ public function itemReturnCallback($returnId)
 
 //----------------------------------------------------------------------------------------------------------------------------------------
 
+    public function storeRequestsTransfers()
+    {
+         $submit =0;
+         $branches = Branch::where('non_nursery',0)->orderBy('name')->get();
+         return view('store.RequestsAndTransfers',compact('submit','branches'));
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function RequestsTransfersReport(Request $request)
+    {
+         $submit =1;
+         $branches = Branch::where('non_nursery',0)->orderBy('name')->get();
+
+         $requestItems = DB::table('store_request_items')
+                           ->select('store_request_items.*', 'items.item_name','store_requests.branch','store_requests.request_date')
+                           ->selectRaw('SUM(qty) AS total_qty')
+                           ->leftjoin('items','store_request_items.item_id','=','items.item_id')
+                           ->leftjoin('store_requests','store_request_items.request_id','=','store_requests.request_id')
+                           ->whereBetween('store_requests.request_date', [$request->start_date, $request->end_date])
+                           ->where('store_requests.branch',$request->branch)
+                           ->groupBy('store_request_items.item_id')
+                           ->orderBy('items.item_name')
+                           ->get();
+
+        foreach($requestItems as $requestItem)
+        {
+            if($requestItem->item_id!=0)
+            {
+              $requestItem->transferApproved = DB::table('item_transfers')->where('item_id',$requestItem->item_id)->where('branch',$request->branch)
+                                                ->where('approval',1)->whereBetween('dated', [$request->start_date, $request->end_date])->sum('count');
+              $requestItem->transferPending = DB::table('item_transfers')->where('item_id',$requestItem->item_id)->where('branch',$request->branch)
+                                                ->where('approval',0)->whereBetween('dated', [$request->start_date, $request->end_date])->sum('count');
+              $requestItem->transferRejected = DB::table('item_transfers')->where('item_id',$requestItem->item_id)->where('branch',$request->branch)
+                                                ->where('approval',-1)->whereBetween('dated', [$request->start_date, $request->end_date])->sum('count');
+            }
+            else
+            {
+                $requestItem->transferApproved = "Unknown Item";
+                $requestItem->transferPending = " - ";
+                $requestItem->transferRejected = " - ";
+            }
+        }                   
+
+
+
+         return view('store.RequestsAndTransfers',compact('submit','branches','requestItems'));
+    }
+
+   
 }
+

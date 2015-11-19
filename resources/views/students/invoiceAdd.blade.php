@@ -318,7 +318,7 @@ $(document.body).on('click', '.delEventButton', function(e){
     var item_id = $("#item_id").val();  
     var qty = $("#qty").val();  
      
-     if(event_id==0)
+     if(item_id==0)
      {
        
        return false;

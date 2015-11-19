@@ -77,7 +77,7 @@ session(['subtitle' => 'storeRequestsMain']); ?>
                                                                 </thead>
                                                                 @foreach($requestItems[$index] AS $requestItem)
                                                                     <tr>
-                                                                        <td>{{$requestItem->item_name}}</td>
+                                                                        <td>{{$requestItem->item_name.$requestItem->new_item}}</td>
                                                                         <td>{{$requestItem->qty}}</td>
                                                                     </tr>
                                                                 @endforeach
