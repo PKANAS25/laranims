@@ -124,7 +124,7 @@ session(['subtitle' => 'addItem']); ?>
         $(document).ready(function() {
             App.init(); 
                                              
-        //$('#eForm').formValidation();  
+        $('#eForm').formValidation();  
 
           });             
     </script>

@@ -23,6 +23,8 @@ use File;
 use Validator;
 use Carbon\Carbon;
 
+use Image;
+
 class StoreController extends Controller
 {
      
@@ -121,38 +123,40 @@ class StoreController extends Controller
     public function saveNewItem(Request $request)
     {
          
-        // $validator = Validator::make($request->all(),[
-        //     'item_name' => 'required',
-        //     'category' => 'required',
-        //     'product_code' => 'required',
-        //     'price' => 'required|numeric|min:1',
-        //     'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',
-        //  ]    
-        // );
+        $validator = Validator::make($request->all(),[
+            'item_name' => 'required',
+            'category' => 'required',
+            'product_code' => 'required',
+            'price' => 'required|numeric|min:1',
+            'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',
+         ]    
+        );
 
-        // if($validator->fails()){
-        //     return redirect()->back()->withErrors($validator->messages())->withInput();
-        // }
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
 
-        // else
-        // {  
-        //     $item = new Item(array(
-        //                        'item_name' => $request->item_name, 
-        //                        'category' => $request->category,
-        //                        'product_code' => $request->product_code,                               
-        //                        'description' => $request->description,
-        //                        'price' => $request->price,
-        //                        'accountant' => Auth::id() 
-        //                        ));
-        //     $item->save();
-        //     $itemId = $item->item_id; 
+        else
+        {  
+            $item = new Item(array(
+                               'item_name' => $request->item_name, 
+                               'category' => $request->category,
+                               'product_code' => $request->product_code,                               
+                               'description' => $request->description,
+                               'price' => $request->price,
+                               'accountant' => Auth::id() 
+                               ));
+            $item->save();
+            $itemId = $item->item_id; 
 
-        $itemId=200;
-           
+       
            if($request->file('fileToUpload') && $itemId)
             {
              $imageName = $itemId.'.jpg';
-             $request->file('fileToUpload')->move(base_path().'/public/uploads/store_items/', $imageName);
+             $imageNameSmall = $itemId.'_s.jpg';
+
+             Image::make($request->file('fileToUpload'))->save(base_path().'/public/uploads/store_items/'.$imageName);
+             Image::make($request->file('fileToUpload'))->resize(175, 200)->save(base_path().'/public/uploads/store_items/'.$imageNameSmall);
             } 
 
             return redirect()->action('StoreController@mainStore')->with('status', 'New Item added!');
