@@ -147,6 +147,7 @@ return [
         App\Providers\ComposerServiceProvider::class,
 
         'Zizaco\Entrust\EntrustServiceProvider',
+        'Intervention\Image\ImageServiceProvider',
 
     ],
 
@@ -197,6 +198,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
         'Entrust' => 'Zizaco\Entrust\EntrustFacade',
+        'Image' => 'Intervention\Image\Facades\Image',
 
     ],
 
