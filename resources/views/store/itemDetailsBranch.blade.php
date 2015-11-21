@@ -119,7 +119,7 @@ session(['subtitle' => 'branchStore']); ?>
                                             <h4 class="modal-title">{{$item->item_name}}</h4>
                                         </div>
                                         <div class="modal-body" align="center">
-                                            <img src="{{$picBig}}" style="border:#06F solid 1px" />
+                                            <img height="100%" width="100%" src="{{$picBig}}" style="border:#06F solid 1px" />
                                         </div>
                                         
                                     </div>

@@ -1,7 +1,7 @@
 @extends('master') 
  
 <?php session(['title' => 'Store']);
-session(['subtitle' => 'main']); ?> 
+session(['subtitle' => 'suppliers']); ?> 
 
 @section('content') 
   
@@ -9,12 +9,12 @@ session(['subtitle' => 'main']); ?>
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right hidden-print">
 				<li><a href="javascript:;">Store</a></li>
-				<li class="active"><a href="javascript:;">Head</a></li>
+				<li class="active"><a href="javascript:;">Suppliers</a></li>
 				 
 			</ol> 
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header hidden-print">Main <small> Store</small></h1>
+			<h1 class="page-header hidden-print">Store <small> Suppliers</small></h1>
 			<!-- end page-header -->
 			<!-- begin row -->
 			 <div class="col-md-12">
@@ -26,10 +26,10 @@ session(['subtitle' => 'main']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">Items and Stock</h4>
+                            <h4 class="panel-title">Suppliers List</h4>
                         </div>
                         
-                            <input type="hidden" name="_token" value="{!! csrf_token() !!}">
+                            
                         <div class="panel-body">
                                 
                                 <div class="hidden-print">
@@ -41,32 +41,39 @@ session(['subtitle' => 'main']); ?>
                                     @endif
                                 </div>    
 
-
+                        @if(Auth::user()->hasRole('StoreManager'))         
+                        <div > 
+                            <a class="btn btn-primary btn-xs m-r-5" href = "/store/suppliers/add/new" title="Click here to add new supplier"><i class="fa fa-plus"></i>  Add Supplier</a> </div>    
+                        @endif  
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Item</th>
-                                        <th>Product Code</th>
-                                        <th>Price</th>
-                                        <th>Stock</th>                                        
-                                        <th>Pending</th>
-                                        <th>Category</th> 
+                                        <th>Supplier</th>
+                                        <th>Mobile</th>
+                                        <th>Tel</th>
+                                        <th>Email</th>                                        
+                                        <th>Contact Person</th>
+                                        <th>Business Volume</th> 
+                                        <th>Mob II</th>
+                                        <th>Tel II</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($Items as $index => $item)
+                                    @foreach($suppliers as $index => $supplier)
                                     <tr>
                                         <td>{{$index+1}}</td>
-                                        <td><a href="{!! action('StoreController@itemView', base64_encode($item->item_id)) !!}">{{$item->item_name}}</a></td>
-                                        <td>{{$item->product_code}}</td>
-                                        <td>{{$item->price}}</td>
-                                        <td>{{$item->stock}}</td>
-                                        <td>{{$item->pending}}</td>
-                                        <td>{{$item->category_name}}</td> 
+                                        <td>{{$supplier->name}}</td>
+                                        <td>{{$supplier->mob1}}</td>
+                                        <td>{{$supplier->ofc1}}</td>
+                                        <td>{{$supplier->email}}</td>
+                                        <td><a title="{{$supplier->address}}">{{$supplier->contact_person}}</a></td>
+                                        <td>{{$supplier->volume+0}}</td> 
+                                        <td>{{$supplier->mob2}}</td> 
+                                        <td>{{$supplier->ofc2}}</td> 
                                         <td> @if(Auth::user()->hasRole('StoreManager'))
-                                            <a class="btn btn-inverse btn-xs m-r-5" title="Click here to edit this item" href="{!! action('StoreControllerExtra@editItem', base64_encode($item->item_id)) !!}"><i class="fa fa-edit"></i></a>
+                                            <a class="btn btn-inverse btn-xs m-r-5" title="Click here to edit this supplier"  href="{!! action('StoreControllerExtra@editSupplier', base64_encode($supplier->supplier_id)) !!}" ><i class="fa fa-edit"></i></a>
                                             @endif
                                         </td>
                                     </tr>

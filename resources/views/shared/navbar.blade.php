@@ -87,8 +87,8 @@
                                 
                                 @endif
 
-                            <li><a href="form_slider_switcher.html">Categories</a></li>
-                            <li><a href="form_validation.html">Suppliers</a></li>
+                            <li class="@if(session('subtitle') == 'categories') active @endif"><a href="/store/categories">Categories</a></li>
+                            <li class="@if(session('subtitle') == 'suppliers') active @endif"><a href="/store/suppliers">Suppliers</a></li>
                             @endif                           
                             
                             <li class="@if(session('subtitle') == 'branchStore')   active @endif"><a href="/store/branch/items">Branch Store</a></li>

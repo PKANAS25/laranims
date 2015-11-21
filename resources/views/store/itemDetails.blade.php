@@ -153,7 +153,10 @@ session(['subtitle' => 'main']); ?>
                         
                             <div class="tab-pane fade active in" id="default-tab-1">
                                 @if(Auth::user()->hasRole('StoreManager'))         
-                        <div align="right"><a class="btn btn-primary btn-xs m-r-5" href = "{{action('StoreController@addStock',base64_encode($item->item_id))}}" title="Click here to add new stock"><i class="fa fa-plus"></i>  Add stock</a> </div>    
+                        <div align="right">
+                            <a class="btn btn-inverse btn-xs m-r-5" title="Click here to edit this item" href="{!! action('StoreControllerExtra@editItem', base64_encode($item->item_id)) !!}"><i class="fa fa-edit"></i> Edit Item</a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a class="btn btn-primary btn-xs m-r-5" href = "{{action('StoreController@addStock',base64_encode($item->item_id))}}" title="Click here to add new stock"><i class="fa fa-plus"></i>  Add stock</a> </div>    
                         @endif   
 
                     <p> </p>

@@ -143,6 +143,11 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/store/add/item/new', ['middleware' => 'StoreManager','uses'=>'StoreController@addNewItem']);
     Route::post('/store/add/item/new', ['middleware' => 'StoreManager','uses'=>'StoreController@saveNewItem']);
+    Route::get('/itemAddCheck', 'StoreControllerExtra@itemAddCheck');
+
+    Route::get('/store/edit/{itemId}/item', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editItem']);
+    Route::post('/store/edit/{itemId}/item', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editItemSave']);
+    Route::get('/itemEditCheck', 'StoreControllerExtra@itemEditCheck');
 
     Route::get('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@addStock']);
     Route::post('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@saveStock']);
@@ -191,7 +196,23 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/main/report/requests/transfers', ['middleware' => 'StoreManager','uses'=>'StoreController@storeRequestsTransfers']);
     Route::post('/store/main/report/requests/transfers', ['middleware' => 'StoreManager','uses'=>'StoreController@RequestsTransfersReport']);
 
+    Route::get('/store/categories', ['middleware' => 'StoreManagerOrView','uses'=>'StoreControllerExtra@categories']);
+    Route::get('/store/categories/add/new', ['middleware' => 'StoreManager',function () {return view('store.addCategory');}]);
+    Route::post('/store/categories/add/new', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@addCategory']);
+    Route::get('/categoryAddCheck', 'StoreControllerExtra@categoryAddCheck');
 
+    Route::get('/store/categories/{categoryId}/edit', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editCategory']);
+    Route::post('/store/categories/{categoryId}/edit', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editSaveCategory']);
+    Route::get('/categoryEditCheck', 'StoreControllerExtra@categoryEditCheck');
+
+    Route::get('/store/suppliers', ['middleware' => 'StoreManagerOrView','uses'=>'StoreControllerExtra@suppliers']);
+    Route::get('/store/suppliers/add/new', ['middleware' => 'StoreManager',function () {return view('store.addSupplier');}]);
+    Route::post('/store/suppliers/add/new', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@addSupplier']);
+    Route::get('/supplierAddCheck', 'StoreControllerExtra@supplierAddCheck');
+
+    Route::get('/store/suppliers/{supplierId}/edit', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editSupplier']);
+    Route::post('/store/suppliers/{supplierId}/edit', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editSaveSupplier']);
+    Route::get('/supplierEditCheck', 'StoreControllerExtra@supplierEditCheck');
 
 });
 

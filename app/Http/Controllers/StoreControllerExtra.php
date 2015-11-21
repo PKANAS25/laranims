@@ -9,6 +9,11 @@ use App\Http\Controllers\Controller;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use App\Item;
+
+use File;
+use Image;
+use Validator;
 
 class StoreControllerExtra extends Controller
 {
@@ -179,6 +184,338 @@ public function itemRemove(Request $request)
         return redirect()->action('StoreController@storeRequestsBranch')->with('status', 'Request has been sent to store manager!');
     }            
 //----------------------------------------------------------------------------------------------------------------------------------------
- 
+ public function itemAddCheck(Request $request)
+    {
+          
+          $item_name = $request->get('item_name'); 
+
+          $count = Item::whereRAW("item_name LIKE '%".$item_name."%'")
+                            ->count();
+            
+
+        if($count)
+        return response()->json(['valid' => 'false', 'message' => 'Name exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+         
+    }
    
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+ public function editItem($itemId)
+    {
+          
+          $itemId = base64_decode($itemId); 
+
+          $categories = DB::table('categories')->orderBy('category')->get(); 
+
+          $item = Item::select('items.*','categories.category AS category_name')
+                        ->leftjoin('categories','categories.category_id','=','items.category')
+                        ->where('item_id',$itemId)
+                        ->first();
+        $pic="";
+        if (File::exists(base_path().'/public/uploads/store_items/'.$itemId.'_s.jpg'))
+           { $pic='/uploads/store_items/'.$itemId.'_s.jpg';}
+            
+
+        return view('store.editItem',compact('item','categories','pic'));
+         
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+ public function itemEditCheck(Request $request)
+    {
+          
+          $item_name = $request->get('item_name'); 
+          $itemId = $request->get('itemId'); 
+
+          $count = Item::whereRAW("item_name LIKE '%".$item_name."%'")->where('item_id','!=',$itemId)->count();
+            
+
+        if($count)
+        return response()->json(['valid' => 'false', 'message' => 'Name exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+         
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------
+   
+ public function editItemSave(Request $request,$itemId)
+    {
+       $itemId = base64_decode($itemId);
+
+        $validator = Validator::make($request->all(),[
+            'item_name' => 'required',
+            'category' => 'required',
+            'product_code' => 'required',
+            'price' => 'required|numeric|min:1',
+            'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',
+         ]    
+        );
+        
+
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+
+        else
+        {  
+           
+
+           $item = Item::where('item_id',$itemId)->first();
+           
+           $item->item_name = $request->item_name; 
+           $item->category = $request->category;
+           $item->product_code = $request->product_code;                              
+           $item->description = $request->description;
+           $item->price = $request->price; 
+
+           $item->save(); 
+
+       
+           if($request->file('fileToUpload'))
+            {
+             
+             $imageName = $itemId.'.jpg';
+             $imageNameSmall = $itemId.'_s.jpg';
+             
+             if (File::exists(base_path().'/public/uploads/store_items/'.$imageName))
+                 File::delete(base_path().'/public/uploads/store_items/'.$imageName);
+             
+             if (File::exists(base_path().'/public/uploads/store_items/'.$imageNameSmall))
+                 File::delete(base_path().'/public/uploads/store_items/'.$imageNameSmall);
+
+
+             Image::make($request->file('fileToUpload'))->save(base_path().'/public/uploads/store_items/'.$imageName);
+             Image::make($request->file('fileToUpload'))->resize(175, 200)->save(base_path().'/public/uploads/store_items/'.$imageNameSmall);
+            } 
+
+            return redirect()->action('StoreController@itemView',[base64_encode($itemId)])->with('status', 'Item editted successfully!');
+        }
+
+                         
+    }  
+//----------------------------------------------------------------------------------------------------------------------------------------
+ public function categories()
+    { 
+     
+     $categories = DB::table('categories')->orderBy('category')->get();  
+
+     return view('store.categories',compact('categories'));
+         
+    }  
+//----------------------------------------------------------------------------------------------------------------------------------------
+ public function categoryAddCheck(Request $request)
+    {
+          
+          $category = $request->get('category'); 
+
+          $count = DB::table('categories')->whereRAW("category LIKE '%".$category."%'")
+                            ->count();
+            
+
+        if($count)
+        return response()->json(['valid' => 'false', 'message' => 'Category exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+         
+    }      
+//----------------------------------------------------------------------------------------------------------------------------------------   
+
+ public function addCategory(Request $request)
+    { 
+      $this->validate($request, [
+        'category' => 'required',]); 
+
+       DB::table('categories')->insert([
+                  'category' => $request->category,
+                  'description' => $request->description
+                  ]);  
+
+     return redirect()->action('StoreControllerExtra@categories')->with('status', 'Category successfully added!');
+         
+    }  
+//--------------------------------------------------------------------------------------------------------------------------------------------
+public function editCategory($categoryId)
+    { 
+     
+     $categoryId = base64_decode($categoryId);
+     
+     $category = DB::table('categories')->where('category_id',$categoryId)->first();  
+
+     return view('store.editCategory',compact('category'));
+         
+    }  
+//----------------------------------------------------------------------------------------------------------------------------------------
+ public function categoryEditCheck(Request $request)
+    {
+          
+          $category = $request->get('category'); 
+          $categoryId = $request->get('categoryId'); 
+
+          $count = DB::table('categories')->whereRAW("category LIKE '%".$category."%'")->where('category_id','!=',$categoryId)->count();
+            
+
+        if($count)
+        return response()->json(['valid' => 'false', 'message' => 'Category exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+         
+    }
+//--------------------------------------------------------------------------------------------------------------------------------------------
+ public function editSaveCategory(Request $request,$categoryId)
+    {
+       $categoryId = base64_decode($categoryId);
+
+        $validator = Validator::make($request->all(),[ 
+            'category' => 'required'
+         ]    
+        );
+        
+
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+
+        else
+        {  
+           
+             DB::table('categories')->where('category_id',$categoryId)->update(['category' => $request->category,'description' => $request->description]);  
+           
+             return redirect()->action('StoreControllerExtra@categories')->with('status', 'Category successfully editted!');
+        }
+
+                         
+    }  
+//----------------------------------------------------------------------------------------------------------------------------------------
+ public function suppliers()
+    { 
+     
+     
+     $suppliers = DB::table('suppliers')
+                    ->select('suppliers.*',DB::raw("(SELECT SUM(item_count*cost)  FROM stocks WHERE deleted = '0'  AND stocks.supplier_id = suppliers.supplier_id) AS volume"))
+                    ->orderBy('name')->get();  
+
+     return view('store.suppliers',compact('suppliers'));
+         
+    }      
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+ public function supplierAddCheck(Request $request)
+    {
+          
+          $name = $request->get('name'); 
+
+          $count = DB::table('suppliers')->whereRAW("name LIKE '%".$name."%'")
+                            ->count();
+            
+
+        if($count)
+        return response()->json(['valid' => 'false', 'message' => 'Supplier exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+         
+    } 
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+   public function addSupplier(Request $request)
+    { 
+      $this->validate($request, [
+        'name' => 'required',
+        'ofc1' => 'required',
+        'contact_person' => 'required']); 
+
+       DB::table('suppliers')->insert([
+                  'name' => $request->name,
+                  'mob1' => $request->mob1,
+                  'ofc1' => $request->ofc1,
+                  'mob2' => $request->mob2,
+                  'ofc2' => $request->ofc2,
+                  'email' => $request->email,
+                  'contact_person' => $request->contact_person,
+                  'address' => $request->address,
+                  ]);  
+
+       
+
+     return redirect()->action('StoreControllerExtra@suppliers')->with('status', 'Supplier successfully added!');
+         
+    }  
+
+//--------------------------------------------------------------------------------------------------------------------------------------------
+public function editSupplier($supplierId)
+    { 
+     
+     $supplierId = base64_decode($supplierId);
+     
+     $supplier = DB::table('suppliers')->where('supplier_id',$supplierId)->first();  
+
+     return view('store.editSupplier',compact('supplier'));
+         
+    }  
+//--------------------------------------------------------------------------------------------------------------------------------------------
+
+public function supplierEditCheck(Request $request)
+    {
+          
+          $name = $request->get('name'); 
+          $supplierId = $request->get('supplierId'); 
+
+          $count = DB::table('suppliers')->whereRAW("name LIKE '%".$name."%'")->where('supplier_id','!=',$supplierId)->count();
+            
+
+        if($count)
+        return response()->json(['valid' => 'false', 'message' => 'Supplier exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+         
+    }
+//--------------------------------------------------------------------------------------------------------------------------------------------   
+public function editSaveSupplier(Request $request,$supplierId)
+    {
+       $supplierId = base64_decode($supplierId);
+
+        $validator = Validator::make($request->all(),[ 
+            'name' => 'required',
+            'ofc1' => 'required',
+            'contact_person' => 'required'
+         ]    
+        );
+        
+
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+
+        else
+        {  
+           
+             DB::table('suppliers')->where('supplier_id',$supplierId)
+                                    ->update([
+                                                  'name' => $request->name,
+                                                  'mob1' => $request->mob1,
+                                                  'ofc1' => $request->ofc1,
+                                                  'mob2' => $request->mob2,
+                                                  'ofc2' => $request->ofc2,
+                                                  'email' => $request->email,
+                                                  'contact_person' => $request->contact_person,
+                                                  'address' => $request->address
+                                            ]);  
+           
+             return redirect()->action('StoreControllerExtra@suppliers')->with('status', 'Supplier successfully editted!');
+        }
+
+                         
+    }  
+//----------------------------------------------------------------------------------------------------------------------------------------
+
 }

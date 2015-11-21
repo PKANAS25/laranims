@@ -1,7 +1,7 @@
 @extends('formsMaster') 
  
 <?php session(['title' => 'Store']);
-session(['subtitle' => 'addItem']); ?> 
+session(['subtitle' => 'categories']); ?> 
 
 @section('content') 
   
@@ -9,12 +9,12 @@ session(['subtitle' => 'addItem']); ?>
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right hidden-print">
 				<li><a href="javascript:;">Store</a></li>
-				<li class="active"><a href="javascript:;">Add Item</a></li>
+				<li class="active"><a href="javascript:;">Add Category</a></li>
 				 
 			</ol> 
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header hidden-print">Store <small> Add Item</small></h1>
+			<h1 class="page-header hidden-print">Store <small> Add Category</small></h1>
 			<!-- end page-header -->
 			<!-- begin row -->
 			 <div class="col-md-12">
@@ -26,7 +26,7 @@ session(['subtitle' => 'addItem']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">Add New Item</h4>
+                            <h4 class="panel-title">Add New Category</h4>
                         </div>
                         <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
@@ -52,40 +52,13 @@ session(['subtitle' => 'addItem']); ?>
                                 </div>    
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="item_name">Item Name :</label>
+                                    <label class="control-label col-md-4 col-sm-4" for="category">Category :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="item_name" name="item_name" data-fv-notempty="true"  data-fv-remote="true"  value="{{ old('item_name') }}" />  
+                                        <input class="form-control" type="text" id="category" name="category" data-fv-notempty="true"  data-fv-remote="true"  value="{{ old('category') }}" />  
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4">Category :</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <select class="form-control" id="select-required" name="category" data-fv-notempty="true">
-                                            <option value="">Please choose</option>
-                                            @foreach($categories as $category)
-                                            <option value="{!! $category->category_id !!}">{!! $category->category !!}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> 
-
-                            
-
-                                <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="product_code">Product Code :</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text"   id="product_code" name="product_code"   data-fv-notempty="true" value="{{ old('product_code') }}" />  
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="price">Price :</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="price"   name="price" data-fv-notempty="true"  min="1"  value="{{ old('price') }}" />
-                                    </div>
-                                </div>
-
+                               
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="description">Description :</label>
                                     <div class="col-md-6 col-sm-6">
@@ -93,12 +66,7 @@ session(['subtitle' => 'addItem']); ?>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="fileToUpload">Pic</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="file"  accept="image/*"    data-fv-file="true"  data-fv-file-extension="jpeg,jpg"  data-fv-file-type="image/jpeg,image/jpg"  data-fv-file-maxsize="629760" data-fv-file-message="The selected file is not valid" id="fileToUpload" name="fileToUpload" /> <span class="text-info">Max size 500 Kb, JPG only</span>
-                                    </div>
-                                </div>
+                                
                                
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4"></label>
@@ -129,14 +97,14 @@ session(['subtitle' => 'addItem']); ?>
                 message: 'This value is not valid',
                  fields: 
                  {
-                    item_name: {
+                    category: {
                      threshold: 5,
                      verbose: false,
                      
                      validators: {
                      notEmpty: {},
                      remote: {
-                        url: '/itemAddCheck'
+                        url: '/categoryAddCheck'
                     }
                 }
             }
@@ -149,7 +117,7 @@ session(['subtitle' => 'addItem']); ?>
         // data.result    --> The result returned by the validator
         // data.validator --> The validator name
 
-        if (data.field === 'item_name'
+        if (data.field === 'category'
             && data.validator === 'remote'
             && (data.result.available === false || data.result.available === 'false'))
         {
@@ -163,12 +131,12 @@ session(['subtitle' => 'addItem']); ?>
                 .addClass('has-warning')
 
                 // Show message
-                .find('small[data-fv-validator="remote"][data-fv-for="item_name"]')
+                .find('small[data-fv-validator="remote"][data-fv-for="category"]')
                     .show();
         }
 
 
-        if (data.field === 'item_name'
+        if (data.field === 'category'
             && data.validator === 'remote'
             && (data.result.available === true || data.result.available === 'true'))
         {
@@ -182,7 +150,7 @@ session(['subtitle' => 'addItem']); ?>
                 .addClass('has-success')
 
                 // Show message
-                .find('small[data-fv-validator="remote"][data-fv-for="item_name"]')
+                .find('small[data-fv-validator="remote"][data-fv-for="category"]')
                     .show();
         }
 
@@ -194,7 +162,7 @@ session(['subtitle' => 'addItem']); ?>
          
         // We need to remove has-warning class
         // when the field doesn't pass any validator
-        if (data.field === 'item_name') {
+        if (data.field === 'category') {
             data.element
                 .closest('.form-group')
                 .removeClass('has-warning')
