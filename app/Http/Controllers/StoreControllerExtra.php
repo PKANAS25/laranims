@@ -10,6 +10,8 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Item;
+use App\InvoicesCustomItem;
+use App\BranchItem;
 
 use File;
 use Image;
@@ -516,6 +518,89 @@ public function editSaveSupplier(Request $request,$supplierId)
 
                          
     }  
+//--------------------------------------------------------------------------------------------------------------------------------------------   
+public function nonReceivedItems($viewer)
+    {
+        
+       if($viewer=="waiting")
+       $nonReceivedItems = InvoicesCustomItem::select('invoices.dated','invoices.invoice_no', 'invoices_custom_items.item_id',
+                                                      'invoices_custom_items.quantity_not_received', 'invoices_custom_items.item_name',
+                                                      'invoices_custom_items.custom_id','students.full_name','branch_items.stock')
+                                             ->leftjoin('invoices','invoices_custom_items.invoice_id' ,'=', 'invoices.invoice_id')
+                                             ->leftjoin('students','students.student_id', '=' , 'invoices.student_id') 
+                                             ->leftjoin('branch_items','branch_items.item_id', '=', 'invoices_custom_items.item_id')
+                                             ->where('invoices.branch',Auth::user()->branch)
+                                             ->where('branch_items.branch',Auth::user()->branch)
+                                             ->where('invoices_custom_items.quantity_not_received', '>', '0')
+                                             ->where('invoices.deleted',0)
+                                             ->orderBy('invoices.invoice_no','DESC')
+                                             ->get();
+         
+       else
+       $nonReceivedItems = InvoicesCustomItem::select('invoices.dated','invoices.invoice_no', 'invoices_custom_items.item_id','invoices_custom_items.quantity_not_received', 'invoices_custom_items.item_name','students.full_name','item_receive_tracking.qty AS received', 'item_receive_tracking.dated AS receive_date' , 'item_receive_tracking.refunded')
+                                             ->leftjoin('invoices','invoices_custom_items.invoice_id' ,'=', 'invoices.invoice_id')
+                                             ->leftjoin('students','students.student_id', '=' , 'invoices.student_id') 
+                                             ->leftjoin('item_receive_tracking','item_receive_tracking.track_id', '=', 'invoices_custom_items.track_id')
+                                             ->where('invoices.branch',Auth::user()->branch)
+                                             ->where('invoices_custom_items.track_id', '>', '0')
+                                             ->where('invoices.deleted',0)
+                                             ->orderBy('invoices.invoice_no','DESC')
+                                             ->get();                                   
+
+      return view('store.nonReceivedItems',compact('nonReceivedItems','viewer'));                                       
+
+    }   
+
+//--------------------------------------------------------------------------------------------------------------------------------------------   
+public function issueReceiveLetter($customId)
+    { 
+      $customId = base64_decode($customId);
+
+      $trackItem = InvoicesCustomItem::select('invoices.invoice_id','invoices.invoice_no', 'invoices_custom_items.item_id',
+                                                      'invoices_custom_items.quantity_not_received', 'invoices_custom_items.quantity_received',
+                                                      'invoices_custom_items.item_name','invoices_custom_items.custom_id',
+                                                      'students.student_id','branch_items.stock')
+                                             ->leftjoin('invoices','invoices_custom_items.invoice_id' ,'=', 'invoices.invoice_id')
+                                             ->leftjoin('students','students.student_id', '=' , 'invoices.student_id') 
+                                             ->leftjoin('branch_items','branch_items.item_id', '=', 'invoices_custom_items.item_id')
+                                             ->where('branch_items.branch',Auth::user()->branch)
+                                             ->where('invoices_custom_items.custom_id', $customId)
+                                             ->where('invoices.deleted',0)
+                                             ->first();
+      $currentStock =  $trackItem->stock;  
+
+      $tracked = DB::table('item_receive_tracking')->where('custom_id',$customId)->count();   
+      
+      if($currentStock >= $trackItem->quantity_not_received && $tracked==0)  
+      {
+         $updatedStock = $currentStock - $trackItem->quantity_not_received;
+
+         $trackId = DB::table('item_receive_tracking')->insertGetId(['invoice_id' => $trackItem->invoice_id,
+                                                           'student_id' => $trackItem->student_id,
+                                                           'custom_id' => $trackItem->custom_id,
+                                                           'admin' => Auth::id(),
+                                                           'dated' => Carbon::now()->toDateString(),
+                                                           'qty' => $trackItem->quantity_not_received]); 
+
+        $branchItem = BranchItem::where('item_id',$trackItem->item_id)->where('branch',Auth::user()->branch)->first();
+        $branchItem->stock = $updatedStock;
+        $branchItem->save();
+
+        $updatedQuantityRecieved=$trackItem->quantity_received+$trackItem->quantity_not_received;
+        $trackItem->quantity_received = $updatedQuantityRecieved;
+        $trackItem->quantity_not_received = 0;
+        $trackItem->track_id = $trackId;
+
+        $trackItem->save();
+
+        return view('store.receiveLetter',compact('nonReceivedItems','viewer'));
+      
+      }
+      else
+       return redirect()->action('StoreControllerExtra@nonReceivedItems',['waiting'])->withErrors('Something went wrong!'); 
+
+    }   
 //----------------------------------------------------------------------------------------------------------------------------------------
+
 
 }

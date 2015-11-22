@@ -214,6 +214,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/store/suppliers/{supplierId}/edit', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editSaveSupplier']);
     Route::get('/supplierEditCheck', 'StoreControllerExtra@supplierEditCheck');
 
+    Route::get('/store/students/nonreceived/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@nonReceivedItems']);
+    Route::get('/store/issueReceiveLetter/{customId}', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@issueReceiveLetter']);
+
 });
 
  
