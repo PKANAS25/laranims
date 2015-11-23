@@ -91,14 +91,13 @@
                             <li class="@if(session('subtitle') == 'suppliers') active @endif"><a href="/store/suppliers">Suppliers</a></li>
                             @endif                           
                             
-                            <li class="@if(session('subtitle') == 'branchStore') active @endif"><a href="/store/branch/items">Branch Store</a></li>
-                            <li class="@if(session('subtitle') == 'nonReceived') active @endif"><a href="/store/students/nonreceived/waiting">Non-Received Items</a></li>
-                            <li><a href="form_wysiwyg.html">Exchanged Items</a></li>
+                            <li class="@if(session('subtitle') == 'branchStore') active @endif"><a href="/store/branch/items">Branch Store</a></li> 
                             @if(Auth::user()->hasRole('BranchStore') )
                              <li class="@if(session('subtitle') == 'returnRejections') active @endif"><a href="/store/branch/returns/rejections/unread">Return Rejections</a></li>
                              <li class="@if(session('subtitle') == 'storeRequests') active @endif"><a href="/store/branch/requests">Store Requests</a></li>
                             @endif
-                            
+                             <li class="@if(session('subtitle') == 'nonReceived') active @endif"><a href="/store/students/nonreceived/waiting">Non-Received Items</a></li>
+                            <li class="@if(session('subtitle') == 'exchanged') active @endif"><a href="/store/receipts/exchanged/items">Exchanged Items</a></li>
                         </ul>
                     </li>
                     @endif

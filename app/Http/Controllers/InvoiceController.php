@@ -661,6 +661,98 @@ class InvoiceController extends Controller
                 return redirect()->intended('profile/student/'.$studentId)->withErrors(['Technical Error. Contact Administrator']);
             }
     }
+//----------------------------------------------------------------------------------------------------------------------------
+    public function exchangeForm($customId)
+    {
+        if(!Auth::user()->hasRole('InvoiceEditor'))
+            return redirect()->intended('/home')->with('warning', 'Tried to enter restricted area!');
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        $customId = base64_decode($customId);
+
+        $customItem = InvoicesCustomItem::where('custom_id',$customId)->first(); 
+        $currentItemName = $customItem->item_name;
+
+        $items = BranchItem::select('branch_items.*','items.item_name')    
+                            ->leftjoin('items','branch_items.item_id','=','items.item_id') 
+                            ->where('branch_items.branch',Auth::user()->branch)
+                            ->where('branch_items.item_id','!=',$customItem->item_id)
+                            ->where('branch_items.stock','>=',$customItem->qty)
+                            ->orderBy('items.item_name')
+                            ->get();   
+
+        return view('invoiceExchangeItem',compact('items','currentItemName'));                 
+
+    }
+
+
+//----------------------------------------------------------------------------------------------------------------------------
+    public function exchangeSave($customId,Request $request)
+    {
+        if(!Auth::user()->hasRole('InvoiceEditor'))
+            return redirect()->intended('/home')->with('warning', 'Tried to enter restricted area!');
+
+         $this->validate($request, [
+        'item_id' => 'required']); 
+
+        $customId = base64_decode($customId);
+
+        $customItem = InvoicesCustomItem::where('custom_id',$customId)->first(); 
+        
+        $oldItemId = $customItem->item_id;
+        $chosenItemId = $request->item_id;
+
+        $qty = $customItem->qty;
+        $quantity_received = $customItem->quantity_received;
+        $quantity_not_received = $customItem->quantity_not_received;
+
+        $oldItem = BranchItem::where('branch',Auth::user()->branch)
+                             ->where('item_id',$oldItemId)
+                             ->first();
+
+                             $updatedStockOld = $oldItem->stock + $quantity_received;
+                             $updatedSoldOld = $oldItem->sold - $qty;
+       
+        //echo "Old Item ====Current Stock".$oldItem->stock."====Updated Stock====".$updatedStockOld."====Sold====".$oldItem->sold."====Updated Sold====".$updatedSoldOld;                     
+
+        $newItem =BranchItem::select('branch_items.*','items.item_name')    
+                            ->leftjoin('items','branch_items.item_id','=','items.item_id') 
+                            ->where('branch_items.branch',Auth::user()->branch)
+                            ->where('branch_items.item_id',$chosenItemId)
+                            ->first();  
+                            
+                            $updatedStockNew = $newItem->stock - $qty;
+                            $updatedSoldNew = $newItem->sold + $qty;
+        //echo "sdsd<br>New Item ====".$newItem->item_name."====current stock:".$newItem->stock."====Updated Stock====".$updatedStockNew."====Sold====".$newItem->sold."====Updated Sold====".$updatedSoldNew;                    
+       
+        $customItem->item_id = $chosenItemId; 
+        $customItem->item_name = $newItem->item_name;
+        $customItem->quantity_received = $qty;
+        $customItem->quantity_not_received = 0; 
+        $customItem->save();   
+
+        DB::table('invoice_edit_history')->insert([
+                                                    'invoice_id' => $customItem->invoice_id, 
+                                                    'custom_id' => $customId, 
+                                                    'old_item' => $oldItemId,
+                                                    'new_item'=>$chosenItemId,
+                                                    'dated'=>Carbon::now()->toDateString(),
+                                                    'admin'=>Auth::id(),
+                                                    'branch'=>Auth::user()->branch
+                                                ]);   
+        $oldItem->stock = $updatedStockOld;
+        $oldItem->sold = $updatedSoldOld;  
+        $oldItem->save();
+
+        $newItem->stock = $updatedStockNew;
+        $newItem->sold = $updatedSoldNew;  
+        $newItem->save();    
+        
+        return redirect()->action('InvoiceController@view', [base64_encode($customItem->invoice_id)])->with('status','Item Exchanged successfully') ;                  
+
+    }    
+
+//====--------------------------------------------------------------------------------------------------------------------------
+
 }
+ 
+ 

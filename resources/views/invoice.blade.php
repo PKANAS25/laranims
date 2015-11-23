@@ -49,6 +49,13 @@ session(['subtitle' => '']); ?>
                     </div>
                 </div>
                 <div class="invoice-content">
+                  <div class="hidden-print"> 
+                                    @if (session('status'))
+                                        <div class="alert alert-success">
+                                            {{ session('status') }}   
+                                        </div>
+                                    @endif 
+                                </div>  
                     <div class="table">
                         <table class="table table-invoice">
                             <thead>
@@ -88,7 +95,13 @@ session(['subtitle' => '']); ?>
                                 @foreach($items AS $item)
                                 <tr>
                                     <td>{{$i}}</td>
-                                    <td>{{$item->item_name}}</td>
+                                    <td>{{$item->item_name}} 
+                                    <span class="hidden-print">
+                                        @if(Auth::user()->hasRole('InvoiceEditor') && $item->track_id==0 && $invoice->branch==Auth::user()->branch) 
+                                        <a title="Exchange Item" href="/invoice/exchange/{{base64_encode($item->custom_id)}}"><i class="fa fa-edit"></i></a>
+                                        @endif
+                                    </span>
+                                    </td>
                                     <td>{{$item->quantity_received}}/{{$item->quantity_not_received}}</td>
                                     <td>{{$item->unit_price}}</td>
                                     <td>{{$item->qty}}</td>

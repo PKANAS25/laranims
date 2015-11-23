@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Item;
 use App\InvoicesCustomItem;
 use App\BranchItem;
+use App\Branch;
 
 use File;
 use Image;
@@ -537,7 +538,10 @@ public function nonReceivedItems($viewer)
                                              ->get();
          
        else
-       $nonReceivedItems = InvoicesCustomItem::select('invoices.dated','invoices.invoice_no', 'invoices_custom_items.item_id','invoices_custom_items.quantity_not_received', 'invoices_custom_items.item_name','students.full_name','item_receive_tracking.qty AS received', 'item_receive_tracking.dated AS receive_date' , 'item_receive_tracking.refunded')
+       $nonReceivedItems = InvoicesCustomItem::select('invoices.dated','invoices.invoice_no', 'invoices_custom_items.item_id','invoices_custom_items.quantity_not_received', 
+                                                      'invoices_custom_items.item_name','students.full_name','item_receive_tracking.qty AS received', 
+                                                      'item_receive_tracking.dated AS receive_date' , 'item_receive_tracking.refunded', 
+                                                      'item_receive_tracking.track_id')
                                              ->leftjoin('invoices','invoices_custom_items.invoice_id' ,'=', 'invoices.invoice_id')
                                              ->leftjoin('students','students.student_id', '=' , 'invoices.student_id') 
                                              ->leftjoin('item_receive_tracking','item_receive_tracking.track_id', '=', 'invoices_custom_items.track_id')
@@ -568,6 +572,7 @@ public function issueReceiveLetter($customId)
                                              ->where('invoices.deleted',0)
                                              ->first();
       $currentStock =  $trackItem->stock;  
+      $qnr = $trackItem->quantity_not_received;
 
       $tracked = DB::table('item_receive_tracking')->where('custom_id',$customId)->count();   
       
@@ -593,13 +598,51 @@ public function issueReceiveLetter($customId)
 
         $trackItem->save();
 
-        return view('store.receiveLetter',compact('nonReceivedItems','viewer'));
+        
+         return redirect()->action('StoreControllerExtra@ReceiveLetter',[$trackId]);
       
       }
       else
        return redirect()->action('StoreControllerExtra@nonReceivedItems',['waiting'])->withErrors('Something went wrong!'); 
 
     }   
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+public function ReceiveLetter($trackId)
+    { 
+      $branch = Branch::where('id', Auth::user()->branch)->first();
+
+      $trackItem = DB::table('item_receive_tracking')
+                     ->select('item_receive_tracking.*','invoices_custom_items.item_name','students.full_name','invoices.invoice_no')
+                     ->leftjoin('invoices_custom_items','invoices_custom_items.custom_id' ,'=', 'item_receive_tracking.custom_id')
+                     ->leftjoin('students','students.student_id', '=' , 'item_receive_tracking.student_id')
+                     ->leftjoin('invoices','invoices.invoice_id' ,'=', 'item_receive_tracking.invoice_id')
+                     ->where('item_receive_tracking.track_id',$trackId)
+                     ->first(); 
+
+      return view('store.receiveLetter',compact('branch','trackItem'));               
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+public function exchangedItems()
+    { 
+       
+echo  Carbon::now();
+      // $exchangedItems =  DB::table('invoice_edit_history')
+      //                      ->select('invoice_edit_history.*', 'users.name AS adminer','oldee.item_name AS oldItemName', 'newee.item_name AS newItemName', 
+      //                                'invoices.invoice_no', 'invoices.student_id','invoices.dated AS inv_date','students.full_name') 
+      //                      ->leftjoin('items AS oldee','invoice_edit_history.old_item', '=', 'oldee.item_id')
+      //                      ->leftjoin('items AS newee','invoice_edit_history.new_item', '=', 'newee.item_id')
+      //                      ->leftjoin('users','invoice_edit_history.admin', '=', 'users.id') 
+      //                      ->leftjoin('invoices','invoice_edit_history.invoice_id', '=', 'invoices.invoice_id')  
+      //                      ->leftjoin('students','invoices.student_id', '=', 'students.student_id') 
+      //                      ->where('invoice_edit_history.branch',AUth::user()->branch)  
+      //                      ->orderBy('edit_id','DESC')
+      //                      ->get();      
+
+      // return view('store.exchangedItems',compact('exchangedItems'));               
+    }    
 //----------------------------------------------------------------------------------------------------------------------------------------
 
 

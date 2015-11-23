@@ -80,7 +80,7 @@ session(['subtitle' => 'nonReceived']); ?>
                                         <td>{{$nonReceivedItem->item_name}}</td>
                                         <td>{{$nonReceivedItem->quantity_not_received}}</td>
                                         <td>@if($nonReceivedItem->stock < $nonReceivedItem->quantity_not_received) Insufficient Stock
-                                            @else 
+                                            @elseif(Auth::user()->hasRole('BranchStore'))
                                             <button class="btn btn-danger btn-sm m-r-5" id="Receive{{$index+1}}" >Receive Letter</button>
                                 <script type="text/javascript">
                                     $('#Receive{{$index+1}}').click(function(ev) {
@@ -106,8 +106,11 @@ session(['subtitle' => 'nonReceived']); ?>
                                       ev.preventDefault();
                                     
                                     });
-                                </script> 
-                                            @endif</td>
+                                </script>
+                                @else
+                                <button class="btn btn-default btn-sm m-r-5" onclick='$.msgbox("You are not authorized to issue receive letter.", {buttons : [{type: "cancel", value: "OK"}]});'>Receive Letter</button>
+                                @endif
+                                </td>
                                     </tr>
                                     @endforeach
 
@@ -120,7 +123,7 @@ session(['subtitle' => 'nonReceived']); ?>
                                         <td>{{$nonReceivedItem->full_name}}</td>
                                         <td>{{$nonReceivedItem->item_name}}</td>
                                         <td>{{$nonReceivedItem->received}}</td>
-                                        <td>{{$nonReceivedItem->receive_date}}</td>
+                                        <td><a href="/store/ReceiveLetter/{{$nonReceivedItem->track_id}}">{{$nonReceivedItem->receive_date}}</a></td>
                                     </tr>
                                     @endforeach                             
                                 @endif

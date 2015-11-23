@@ -88,6 +88,11 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::post('/profile/student/{studentId}', ['middleware' => 'nursery_admin','uses'=>'InvoiceController@delete']);
 
+    Route::get('/invoice/exchange/{customId}','InvoiceController@exchangeForm');
+    Route::post('/invoice/exchange/{customId}','InvoiceController@exchangeSave');
+
+
+
  //---------------------------------------GradesController-------------------------------------------------------------
     Route::get('/students/grades', 'GradesController@index');
     Route::get('/students/grade/{classId}/students/{filter}', 'GradesController@students');    
@@ -214,9 +219,11 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/store/suppliers/{supplierId}/edit', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@editSaveSupplier']);
     Route::get('/supplierEditCheck', 'StoreControllerExtra@supplierEditCheck');
 
-    Route::get('/store/students/nonreceived/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@nonReceivedItems']);
-    Route::get('/store/issueReceiveLetter/{customId}', ['middleware' => 'StoreManager','uses'=>'StoreControllerExtra@issueReceiveLetter']);
+    Route::get('/store/students/nonreceived/{viewer}', ['middleware' => 'StoreAnyRole','uses'=>'StoreControllerExtra@nonReceivedItems']);
+    Route::get('/store/issueReceiveLetter/{customId}', ['middleware' => 'BranchStore','uses'=>'StoreControllerExtra@issueReceiveLetter']);
+    Route::get('/store/ReceiveLetter/{trackId}', ['middleware' => 'StoreAnyRole','uses'=>'StoreControllerExtra@ReceiveLetter']);
 
+    Route::get('/store/receipts/exchanged/items', ['middleware' => 'StoreAnyRole','uses'=>'StoreControllerExtra@exchangedItems']);
 });
 
  
