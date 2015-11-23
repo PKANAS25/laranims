@@ -628,20 +628,20 @@ public function ReceiveLetter($trackId)
 public function exchangedItems()
     { 
        
-echo  Carbon::now();
-      // $exchangedItems =  DB::table('invoice_edit_history')
-      //                      ->select('invoice_edit_history.*', 'users.name AS adminer','oldee.item_name AS oldItemName', 'newee.item_name AS newItemName', 
-      //                                'invoices.invoice_no', 'invoices.student_id','invoices.dated AS inv_date','students.full_name') 
-      //                      ->leftjoin('items AS oldee','invoice_edit_history.old_item', '=', 'oldee.item_id')
-      //                      ->leftjoin('items AS newee','invoice_edit_history.new_item', '=', 'newee.item_id')
-      //                      ->leftjoin('users','invoice_edit_history.admin', '=', 'users.id') 
-      //                      ->leftjoin('invoices','invoice_edit_history.invoice_id', '=', 'invoices.invoice_id')  
-      //                      ->leftjoin('students','invoices.student_id', '=', 'students.student_id') 
-      //                      ->where('invoice_edit_history.branch',AUth::user()->branch)  
-      //                      ->orderBy('edit_id','DESC')
-      //                      ->get();      
 
-      // return view('store.exchangedItems',compact('exchangedItems'));               
+      $exchangedItems =  DB::table('invoice_edit_history')
+                           ->select('invoice_edit_history.*', 'users.name AS adminer','oldee.item_name AS oldItemName', 'newee.item_name AS newItemName', 
+                                     'invoices.invoice_no', 'invoices.student_id','invoices.dated AS inv_date','students.full_name') 
+                           ->leftjoin('items AS oldee','invoice_edit_history.old_item', '=', 'oldee.item_id')
+                           ->leftjoin('items AS newee','invoice_edit_history.new_item', '=', 'newee.item_id')
+                           ->leftjoin('users','invoice_edit_history.admin', '=', 'users.id') 
+                           ->leftjoin('invoices','invoice_edit_history.invoice_id', '=', 'invoices.invoice_id')  
+                           ->leftjoin('students','invoices.student_id', '=', 'students.student_id') 
+                           ->where('invoice_edit_history.branch',AUth::user()->branch)  
+                           ->orderBy('edit_id','DESC')
+                           ->get();      
+
+      return view('store.exchangedItems',compact('exchangedItems'));               
     }    
 //----------------------------------------------------------------------------------------------------------------------------------------
 
