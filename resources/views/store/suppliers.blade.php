@@ -40,11 +40,8 @@ session(['subtitle' => 'suppliers']); ?>
                                         </div>
                                     @endif
                                 </div>    
-
-                        @if(Auth::user()->hasRole('StoreManager'))         
-                        <div > 
-                            <a class="btn btn-primary btn-xs m-r-5" href = "/store/suppliers/add/new" title="Click here to add new supplier"><i class="fa fa-plus"></i>  Add Supplier</a> </div>    
-                        @endif  
+ 
+                         
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
@@ -81,8 +78,9 @@ session(['subtitle' => 'suppliers']); ?>
                                 </tbody>
                                 
                             </table>
-
-                               
+                             @if(Auth::user()->hasRole('StoreManager')) 
+                            <a class="btn btn-sm btn-primary m-b-10 hidden-print" href = "/store/suppliers/add/new" title="Click here to add new supplier"><i class="fa fa-plus"></i>  Add Supplier</a>
+                            @endif    
                         </div> 
                          
                              

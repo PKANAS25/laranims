@@ -51,11 +51,7 @@ session(['subtitle' => 'nonReceived']); ?>
                                     @endif
                                 </div>    
 
-                                 <div><a class="btn btn-sm btn-warning" href="/store/students/nonreceived/waiting">Not Received</a>
-                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                     <a class="btn btn-sm  btn-success" href="/store/students/nonreceived/track">Receive Letter Issued</a>
-                                </div>
-
+                                
 
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
@@ -129,7 +125,9 @@ session(['subtitle' => 'nonReceived']); ?>
                                 @endif
                                 </tbody>
                             </table>
-
+                                    <a class="btn btn-sm btn-warning" href="/store/students/nonreceived/waiting">Not Received</a>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;
+                                     <a class="btn btn-sm  btn-success" href="/store/students/nonreceived/track">Receive Letter Issued</a>
                               
                         </div> 
                          

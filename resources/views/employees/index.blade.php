@@ -1,20 +1,20 @@
 @extends('master') 
  
-<?php session(['title' => 'Store']);
-session(['subtitle' => 'categories']); ?> 
+<?php session(['title' => 'Employees']);
+session(['subtitle' => 'employeeList']); ?> 
 
 @section('content') 
   
 <div id="content" class="content">
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right hidden-print">
-				<li><a href="javascript:;">Store</a></li>
-				<li class="active"><a href="javascript:;">Head</a></li>
+				<li><a href="javascript:;">Employees</a></li>
+				<li class="active"><a href="javascript:;">List</a></li>
 				 
 			</ol> 
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header hidden-print">Store <small> Categories</small></h1>
+			<h1 class="page-header hidden-print">Employees <small>List</small></h1>
 			<!-- end page-header -->
 			<!-- begin row -->
 			 <div class="col-md-12">
@@ -26,55 +26,65 @@ session(['subtitle' => 'categories']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">Categories</h4>
+                            <h4 class="panel-title">Employees</h4>
                         </div>
-                        
-                            
+                         
                         <div class="panel-body">
-                                
+                              
+                               
+                                 
                                 <div class="hidden-print">
-                                     
+                                     @if (count($errors) > 0)
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
                                     @if (session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   
                                         </div>
                                     @endif
                                 </div>    
-                        
+
 
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Category</th>
-                                        <th>Description</th>                                      
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Joining Date</th>
+                                        <th>Bonus Category</th>
+                                        <th>Work Time</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($categories as $index => $category)
+                                    @foreach($employees As $index => $employee)
                                     <tr>
                                         <td>{{$index+1}}</td>
-                                        <td>{{$category->category}}</td>
-                                        <td>{{$category->description}}</td> 
-                                        <td> @if(Auth::user()->hasRole('StoreManager'))
-                                            <a class="btn btn-inverse btn-xs m-r-5" title="Click here to edit this category" href="{!! action('StoreControllerExtra@editCategory', base64_encode($category->category_id)) !!}"><i class="fa fa-edit"></i></a>
-                                            @endif
-                                        </td>
+                                        <td>{{$employee->employee_id}}</td>
+                                        <td><a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}">{{$employee->fullname}}</a></td>
+                                        <td>{{$employee->joining_date}}</td>
+                                        <td>{{$employee->bonus_category}}</td>
+                                        <td>{{$employee->start_time}} to {{$employee->end_time}}</td>
+                                        <td></td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                                 
                             </table>
-                        @if(Auth::user()->hasRole('StoreManager'))         
-                        <a class="btn btn-sm btn-primary m-b-10 hidden-print" href = "/store/categories/add/new" title="Click here to add new category"><i class="fa fa-plus"></i>  Add Category</a>   
-                        @endif  
+
                                
                         </div> 
                          
                              
                              
-                            
+                             </form>
                          
                     
                     <!-- end panel --> 

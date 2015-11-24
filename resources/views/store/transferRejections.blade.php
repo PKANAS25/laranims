@@ -53,10 +53,7 @@ session(['subtitle' => 'rejections']); ?>
                                     @endif
                                 </div>    
                                 
-                                <div><a class="btn btn-sm btn-warning" href="/store/main/rejections/unread">Rejections Unseen</a>
-                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                     <a class="btn btn-sm  btn-success" href="/store/main/rejections/read">Rejections Seen</a>
-                                </div>
+                                
 
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
@@ -107,7 +104,9 @@ session(['subtitle' => 'rejections']); ?>
                                 </tbody>
                             </table>
 
-                               
+                               <a class="btn btn-sm btn-warning" href="/store/main/rejections/unread">Rejections Unseen</a>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;
+                                     <a class="btn btn-sm  btn-success" href="/store/main/rejections/read">Rejections Seen</a>
                         </div> 
                           
                          

@@ -32,10 +32,7 @@ session(['subtitle' => 'unassigned']); ?>
                         <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="panel-body">
-                              <div class="hidden-print">
-                                <span class="text-success">Showing {{$viewer}} </span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="/refunds/tickets/unassigned">Show Unassigned</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-success" href="/refunds/tickets/assigned">Show Assigned</a><hr><br/></div>
+                               
                                @if (session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   
@@ -146,7 +143,10 @@ session(['subtitle' => 'unassigned']); ?>
                                 </tfoot>
                                 
                             </table>
-                            @endif                           
+                            @endif  
+                            <span class="text-success">Showing {{$viewer}} </span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="/refunds/tickets/unassigned">Show Unassigned</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-success" href="/refunds/tickets/assigned">Show Assigned</a>                         
                         </div>  
 
                              </form>

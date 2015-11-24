@@ -224,6 +224,14 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/ReceiveLetter/{trackId}', ['middleware' => 'StoreAnyRole','uses'=>'StoreControllerExtra@ReceiveLetter']);
 
     Route::get('/store/receipts/exchanged/items', ['middleware' => 'StoreAnyRole','uses'=>'StoreControllerExtra@exchangedItems']);
+
+//--------------------------------------------------------EmployeesController------------------------------------------ 
+    
+    Route::get('/employees/branch', 'EmployeesController@index'); 
+    Route::get('/employees/{employeeId}/profile','EmployeesController@profile');
+
+    Route::get('/employees/add/new', ['middleware' => 'HRAdmin','uses'=>'EmployeesController@add']);
+
 });
 
  

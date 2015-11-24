@@ -32,10 +32,7 @@ session(['subtitle' => 'feedbacksPending']); ?>
                         <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="panel-body">
-                              <div class="hidden-print">
-                                <span class="text-success">Showing {{$viewer}} </span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="/refunds/agents/tickets/noreview">Show not reviewed</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-success" href="/refunds/agents/tickets/reviewed">Show reviewed</a><hr><br/></div>
+                              
                                @if (session('status'))
                                         <div class="alert alert-success">
                                             {{ session('status') }}   
@@ -123,7 +120,10 @@ session(['subtitle' => 'feedbacksPending']); ?>
                                 
                                 
                             </table>
-                            @endif                           
+                            @endif  
+                            <span class="text-success">Showing {{$viewer}} </span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="/refunds/agents/tickets/noreview">Show not reviewed</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-success" href="/refunds/agents/tickets/reviewed">Show reviewed</a>                         
                         </div>  
 
                              </form>

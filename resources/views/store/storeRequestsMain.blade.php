@@ -31,12 +31,7 @@ session(['subtitle' => 'storeRequestsMain']); ?>
                         
                         <div class="panel-body">
                               
-                               
-                                
-                                <div><a class="btn btn-sm btn-warning" href="/store/main/requests/unread">Requests Unseen</a>
-                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                     <a class="btn btn-sm  btn-success" href="/store/main/requests/read">Requests Seen</a>
-                                </div>
+                              
 
                               <table id="data-table" class="table table-striped table-bordered">
                                  <thead>
@@ -113,7 +108,9 @@ session(['subtitle' => 'storeRequestsMain']); ?>
                                  @endforeach
                                  </tbody>
                               </table>
-
+                                <a class="btn btn-sm btn-warning" href="/store/main/requests/unread">Requests Unseen</a>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;
+                                     <a class="btn btn-sm  btn-success" href="/store/main/requests/read">Requests Seen</a>
                         </div> 
                          
                              

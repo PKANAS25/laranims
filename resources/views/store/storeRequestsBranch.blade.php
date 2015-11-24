@@ -50,9 +50,7 @@ session(['subtitle' => 'storeRequests']); ?>
                                     @endif
                                 </div>    
 
-                         @if(Auth::user()->hasRole('BranchStore'))         
-                        <div ><a class="btn btn-primary btn-xs m-r-5" href = "{{action('StoreControllerExtra@addStoreRequest')}}" title="Click here to add new request"><i class="fa fa-plus"></i>  New Request</a> </div>   <br> 
-                        @endif  
+                        
                               <table id="data-table" class="table table-striped table-bordered">
                                  <thead>
                                     <tr>
@@ -111,7 +109,9 @@ session(['subtitle' => 'storeRequests']); ?>
                                  @endforeach
                                  </tbody>
                               </table>
-
+                                 @if(Auth::user()->hasRole('BranchStore'))         
+                         <a class="btn btn-primary btn-sm m-r-5" href = "{{action('StoreControllerExtra@addStoreRequest')}}" title="Click here to add new request"><i class="fa fa-plus"></i>  New Request</a>  
+                        @endif  
                         </div> 
                          
                              

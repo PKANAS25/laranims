@@ -41,5 +41,6 @@ class Kernel extends HttpKernel
         'StoreManager' =>\App\Http\Middleware\StoreManager::class,
         'BranchStore' =>\App\Http\Middleware\BranchStore::class,
         'StoreAnyRole' =>\App\Http\Middleware\StoreAnyRole::class,
+        'HRAdmin' =>\App\Http\Middleware\HRAdmin::class,
     ];
 }

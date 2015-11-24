@@ -53,14 +53,7 @@ session(['subtitle' => 'returns']); ?>
                                     @endif
                                 </div>    
                                 
-                                <div>
-                                    
-                                    <a class="btn btn-sm btn-warning" href="/store/main/returns/pending">Pending</a>
-                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                     <a class="btn btn-sm  btn-success" href="/store/main/returns/approved">Approved</a>
-                                      &nbsp;&nbsp;&nbsp;&nbsp;
-                                     <a class="btn btn-sm  btn-inverse" href="/store/main/returns/rejected">Rejected</a>
-                                </div>
+                                
                                 
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
@@ -149,7 +142,11 @@ session(['subtitle' => 'returns']); ?>
                                 </tbody>
                             </table>
 
-                               
+                               <a class="btn btn-sm btn-warning" href="/store/main/returns/pending">Pending</a>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;
+                                     <a class="btn btn-sm  btn-success" href="/store/main/returns/approved">Approved</a>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;
+                                     <a class="btn btn-sm  btn-inverse" href="/store/main/returns/rejected">Rejected</a>
                         </div> 
                           
                          

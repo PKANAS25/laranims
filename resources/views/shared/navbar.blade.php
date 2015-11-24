@@ -61,7 +61,8 @@
                         </ul>
                     </li>
 
-<!-- *******************************************************************Store********************************************************************* -->                    @if(Auth::user()->hasRole('BranchStore') || Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))                    
+<!-- *******************************************************************Store********************************************************************* -->                    
+                    @if(Auth::user()->hasRole('BranchStore') || Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))                    
                     <li class="has-sub @if(session('title') == 'Store')   active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
@@ -149,14 +150,17 @@
                     @endif
 
 <!-- **********************************************************Employees****************************************************************************** -->                    
-                    <li class="has-sub">
+                    <li class="has-sub @if(session('title') == 'Employees')   active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="ion-person-add"></i> 
                             <span>Employees</span>
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="#" >Employee List</a></li>
+                            <li class="@if(session('subtitle') == 'employeeList') active @endif"><a href="/employees/branch">Employee List</a></li>
+                            @if(Auth::user()->hasRole('HRAdmin') )
+                            <li class="@if(session('subtitle') == 'employeeList') active @endif"><a href="/employees/branch">Add Employee</a></li>
+                            @endif
                             <li><a href="#" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             <li><a href="#" >Bonus Hold</a></li>
                             <li><a href="#" >Attendance Report</a></li>

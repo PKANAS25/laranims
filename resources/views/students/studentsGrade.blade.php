@@ -61,11 +61,7 @@ session(['subtitle' => 'grades']); ?>
                         <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="panel-body">
-                             <div class="hidden-print">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-info" href="{!! action('GradesController@students', array($classId,'active')) !!}">Show Active</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-warning" href="{!! action('GradesController@students', array($classId,'all')) !!}">Show All</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-sm btn-inverse" href="{!! action('GradesController@students', array($classId,'deleted')) !!}">Show Deleted</a><hr><br/></div>
-                               
+                            
                                 <div class="invoice-header onlyprintCenter">
                                     <div class="invoice-from" >
                                          
@@ -205,7 +201,14 @@ session(['subtitle' => 'grades']); ?>
                                 
                             </table>
 
-                              <a href="javascript:;" onclick="window.print()" class="btn btn-sm btn-success m-b-10 hidden-print"><i class="fa fa-print m-r-5"></i> Print</a>
+                              
+                                <a class="btn btn-sm btn-info m-b-10 hidden-print" href="{!! action('GradesController@students', array($classId,'active')) !!}">Show Active</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a class="btn btn-sm btn-warning m-b-10 hidden-print" href="{!! action('GradesController@students', array($classId,'all')) !!}">Show All</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a class="btn btn-sm btn-inverse m-b-10 hidden-print" href="{!! action('GradesController@students', array($classId,'deleted')) !!}">Show Deleted</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="javascript:;" onclick="window.print()" class="btn btn-sm btn-success m-b-10 hidden-print"><i class="fa fa-print m-r-5"></i> Print</a>
                         </div> 
                         <div class="panel-body hidden-print">
                              @if($filter!='deleted')
