@@ -12,11 +12,18 @@ use Auth;
 use Carbon\Carbon;
 
 use App\Employee; 
-use App\Branch; 
+use App\Branch;
+use App\EmployeesSalary; 
+use App\Nationality; 
+
 
 use File;
 use Image;
 use Validator;
+
+use Mail;
+
+use App\Http\Requests\EmployeeAddRequest;
 
 class EmployeesController extends Controller
 {
@@ -51,12 +58,127 @@ class EmployeesController extends Controller
         if (File::exists(base_path().'/public/uploads/employee_pics/'.$employeeId.'.jpg'))
             $profile_pic = '/uploads/employee_pics/'.$employeeId.'.jpg' ;
 
-          else
+        else
           $profile_pic = '/uploads/student_pics/no_image.jpg';  
           
+        $assestsAssigned = DB::table('asset_assigns')->where('staff_id',$employeeId)->where('deleted',0)->count();
+         
+        $salary = EmployeesSalary::select('employees_salary.*','branches.name AS wps')
+                                ->leftjoin('branches','employees_salary.labour_card_under','=','branches.id')
+                                ->where('employee_id',$employeeId)
+                                ->first();
 
-        return view('employees.profile',compact('employee','profile_pic','age'));                  
+        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary'));                  
     }
+//----------------------------------------------------------------------------------------------------------------------------------------
+    public function add()
+    {
+        $nations = Nationality::orderBy('nationality')->get();
+        $religions = DB::table('religion')->orderBy('religion')->get();
+        $branches = Branch::orderBy('name')->get();
+        $specialisations = DB::table('specializations')->get(); 
+
+         return view('employees.addEmployee',compact('nations','religions','branches','specialisations'));
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------   
+     public function employeeAddCheck(Request $request)
+    {
+        $fname = $request->get('fname'); 
+        $mname = $request->get('mname');
+        $lname = $request->get('lname');
+
+        $fullname = $fname." ".$mname." ".$lname;
+
+        $count = Employee::whereRAW("fullname LIKE '%".$fullname."%'")->count();
+            
+
+        if($count)
+        return response()->json(['valid' => 'true', 'message' => 'Name exists in the database. Make sure you are not repeating','available'=>'false']);
+
+        else
+        return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------     
+    public function save(EmployeeAddRequest $request)
+    {
+         $fullname = ucwords(strtolower($request->fname." ".$request->mname." ".$request->lname));
+
+       
+         $employee = new Employee(array( 
+                                'fullname'=>$fullname,
+                                'bonus_category'=>$request->bonus_category,
+                                'designation'=>$request->designation,
+                                'designation_mol'=>$request->designation_mol,
+                                'visa_under'=>$request->visa_under,
+                                'working_under'=>$request->working_under,
+                                'qualification'=>$request->qualification,
+                                'specialization'=>$request->specialization,
+                                'joining_date'=>$request->joining_date,
+                                'start_time'=>$request->start_time,
+                                'end_time'=>$request->end_time,
+                                'passport_no'=>$request->passport_no,
+                                'passport_expiry'=>$request->passport_expiry,
+                                'person_code'=>$request->person_code,
+                                'labour_card_no'=>$request->labour_card_no,
+                                'labour_card_expiry'=>$request->labour_card_expiry,
+                                'visa_issue'=>$request->visa_issue,
+                                'visa_expiry'=>$request->visa_expiry,
+                                'gender'=>$request->gender,
+                                'date_of_birth'=>$request->dob,
+                                'nationality'=>$request->nationality,
+                                'religion'=>$request->religion,
+                                'mobile'=>$request->mobile,
+                                'email'=>$request->email,
+                                'personal_email'=>$request->personal_email, 
+                               ));
+            
+            $employee->save();
+            $employeeId = $employee->employee_id; 
+
+            
+            
+            
+            $date_time = date('Y-m-d H:i');
+            
+            
+             
+            //pasport expiry
+            DB::table('staff_docs_details')->insert(['emp_id' => $employeeId,'doc_id' => 1,'expiry_date' => $request->passport_expiry]); 
+
+            //visa expiry
+            DB::table('staff_docs_details')->insert(['emp_id' => $employeeId,'doc_id' => 2,'expiry_date' => $request->visa_expiry]); 
+
+            //labour card expiry
+            DB::table('staff_docs_details')->insert(['emp_id' => $employeeId,'doc_id' => 14,'expiry_date' => $request->labour_card_expiry]);  
+           
+            //history 
+            $action = "Added by ";  
+            DB::table('employees_changes')->insert(['employee_id' => $employeeId,'changer_id' => Auth::id(),'action' => $action,'date_time' => Carbon::now()]);   
+            
+            //mailing list 
+            $mailingList = DB::table('hr_mailing_lists')->where('action',1)->get();
+            $emails = array_pluck($mailingList, 'mail'); 
+            
+              $subject = "Employee Add Notification - ".Auth::user()->branch_name;
+
+              $body = "General details of the employee\n\nEmployee ID: ".$employeeId."\nName: ".$fullname."\nPosition: ".$request->bonus_category.
+                      "\nJoining Date: ".$request->joining_date."\nWorking Hours: ".$request->start_time." to ".$request->end_time."\n\n--Added by: ".Auth::user()->name; 
+             
+            Mail::queue([], [], function ($message) use($subject,$emails,$body) 
+            {
+               $message->from('anas.acmg@gmail.com', 'Al Dana NMS');
+               $message->to($emails);
+               $message->subject($subject);
+               $message->setBody($body);
+            });
+
+            if($request->file('fileToUpload') && $employeeId)
+            {
+             $imageName = $employeeId.'.jpg';  
+             Image::make($request->file('fileToUpload'))->save(base_path().'/public/uploads/employee_pics/'.$imageName); 
+            } 
+
+           return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'New Employee added!');
+    } 
 //----------------------------------------------------------------------------------------------------------------------------------------    
-   
 }

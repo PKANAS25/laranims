@@ -74,9 +74,9 @@ session(['subtitle' => '']); ?>
                                         <tr>
                                             <th></th>
                                             <th>
-                                                <h4>{{$employee->fullname}}
+                                                <h4>{{$employee->fullname}} @if($employee->gender=='f') <i class="fa fa-female"></i> @else <i class="fa fa-female"></i> @endif
                                                 <small>{{$employee->designation}} - <span class="@if($employee->deleted==0) text-success @elseif($employee->deleted==1) text-inverse @elseif($employee->deleted==2) text-danger @elseif($employee->deleted==3) text-warning  @endif"><strong>{{$employee->status}}</strong> 
-                                                @if($employee->gender=='f') <i class="fa fa-female"></i> @else <i class="fa fa-female"></i> @endif</span>
+                                                </span>
                                                 </small>
                                                 </h4>
                                             </th>
@@ -166,64 +166,135 @@ session(['subtitle' => '']); ?>
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#default-tab-1" data-toggle="tab"><i class="fa fa-flag"></i> Actions</a></li>
                         <li class=""><a href="#default-tab-2" data-toggle="tab"><i class="fa fa-money"></i> Salary</a></li>
-                        <li class=""><a href="#default-tab-3" data-toggle="tab"><i class="fa fa-child"></i> Attendance</a></li> 
-                        <li class=""><a href="#default-tab-4" data-toggle="tab"><i class="fa fa-phone"></i> Documents</a></li>
-                        <li class=""><a href="#default-tab-5" data-toggle="tab"><i class="fa fa-phone"></i> Forms</a></li>
+                        <li class=""><a href="#default-tab-3" data-toggle="tab"><i class="fa fa-bars"></i> Attendance</a></li> 
+                        <li class=""><a href="#default-tab-4" data-toggle="tab"><i class="fa fa-file"></i> Documents</a></li>
+                        <li class=""><a href="#default-tab-5" data-toggle="tab"><i class="fa fa-file-text-o"></i> Forms</a></li>
                     </ul>
                     <div class="tab-content">
                         
     <!----------------------------------------------------Actions------------------------------------------------------------------------------- -->       
                         <div class="tab-pane fade active in" id="default-tab-1">
-                        <table class="table">
-                            <tr>
-                                <td width="50%"><a href="#" class="btn btn-warning btn-sm">Resignation</a></td>
-                                <td><a href="#" class="btn btn-warning btn-sm">Add Bonus</a></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                            
+                        <div class="panel-body">
+                        
+                        
+                                <div class="panel panel-inverse" data-sortable-id="table-basic-1">
+                               
+                                    <div class="panel-body">
+                                        <table class="table">
+                                             
+                                            <tbody> 
+                                                <tr>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif class="btn btn-info btn-block btn-sm">Add Bonus</a>
+                                                    </td>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif class="btn btn-danger btn-block btn-sm">Add Deduction</a>
+                                                    </td>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif  class="btn btn-inverse btn-block btn-sm">Personal Loans</a>
+                                                    </td>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif  class="btn btn-warning btn-block btn-sm">Vacation</a>
+                                                    </td>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif  class="btn btn-primary btn-block btn-sm">Sick Leave</a> 
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif  class="btn btn-primary btn-block btn-sm">Maternity Leave</a>
+                                                    </td>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted!=1) href="#" @endif class="btn btn-warning btn-block btn-sm">Absent Correction</a>
+                                                    </td>
+                                                    <td>
+                                                    <a  @if(Auth::user()->hasRole('ProPayments') && $employee->deleted!=1) href="#" @endif class="btn btn-success btn-block btn-sm">Pro payments</a>
+                                                    </td>
+                                                    <td>
+                                                    <a  @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif class="btn btn-default btn-block btn-sm">Personal Benefits</a>
+                                                    </td>
+                                                    <td>
+                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="#" @endif class="btn btn-default btn-block btn-sm">Overtime</a> 
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                    <a href="#" class="btn btn-warning btn-block btn-sm">Resignation</a>
+                                                    </td>
+                                                    <td>
+                                                    <a href="#" class="btn btn-danger btn-block btn-sm">Termination</a>
+                                                    </td>
+                                                    <td>
+                                                    <a href="#" class="btn btn-info btn-block btn-sm">Transfer</a>
+                                                    </td>
+                                                    <td>
+                                                    <a href="#" class="btn btn-inverse btn-block btn-sm">Delete</a>
+                                                    </td>
+                                                    <td>
+                                                    <a href="#" class="btn btn-success btn-block btn-sm">View Payroll</a> 
+                                                    </td>
+                                                </tr>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> 
+                        
+                           
+
+                        </div>
                         </div>
                       
       <!----------------------------------------------------Salary------------------------------------------------------------------------------- -->                
                       
                         <div class="tab-pane fade" id="default-tab-2">
                         
-                       BBBBB
+                       @if($salary)
+                       <table class="table table-profile table-striped ">
+                           <tr>
+                               <td class="field">Basic</td>
+                               <td>{{$salary->basic}}</td>
+                           </tr>
+                           <tr>
+                               <td class="field">Accomodation</td>
+                               <td>{{$salary->accomodation}}</td>
+                           </tr>
+                           <tr>
+                               <td class="field">Transportation</td>
+                               <td>{{$salary->travel}}</td>
+                           </tr>
+                           <tr>
+                               <td class="field">Other</td>
+                               <td>{{$salary->other}}</td>
+                           </tr>
+                           <tr>
+                               <td class="field">Total</td>
+                               <td><strong>{{ $salary->basic + $salary->accomodation + $salary->travel + $salary->other }}</strong></td>
+                           </tr>
+                           <tr>
+                               <td class="field">WPS</td>
+                               <td>{{$salary->wps}}</td>
+                           </tr>
+                           <tr>
+                               <td class="field">Iban</td>
+                               <td>{{$salary->iban}}</td>
+                           </tr>
+                           <tr>
+                               <td class="field">Documents</td>
+                               <td></td>
+                           </tr>
+                           <tr>
+                               <td class="field"></td>
+                               <td>
+                               <a @if(Auth::user()->hasRole('SalaryEdit') && $employee->deleted==0) href="#" @endif class="btn btn-inverse btn-sm">
+                               <i class="fa fa-edit"></i> Edit</a>
+                               </td>
+                           </tr>
+                       </table>
+                       @else
+                       <a @if(Auth::user()->hasRole('SalaryEdit') && $employee->deleted==0) href="#" @endif class="btn btn-inverse btn-sm">
+                               <i class="fa fa-plus"></i> Add Salary Details</a>
+                       @endif
                             
                         </div>
                         

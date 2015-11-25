@@ -159,7 +159,7 @@
                         <ul class="sub-menu">
                             <li class="@if(session('subtitle') == 'employeeList') active @endif"><a href="/employees/branch">Employee List</a></li>
                             @if(Auth::user()->hasRole('HRAdmin') )
-                            <li class="@if(session('subtitle') == 'employeeList') active @endif"><a href="/employees/branch">Add Employee</a></li>
+                            <li class="@if(session('subtitle') == 'addEmp') active @endif"><a href="/employees/add/new">Add Employee</a></li>
                             @endif
                             <li><a href="#" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             <li><a href="#" >Bonus Hold</a></li>
