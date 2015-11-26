@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class EmployeeAddRequest extends Request
+class EmployeeEditRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class EmployeeAddRequest extends Request
     public function rules()
     {
         return [
-            'fname'=>'required',
-            'lname'=>'required',
+            'fullname'=>'required',
             'designation'=>'required',
             'designation_mol'=>'required',
             'bonus_category'=>'required',
@@ -44,7 +43,7 @@ class EmployeeAddRequest extends Request
             'visa_issue'=>'required|date_format:Y-m-d',
             'visa_expiry'=>'required|date_format:Y-m-d',
             'gender'=>'required',
-            'dob'=>'required',
+            'date_of_birth'=>'required',
             'nationality'=>'required',
             'religion'=>'required',
             'mobile'=>'required',

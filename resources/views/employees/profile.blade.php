@@ -34,32 +34,56 @@ session(['subtitle' => '']); ?>
                         <div class="profile-highlight">
                             
                         <div class="m-b-10">
-                            <a href="#" class="btn btn-primary btn-block btn-sm">  ID: <strong>{{$employee->employee_id}}</strong></a>
+                            <a class="btn btn-primary btn-block btn-sm">  ID: <strong>{{$employee->employee_id}}</strong></a>
                         </div>
                         </div> 
 
                         <div class="profile-highlight"  >
                         <div class="m-b-10">
-                            <a href="#" class="btn btn-success btn-block btn-sm">Timings : <strong>{{$employee->start_time}} to {{$employee->end_time}}</strong></a>
-                        </div>
-                            
-                        <div class="m-b-10">
-                            <a href="#" class="btn btn-info btn-block btn-sm">Assign Special Working Days</a>
+                            <a class="btn btn-success btn-block btn-sm">Timings : <strong>{{$employee->start_time}} to {{$employee->end_time}}</strong></a>
                         </div>
 
                         <div class="m-b-10">
-                            <a href="#" class="btn btn-danger btn-block btn-sm">Biometric @if($employee->biometric)<i class="fa fa-check-circle"></i> @else <i class="fa fa-times-circle"></i> @endif </a>
+                            <a class="btn btn-danger btn-block btn-sm">Biometric @if($employee->biometric)<i class="fa fa-check-circle"></i> @else <i class="fa fa-times-circle"></i> @endif </a>
+                        </div>
+
+                        <div class="m-b-10">
+                            <a href="#modal-dialog-history"  data-toggle="modal"  class="btn btn-warning btn-block btn-sm">History</a>
                         </div>
                             
                         <div class="m-b-10">
-                            <a href="#" class="btn btn-warning btn-block btn-sm">History</a>
-                        </div>
+                            <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="{{action('EmployeesController@specialDays',base64_encode($employee->employee_id))}}" @endif class="btn btn-info btn-block btn-sm">Assign Special Working Days</a>
+                        </div> 
+                            
+                        
+
                         
                         <div class="m-b-10">
-                            <a href="#" class="btn btn-inverse btn-block btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                            <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="{{action('EmployeesController@edit',base64_encode($employee->employee_id))}}" @endif  class="btn btn-inverse btn-block btn-sm"><i class="fa fa-edit"></i> Edit</a>
                         </div>     
                             
                         </div>
+
+                        <div class="modal fade" id="modal-dialog-history">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            <h4 class="modal-title">Employee edit history</h4>
+                                        </div> 
+                                        <div class="modal-body" align="center">
+                                            <table class="table table-striped">
+                                            @foreach($history as $index => $action)
+                                            <tr>
+                                                <td>{{$index+1}}. {{$action->action.$action->name}} on {{$action->date_time->format('Y-M-d')}} at {{$action->date_time->format('h:i:s:a')}}</td>
+                                            </tr>
+                                            @endforeach    
+                                            </table>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div> 
                         <!-- end profile-highlight -->
                     </div>
                     <!-- end profile-left -->
@@ -69,12 +93,28 @@ session(['subtitle' => '']); ?>
                         <div class="profile-info">
                             <!-- begin table -->
                             <div class="table-responsive">
+                             <div class="hidden-print">
+                                     @if (count($errors) > 0)
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
+                                    @if (session('status'))
+                                        <div class="alert alert-success">
+                                            {{ session('status') }}   
+                                        </div>
+                                    @endif
+                                </div>    
                                 <table class="table table-profile table-striped ">
                                     <thead>
                                         <tr>
                                             <th></th>
                                             <th>
-                                                <h4>{{$employee->fullname}} @if($employee->gender=='f') <i class="fa fa-female"></i> @else <i class="fa fa-female"></i> @endif
+                                                <h4>{{$employee->fullname}} @if($employee->gender=='f') <i class="fa fa-female"></i> @else <i class="fa fa-male"></i> @endif
                                                 <small>{{$employee->designation}} - <span class="@if($employee->deleted==0) text-success @elseif($employee->deleted==1) text-inverse @elseif($employee->deleted==2) text-danger @elseif($employee->deleted==3) text-warning  @endif"><strong>{{$employee->status}}</strong> 
                                                 </span>
                                                 </small>
@@ -284,15 +324,19 @@ session(['subtitle' => '']); ?>
                                <td></td>
                            </tr>
                            <tr>
+                               <td class="field">Last edit remarks</td>
+                               <td>{{$salary->edit_reason}}</td>
+                           </tr>
+                           <tr>
                                <td class="field"></td>
                                <td>
-                               <a @if(Auth::user()->hasRole('SalaryEdit') && $employee->deleted==0) href="#" @endif class="btn btn-inverse btn-sm">
+                               <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) href="#" @endif class="btn btn-inverse btn-sm">
                                <i class="fa fa-edit"></i> Edit</a>
                                </td>
                            </tr>
                        </table>
                        @else
-                       <a @if(Auth::user()->hasRole('SalaryEdit') && $employee->deleted==0) href="#" @endif class="btn btn-inverse btn-sm">
+                       <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) href="{{action('EmployeesController@addSalary',base64_encode($employee->employee_id))}}" @endif class="btn btn-inverse btn-sm">
                                <i class="fa fa-plus"></i> Add Salary Details</a>
                        @endif
                             

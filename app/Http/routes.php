@@ -234,6 +234,14 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/employees/add/new', ['middleware' => 'HRAdmin','uses'=>'EmployeesController@save']);
     Route::get('/employeeAddCheck', 'EmployeesController@employeeAddCheck');
 
+    Route::get('/employees/{employeeId}/edit', ['middleware' => 'HRAdmin','uses'=>'EmployeesController@edit']);
+    Route::post('/employees/{employeeId}/edit', ['middleware' => 'HRAdmin','uses'=>'EmployeesController@editSave']);
+    Route::get('/employeeEditCheck', 'EmployeesController@employeeEditCheck');
+
+    Route::get('/employees/{employeeId}/special/workings', ['middleware' => 'HRAdmin','uses'=>'EmployeesController@specialDays']);
+    Route::post('/employees/{employeeId}/special/workings', ['middleware' => 'HRAdmin','uses'=>'EmployeesController@specialDaysSave']);
+
+    Route::get('/employees/{employeeId}/salary/add', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@addSalary']);
 });
 
  

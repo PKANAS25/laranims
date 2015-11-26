@@ -2,7 +2,7 @@
 
 @section('urlTitles')
 <?php session(['title' => 'Employees']);
-session(['subtitle' => 'addEmp']); ?>
+session(['subtitle' => '']); ?>
 @endsection
 
 
@@ -12,12 +12,12 @@ session(['subtitle' => 'addEmp']); ?>
             <!-- begin breadcrumb -->
             <ol class="breadcrumb pull-right">
                 <li><a href="javascript:;">Employee</a></li>
-                <li class="active"><a href="javascript:;">Add</a></li>
+                <li class="active"><a href="javascript:;">Edit</a></li>
                  
             </ol> 
             <!-- end breadcrumb -->
             <!-- begin page-header -->
-            <h1 class="page-header">Add <small> new Employee</small></h1>
+            <h1 class="page-header">Edit <small>  Employee</small></h1>
             <!-- end page-header -->
             <!-- begin row -->
              <div class="col-md-12">
@@ -29,7 +29,7 @@ session(['subtitle' => 'addEmp']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">Add</h4>
+                            <h4 class="panel-title">{{$employee->fullname}}</h4>
                         </div>
                         <div class="panel-body">
 
@@ -47,23 +47,11 @@ session(['subtitle' => 'addEmp']); ?>
                                 <fieldset>
                                     
                                      
-                                <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4">Fullname :</label>
-
-                                    <div class="form-inline">
-
-                                     <div class="form-group m-r-10">
-                                         &nbsp;&nbsp;
-                                     <input class="form-control" type="text" id="fname" name="fname" data-fv-notempty="true" value="{{ old('fname') }}" placeholder="First name" />
-                                     </div>
-                                         
-                                     <div class="form-group m-r-10">
-                                         <input class="form-control" type="text" id="mname" name="mname"  value="{{ old('mname') }}" placeholder="Middle name" />
-                                     </div>
-
-                                     <div class="form-group m-r-10">
-                                       <input class="form-control" type="text" id="lname" name="lname" data-fv-notempty="true" data-fv-remote="true" value="{{ old('lname') }}" placeholder="Last name" />
-                                     </div> 
+                               
+                                 <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="fullname">Fullname :</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control" type="text" id="fullname"   name="fullname" data-fv-notempty="true"   value="{{$employee->fullname}}" />
                                     </div>
                                 </div>
 
@@ -72,7 +60,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control" id="select-required" name="designation" data-fv-notempty="true">
                                             
-                                            <option value="">Select</option>
+                                            <option value="{{$employee->designation}}">{{$employee->designation}}</option>
                                             <optgroup label="Nursery">
                                             <option value="Teacher">Teacher</option>
                                             <option value="Asst. Teacher">Asst. Teacher</option>
@@ -127,7 +115,7 @@ session(['subtitle' => 'addEmp']); ?>
                                  <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="designation_mol">Position in MOL :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="designation_mol"   name="designation_mol" data-fv-notempty="true"   value="{{ old('designation_mol') }}" />
+                                        <input class="form-control" type="text" id="designation_mol"   name="designation_mol" data-fv-notempty="true"   value="{{$employee->designation_mol}}" />
                                     </div>
                                 </div>
 
@@ -135,7 +123,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4">Bonus Category :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="bonus_category" data-fv-notempty="true">
-                                            <option value="">Please choose</option>
+                                            <option value="{{$employee->bonus_category}}">{{$employee->bonus_category}}</option>
                                             <option value="Teacher">Teacher</option>
                                             <option value="Principal">Principal</option>
                                             <option value="Cleaner">Cleaner</option>
@@ -148,7 +136,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4">Visa Under :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="visa_under" data-fv-notempty="true">
-                                            <option value="">Please choose</option>
+                                            <option value="{{$employee->visa_under}}">{{$employee->visa_in}}</option>
                                             <option value="-1">Under Process</option>
                                             <option value="-2">Spouse</option>
                                             <option value="-3">Guardian</option>
@@ -163,7 +151,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4">Working for :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="working_under" data-fv-notempty="true">
-                                            <option value="{{Auth::user()->branch}}">{{Auth::user()->branch_name}}</option> 
+                                            <option value="{{$employee->working_under}}">{{$employee->working_for}}</option> 
                                         </select>
                                     </div>
                                 </div>
@@ -172,7 +160,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4" for="address">Qualification :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="qualification" data-fv-notempty="true">
-                                            <option value="">Please Choose</option>
+                                            <option value="{{$employee->qualification}}">{{$employee->qualification}}</option>
                                             <option value="None">None</option>
                                             <option value="High school or equivalent">High school or equivalent</option>
                                             <option value="Diploma">Diploma</option>
@@ -187,7 +175,7 @@ session(['subtitle' => 'addEmp']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="specialization">Specialisation :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input list="specialisations" class="form-control" type="text" id="specialization"   name="specialization" data-fv-notempty="true"   value="{{ old('specialization') }}" />
+                                        <input list="specialisations" class="form-control" type="text" id="specialization"   name="specialization" data-fv-notempty="true"   value="{{$employee->specialization}}" />
                                         <datalist id="specialisations">
                                          @foreach($specialisations AS $specialisation)
                                          <option value="{{$specialisation->specialization}}" ></option>
@@ -199,7 +187,7 @@ session(['subtitle' => 'addEmp']); ?>
                                  <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="joining_date">Joining Date :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="joining_date"  name="joining_date" data-fv-notempty="true"   value="{{ old('joining_date') }}" />
+                                        <input class="form-control" type="text" id="joining_date"  name="joining_date" data-fv-notempty="true"   value="{{$employee->joining_date}}" />
                                     </div>
                                 </div>
 
@@ -209,15 +197,33 @@ session(['subtitle' => 'addEmp']); ?>
                                      <div class="form-inline">
 
                                          <div class="form-group m-r-10 ">
-                                             &nbsp;&nbsp;<input class="form-control" type="text" id="start_time" name="start_time" data-fv-notempty="true"  value="7:30" />
+                                             &nbsp;&nbsp;<input class="form-control" type="text" id="start_time" name="start_time" data-fv-notempty="true"  value="{{$employee->start_time}}" @if(!Auth::user()->hasRole('AttendanceManager')) readOnly @endif />
                                          </div>
                                          
                                          <div class="form-group m-r-10">
-                                                <input class="form-control" type="text" name="end_time" data-fv-notempty="true" value="14:30" />
+                                                <input class="form-control" type="text" name="end_time" data-fv-notempty="true" value="{{$employee->end_time}}" @if(!Auth::user()->hasRole('AttendanceManager')) readOnly @endif />
                                          </div> 
                                     </div>
-
                                 </div>
+                                    <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4">Biometric :</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="radio-inline">
+                                            <label>
+                                                <input type="radio" name="biometric" value="1" id="radio-required" data-fv-notempty="true" 
+                                                @if($employee->biometric=='1') checked @endif /> Yes
+                                        </div>
+
+                                        <div class="radio-inline">
+                                            <label>
+                                                <input type="radio" name="biometric" id="radio-required2" value="0" 
+                                                @if($employee->biometric=='0') checked @endif /> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
 
 
                                 
@@ -228,28 +234,29 @@ session(['subtitle' => 'addEmp']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="passport_no">Passport No. :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="passport_no" name="passport_no"  data-fv-notempty="true" value="{{ old('passport_no') }}" />
+                                        <input class="form-control" type="text" id="passport_no" name="passport_no"  data-fv-notempty="true" value="{{$employee->passport_no}}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="passport_expiry">Passport Expiry :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="passport_expiry" name="passport_expiry"   data-fv-notempty="true" value="{{ old('passport_expiry') }}" />
+                                        <input class="form-control" type="text" id="passport_expiry" name="passport_expiry"   data-fv-notempty="true" value="{{$employee->passport_expiry}}" />
                                     </div>
                                 </div>
 
                                <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="person_code">Person Code :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="person_code" name="person_code"   data-fv-notempty="true" value="{{ old('person_code') }}" />
+                                        <input class="form-control" type="text" id="person_code" name="person_code"   data-fv-notempty="true" value="{{$employee->person_code}}"
+                                        @if(!Auth::user()->hasRole('SalaryEdit')) readOnly @endif />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="labour_card_no">Labour card no. :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="labour_card_no" name="labour_card_no"   data-fv-notempty="true"   value="{{ old('labour_card_no') }}" />
+                                        <input class="form-control" type="text" id="labour_card_no" name="labour_card_no"   data-fv-notempty="true"   value="{{$employee->labour_card_no}}" />
                                     </div>
                                 </div>
 
@@ -258,21 +265,21 @@ session(['subtitle' => 'addEmp']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="labour_card_expiry">Labour Card Expiry :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="labour_card_expiry" name="labour_card_expiry"   data-fv-notempty="true" value="{{ old('labour_card_expiry') }}" />
+                                        <input class="form-control" type="text" id="labour_card_expiry" name="labour_card_expiry"   data-fv-notempty="true" value="{{$employee->labour_card_expiry}}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="visa_issue">Visa Issued On :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="visa_issue" name="visa_issue"   data-fv-notempty="true" value="{{ old('visa_issue') }}" />
+                                        <input class="form-control" type="text" id="visa_issue" name="visa_issue"   data-fv-notempty="true" value="{{$employee->visa_issue}}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="visa_expiry">Visa Expires on :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="visa_expiry" name="visa_expiry"   data-fv-notempty="true" value="{{ old('visa_expiry') }}" />
+                                        <input class="form-control" type="text" id="visa_expiry" name="visa_expiry"   data-fv-notempty="true" value="{{$employee->visa_expiry}}" />
                                     </div>
                                 </div>
 
@@ -286,20 +293,23 @@ session(['subtitle' => 'addEmp']); ?>
                                     <div class="col-md-6 col-sm-6">
                                         <div class="radio-inline">
                                             <label>
-                                                <input type="radio" name="gender" value="m" id="radio-required" data-fv-notempty="true" /> Male
+                                                <input type="radio" name="gender" value="m" id="radio-required" data-fv-notempty="true" 
+                                                @if($employee->gender=='m') checked @endif /> Male
                                         </div>
+
                                         <div class="radio-inline">
                                             <label>
-                                                <input type="radio" name="gender" id="radio-required2" value="f" /> Female
+                                                <input type="radio" name="gender" id="radio-required2" value="f" 
+                                                @if($employee->gender=='f') checked @endif /> Female
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
                                  <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="dob">Date of birth :</label>
+                                    <label class="control-label col-md-4 col-sm-4" for="date_of_birth">Date of birth :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="dob"   name="dob" data-fv-notempty="true"   value="{{ old('dob') }}" />
+                                        <input class="form-control" type="text" id="date_of_birth"   name="date_of_birth" data-fv-notempty="true"   value="{{$employee->date_of_birth}}" />
                                     </div>
                                 </div>
 
@@ -310,7 +320,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4">Nationality :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="nationality" data-fv-notempty="true">
-                                            <option value="">Please choose</option>
+                                            <option value="{{$employee->nationality}}">{{$employee->nation}}</option>
                                             @foreach($nations as $nation)
                                             <option value="{!! $nation->nation_id !!}">{!! $nation->nationality !!}</option>
                                             @endforeach
@@ -322,7 +332,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4">Religion :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="religion" data-fv-notempty="true">
-                                            <option value="">Please choose</option>
+                                            <option value="{{$employee->religion}}">{{$employee->rel}}</option>
                                             @foreach($religions as $religion)
                                             <option value="{!! $religion->religion_id !!}">{!! $religion->religion !!}</option>
                                             @endforeach
@@ -333,7 +343,7 @@ session(['subtitle' => 'addEmp']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="mobile">Mobile :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="mobile"  name="mobile" data-fv-notempty="true"   value="{{ old('mobile') }}" />
+                                        <input class="form-control" type="text" id="mobile"  name="mobile" data-fv-notempty="true"   value="{{$employee->mobile}}" />
                                     </div>
                                 </div>
 
@@ -341,7 +351,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4" for="email">Email :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <input class="form-control" type="text" id="email"   name="email" data-fv-notempty="true"  data-fv-emailaddress="true"
-                data-fv-emailaddress-message="The value is not a valid email address"  value="{{ old('email') }}" />
+                data-fv-emailaddress-message="The value is not a valid email address"  value="{{$employee->email}}" />
                                     </div>
                                 </div>
 
@@ -349,7 +359,7 @@ session(['subtitle' => 'addEmp']); ?>
                                     <label class="control-label col-md-4 col-sm-4" for="personal_email">Personal Email :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <input class="form-control" type="text" id="personal_email"   name="personal_email"    data-fv-emailaddress="true"
-                data-fv-emailaddress-message="The value is not a valid email address"  value="{{ old('personal_email') }}" />
+                data-fv-emailaddress-message="The value is not a valid email address"  value="{{$employee->personal_email}}" />
                                     </div>
                                 </div> 
 
@@ -358,6 +368,12 @@ session(['subtitle' => 'addEmp']); ?>
                                     <div class="col-md-6 col-sm-6">
                                         <input class="form-control" type="file"  accept="image/*"    data-fv-file="true"  data-fv-file-extension="jpeg,jpg"  data-fv-file-type="image/jpeg,image/jpg"  data-fv-file-maxsize="629760" data-fv-file-message="The selected file is not valid" id="fileToUpload" name="fileToUpload" /> <span class="text-info">Max size 500 Kb, JPG only</span>
                                     </div>
+                                    @if($profile_pic)
+                                        <div class="profile-image">
+                                        <img src="{{$profile_pic}}" />
+                                        <i class="fa fa-user hide"></i>
+                                        </div>
+                                    @endif
                                 </div> 
  
                                 <div class="form-group">
@@ -391,11 +407,11 @@ session(['subtitle' => 'addEmp']); ?>
         $(document).ready(function() {
             App.init(); 
 
-            $('#dob').datepicker({
+            $('#date_of_birth').datepicker({
                 format: "yyyy-mm-dd",
                 autoclose: true
             }).on('changeDate', function(e) { 
-            $('#eForm').formValidation('revalidateField', 'dob');
+            $('#eForm').formValidation('revalidateField', 'date_of_birth');
             });
 
             
@@ -453,19 +469,19 @@ session(['subtitle' => 'addEmp']); ?>
                         }
                     },
                  
-            lname: {
+            fullname: {
                      
+                     threshold: 5,
                      verbose: false,
                      
                      validators: {
                      
                      notEmpty: {},
                      remote: {
-                        url: '/employeeAddCheck' ,
+                        url: '/employeeEditCheck' ,
                         data: function(validator, $field, value) {
                             return {                                 
-                                fname: validator.getFieldElements('fname').val(),
-                                mname: validator.getFieldElements('mname').val()
+                                employeeId: {{$employee->employee_id}} 
                             };
                         }
 
@@ -483,7 +499,7 @@ session(['subtitle' => 'addEmp']); ?>
 
          
 
-        if (data.field === 'lname'
+        if (data.field === 'fullname'
             && data.validator === 'remote'
             && (data.result.available === false || data.result.available === 'false'))
         {
@@ -497,12 +513,12 @@ session(['subtitle' => 'addEmp']); ?>
                 .addClass('has-warning')
 
                 // Show message
-                .find('small[data-fv-validator="remote"][data-fv-for="lname"]')
+                .find('small[data-fv-validator="remote"][data-fv-for="fullname"]')
                     .show();
         }
 
 
-        if (data.field === 'lname'
+        if (data.field === 'fullname'
             && data.validator === 'remote'
             && (data.result.available === true || data.result.available === 'true'))
         {
@@ -516,7 +532,7 @@ session(['subtitle' => 'addEmp']); ?>
                 .addClass('has-success')
 
                 // Show message
-                .find('small[data-fv-validator="remote"][data-fv-for="lname"]')
+                .find('small[data-fv-validator="remote"][data-fv-for="fullname"]')
                     .show();
         }
 
@@ -528,7 +544,7 @@ session(['subtitle' => 'addEmp']); ?>
         // when the field doesn't pass any validator
          
 
-        if (data.field === 'lname') {
+        if (data.field === 'fullname') {
             data.element
                 .closest('.form-group')
                 .removeClass('has-warning')
