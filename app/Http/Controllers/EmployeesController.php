@@ -410,4 +410,98 @@ class EmployeesController extends Controller
         return view('employees.addSalary',compact('branches','employee'));  
     }     
 //----------------------------------------------------------------------------------------------------------------------------------------
+     public function saveSalary($employeeId,Request $request)
+    {
+        $employeeId = base64_decode($employeeId);
+
+        $this->validate($request, [
+        'labour_card_under' => 'required',
+        'basic' => 'required|numeric',
+        'accomodation' => 'required|numeric',
+        'travel' => 'required|numeric',
+        'other' => 'required|numeric',
+        'iban' => 'required',]); 
+
+        $salary = new EmployeesSalary(array( 
+                                'employee_id'=>$employeeId,
+                                'basic'=>$request->basic,
+                                'accomodation'=>$request->accomodation,
+                                'travel'=>$request->travel,
+                                'other'=>$request->other,
+                                'iban'=>$request->iban,
+                                'labour_card_under'=>$request->labour_card_under,
+                                'edit_reason' => "Adding First Time",
+                                ));
+        $salary->save();
+
+        $action = "Salary details added by ";  
+        DB::table('employees_changes')->insert(['employee_id' => $employeeId,'changer_id' => Auth::id(),'action' => $action,'date_time' => Carbon::now()]);  
+
+        return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Salary Details Added!');  
+    }     
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+    public function editSalary($employeeId)
+    {
+        $employeeId = base64_decode($employeeId);
+        $employee = Employee::select('fullname')->where('employee_id',$employeeId)->first();
+        $branches = Branch::orderBy('name')->get();
+        
+        $salary = EmployeesSalary::select('employees_salary.*','branches.name AS wps')
+                                ->leftjoin('branches','employees_salary.labour_card_under','=','branches.id')
+                                ->where('employee_id',$employeeId)
+                                ->first();
+
+       if($salary->labour_card_under==0)
+          $salary->wps = "No WPS";    
+
+       $salary->totalT =   $salary->basic+$salary->accomodation+$salary->travel+$salary->other;                   
+
+        return view('employees.editSalary',compact('branches','employee','salary'));  
+    }     
+//----------------------------------------------------------------------------------------------------------------------------------------
+     public function editSaveSalary($employeeId,Request $request)
+    {
+        $employeeId = base64_decode($employeeId);
+
+        $this->validate($request, [
+        'labour_card_under' => 'required',
+        'basic' => 'required|numeric',
+        'accomodation' => 'required|numeric',
+        'travel' => 'required|numeric',
+        'other' => 'required|numeric',
+        'iban' => 'required',
+        'edit_reason' => 'required',]); 
+
+        $salary = EmployeesSalary::where('employee_id',$employeeId)->first();
+
+        if($salary->basic != $request->basic || $salary->accomodation != $request->accomodation || $salary->travel != $request->travel || $salary->other != $request->other || $salary->iban != $request->iban)
+        { 
+            $salary->basic = $request->basic;
+            $salary->accomodation = $request->accomodation; 
+            $salary->travel = $request->travel; 
+            $salary->other = $request->other; 
+            $salary->iban = $request->iban;
+            $salary->edit_reason = $request->edit_reason;
+            $salary->verification1 = 0;
+            $salary->verification2 = 0;
+            $salary->verification3 = 0;
+
+            $salary->save();
+
+            $action = "Salary details changed by ";  
+            DB::table('employees_changes')->insert(['employee_id' => $employeeId,'changer_id' => Auth::id(),'action' => $action,'date_time' => Carbon::now()]);  
+
+            return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Salary Details Changed!'); 
+
+        }
+
+        else
+            return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'No edits made!');
+
+       
+         
+    }     
+//----------------------------------------------------------------------------------------------------------------------------------------
+
 }

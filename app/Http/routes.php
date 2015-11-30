@@ -242,6 +242,10 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/employees/{employeeId}/special/workings', ['middleware' => 'HRAdmin','uses'=>'EmployeesController@specialDaysSave']);
 
     Route::get('/employees/{employeeId}/salary/add', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@addSalary']);
+    Route::post('/employees/{employeeId}/salary/add', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@saveSalary']);
+
+     Route::get('/employees/{employeeId}/salary/edit', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@editSalary']);
+    Route::post('/employees/{employeeId}/salary/edit', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@editSaveSalary']);
 });
 
  

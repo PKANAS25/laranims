@@ -44,62 +44,67 @@ session(['subtitle' => '']); ?>
 
                                 <input type="hidden" name="_token" value="{!! csrf_token() !!}">
 
-                                <fieldset>
-                                    
+                                <fieldset> 
                                      
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4">Labour Card Under :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="labour_card_under" data-fv-notempty="true">
+                                                <option value="{{$salary->labour_card_under}}">{{$salary->wps}}</option>
                                                 <option value="0">No WPS</option>
                                                 @foreach($branches as $branch)
                                                 <option value="{!! $branch->id !!}">{!! $branch->name !!}</option>
                                                 @endforeach
                                         </select>
                                     </div>
-                                </div>
-
-                               
+                                </div> 
                                 
                                  <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="basic">Basic :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="basic" name="basic" data-fv-notempty="true" value="{{ old('basic') }}" onKeyUp="totalRes()" />
+                                        <input class="form-control" type="number" id="basic" name="basic" data-fv-notempty="true" value="{{$salary->basic}}" onKeyUp="totalRes()" />
                                     </div>
                                 </div>
 
                                <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="accomodation">Accomodation :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="accomodation" name="accomodation" data-fv-notempty="true" value="{{ old('accomodation') }}" onKeyUp="totalRes()" />
+                                        <input class="form-control" type="number" id="accomodation" name="accomodation" data-fv-notempty="true" value="{{$salary->accomodation}}" onKeyUp="totalRes()" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="travel">Transportation :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="travel" name="travel" data-fv-notempty="true" value="{{ old('travel') }}" onKeyUp="totalRes()" />
+                                        <input class="form-control" type="number" id="travel" name="travel" data-fv-notempty="true" value="{{$salary->travel}}" onKeyUp="totalRes()" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="other">Other :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="other" name="other" data-fv-notempty="true" value="0" onKeyUp="totalRes()"  />
+                                        <input class="form-control" type="number" id="other" name="other" data-fv-notempty="true" value="{{$salary->other}}" onKeyUp="totalRes()"  />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="totalT">Total :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="totalT" name="totalT" data-fv-notempty="true" value="{{ old('totalT') }}" onKeyUp="partSalary()" onBlur="partSalary()" />
+                                        <input class="form-control" type="number" id="totalT" name="totalT" data-fv-notempty="true" value="{{$salary->totalT}}" onKeyUp="partSalary()" onBlur="partSalary()" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="iban">IBAN # :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="iban" name="iban" data-fv-notempty="true" value="{{ old('iban') }}" />
+                                        <input class="form-control" type="text" id="iban" name="iban" data-fv-notempty="true" value="{{$salary->iban}}" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="edit_reason">Edit Reason:</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control" type="text" id="edit_reason" name="edit_reason" data-fv-notempty="true" /> (Last Reason: {{$salary->edit_reason}})
                                     </div>
                                 </div>
 

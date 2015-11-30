@@ -108,6 +108,11 @@ session(['subtitle' => '']); ?>
                                             {{ session('status') }}   
                                         </div>
                                     @endif
+                                    @if (session('warningStatus'))
+                                        <div class="alert alert-warning">
+                                            {{ session('warningStatus') }}   
+                                        </div>
+                                    @endif
                                 </div>    
                                 <table class="table table-profile table-striped ">
                                     <thead>
@@ -330,7 +335,7 @@ session(['subtitle' => '']); ?>
                            <tr>
                                <td class="field"></td>
                                <td>
-                               <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) href="#" @endif class="btn btn-inverse btn-sm">
+                               <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) href="{{action('EmployeesController@editSalary',base64_encode($employee->employee_id))}}" @endif class="btn btn-inverse btn-sm">
                                <i class="fa fa-edit"></i> Edit</a>
                                </td>
                            </tr>

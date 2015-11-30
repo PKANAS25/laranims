@@ -161,7 +161,7 @@
                             @if(Auth::user()->hasRole('HRAdmin') )
                             <li class="@if(session('subtitle') == 'addEmp') active @endif"><a href="/employees/add/new">Add Employee</a></li>
                             @endif
-                            <li><a href="#" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
+                            <li class="@if(session('subtitle') == 'EmpSearch') active @endif"><a href="/employees/branch/search" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             <li><a href="#" >Bonus Hold</a></li>
                             <li><a href="#" >Attendance Report</a></li>
                             <li><a href="#" >Exit Permits</a></li>
