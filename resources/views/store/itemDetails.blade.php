@@ -205,8 +205,11 @@ session(['subtitle' => 'main']); ?>
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                                <h4 class="modal-title">Stock Invoice</h4> <a href="/store/upload/invoice/{{base64_encode($stock->stock_id)}}" title="Click here to upload an invoice">
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                                <h4 class="modal-title">Stock Invoice</h4> 
+                                                                @if(Auth::user()->hasRole('StoreManager'))    
+                                                                <a href="/store/upload/invoice/{{base64_encode($stock->stock_id)}}" title="Click here to upload an invoice">
+                                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                                @endif
                                                             </div>
                                                             <div class="modal-body" >
                                                                 <img height="100%" width="100%" src="/uploads/stock_invoices/{{$stock->stock_id}}.jpg"  />

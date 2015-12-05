@@ -249,7 +249,7 @@ session(['subtitle' => '']); ?>
                                     <label class="control-label col-md-4 col-sm-4" for="person_code">Person Code :</label>
                                     <div class="col-md-6 col-sm-6">
                                         <input class="form-control" type="text" id="person_code" name="person_code"   data-fv-notempty="true" value="{{$employee->person_code}}"
-                                        @if(!Auth::user()->hasRole('SalaryEdit')) readOnly @endif />
+                                        @if(!Auth::user()->hasRole('SalaryEditor')) readOnly @endif />
                                     </div>
                                 </div>
 

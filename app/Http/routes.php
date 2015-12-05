@@ -244,8 +244,25 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/employees/{employeeId}/salary/add', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@addSalary']);
     Route::post('/employees/{employeeId}/salary/add', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@saveSalary']);
 
-     Route::get('/employees/{employeeId}/salary/edit', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@editSalary']);
+    Route::get('/employees/{employeeId}/salary/edit', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@editSalary']);
     Route::post('/employees/{employeeId}/salary/edit', ['middleware' => 'SalaryEditor','uses'=>'EmployeesController@editSaveSalary']);
+
+    Route::get('/employees/branch/search',function () {return view('employees.search');});
+    Route::get('/employeeSearchBind', 'EmployeesController@searchBind');
+
+//--------------------------------------------------------EmployeesControllerExtra------------------------------------------     
+
+    Route::get('/employee/{employeeId}/add/bonus', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addBonus']);
+    Route::post('/employee/{employeeId}/add/bonus', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveBonus']);
+    Route::get('/employee/upload/bonus/{bonusId}/{employeeId}', ['middleware' => 'HRAdmin',function () {return view('employees.uploadBonusDocument');}]);
+    Route::post('/employee/upload/bonus/{bonusId}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@uploadBonus']);
+
+    Route::get('/employee/{employeeId}/add/deduction', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addDeduction']);
+    Route::post('/employee/{employeeId}/add/deduction', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveDeduction']);
+
+    Route::get('/employee/{employeeId}/add/loan', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addLoan']);
+    Route::post('/employee/{employeeId}/add/loan', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveLoan']);
+
 });
 
  

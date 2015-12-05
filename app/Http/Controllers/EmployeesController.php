@@ -70,16 +70,36 @@ class EmployeesController extends Controller
                      ->where('employee_id',$employeeId)
                      ->orderBy('change_id','DESC')
                      ->get();
+        foreach ($history as $row) {  $row->date_time = Carbon::parse($row->date_time);  }
+        
 
-       foreach ($history as $row) {  $row->date_time = Carbon::parse($row->date_time);  }
+        $bonuses = DB::table('bonus')
+                     ->select('bonus.*','adminer.name AS admn', 'approver.name AS hrm')
+                     ->leftjoin('users AS adminer','bonus.admin','=','adminer.id')
+                     ->leftjoin('users AS approver','bonus.decided_by','=','approver.id')
+                     ->where('emp_id',$employeeId)
+                     ->where('absent_correction',0)
+                     ->orderBy('dated','DESC')
+                     ->get();
+
+        foreach ($bonuses as $bonus) 
+        { 
+              if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$bonus->bonus_id.'.jpg'))
+                 $bonus->file=1; 
+             
+              else  
+              $bonus->file=0;                  
+        }                          
+
+       
          
         $salary = EmployeesSalary::select('employees_salary.*','branches.name AS wps')
                                 ->leftjoin('branches','employees_salary.labour_card_under','=','branches.id')
                                 ->where('employee_id',$employeeId)
                                 ->first();
 
-        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history'));                  
-    }
+        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history','bonuses'));                  
+    } 
 //----------------------------------------------------------------------------------------------------------------------------------------
     public function add()
     {
@@ -207,7 +227,8 @@ class EmployeesController extends Controller
                             ->leftjoin('branches AS work_branch','employees.working_under', '=', 'work_branch.id')
                             ->where('employees.employee_id',$employeeId)
                             ->first();
-        if($employee->visa_under==-1) $employee->visa_in = "Under Process"; elseif($employee->visa_under==-2) $employee->visa_in = "Spouse"; elseif($employee->visa_under==-3) $employee->visa_in = "Guardian";                    
+        if($employee->visa_under==-1) $employee->visa_in = "Under Process"; elseif($employee->visa_under==-2) $employee->visa_in = "Spouse"; 
+        elseif($employee->visa_under==-3) $employee->visa_in = "Guardian"; elseif($employee->visa_under==0) $employee->visa_under='';              
 
         if(File::exists(base_path().'/public/uploads/employee_pics/'.$employeeId.'.jpg'))
            $profile_pic = '/uploads/employee_pics/'.$employeeId.'.jpg' ;  
@@ -300,7 +321,7 @@ class EmployeesController extends Controller
         $action = $edit_reason.$action;
 
 
-        $employee->fullname = $request->fullname;
+        $employee->fullname = ucwords(strtolower($request->fullname));
         $employee->bonus_category = $request->bonus_category;
         $employee->designation = $request->designation;
         $employee->designation_mol = $request->designation_mol;
@@ -475,7 +496,8 @@ class EmployeesController extends Controller
 
         $salary = EmployeesSalary::where('employee_id',$employeeId)->first();
 
-        if($salary->basic != $request->basic || $salary->accomodation != $request->accomodation || $salary->travel != $request->travel || $salary->other != $request->other || $salary->iban != $request->iban)
+        if($salary->basic != $request->basic || $salary->accomodation != $request->accomodation || $salary->travel != $request->travel || 
+           $salary->other != $request->other || $salary->iban != $request->iban)
         { 
             $salary->basic = $request->basic;
             $salary->accomodation = $request->accomodation; 
@@ -501,7 +523,76 @@ class EmployeesController extends Controller
 
        
          
-    }     
+    }
+
+//---------------------------------------------------------------------------------------------------------------------------------------------            
+
+public function searchBind(Request $request)
+    {
+        $keyword = $request->keyword;
+
+        $ids = array(0,2,3,1); 
+        $ids_ordered = implode(',', $ids);  
+
+        if($keyword=='noLabourCardCheck')
+         $employees = Employee::select('employees.*', 'visa_branch.name AS visa_in' , 'work_branch.name AS working_for','employees_salary.labour_card_under')
+                            ->leftjoin('branches AS visa_branch','employees.visa_under', '=', 'visa_branch.id')
+                            ->leftjoin('branches AS work_branch','employees.working_under', '=', 'work_branch.id')
+                            ->leftjoin('employees_salary','employees.employee_id', '=', 'employees_salary.employee_id')
+                            ->where(function($query){
+                                     $query->where('employees.working_under', Auth::user()->branch);
+                                     $query->where('employees.deleted', 0);
+                             }) 
+                             ->where(function($query) use ($keyword){
+                                     $query->where('employees_salary.labour_card_under', 0);
+                                     $query->orWhereNull('employees_salary.labour_card_under');
+                             })            
+                            ->get();
+
+         else               
+          $employees = Employee::select('employees.*', 'visa_branch.name AS visa_in' , 'work_branch.name AS working_for')
+                            ->leftjoin('branches AS visa_branch','employees.visa_under', '=', 'visa_branch.id')
+                            ->leftjoin('branches AS work_branch','employees.working_under', '=', 'work_branch.id')
+                            ->where(function($query){
+                                     $query->where('employees.working_under', Auth::user()->branch);
+                             }) 
+                             ->where(function($query) use ($keyword){
+                                $query->orwhere('fullname', 'like', '%'.$keyword.'%');
+                                $query->orWhere('employee_id', 'like', '%'.$keyword.'%');
+                                $query->orWhere('mobile', 'like', '%'.$keyword.'%');
+                             }) 
+                             ->orderByRaw(DB::raw("FIELD(deleted, $ids_ordered)"))           
+                            ->get();
+ if($employees)
+ {
+?>
+<table class="table ">
+            <thead><th> Id</th><th>Name</th><th>Visa Under</th><th>Working For</th><th>Bonus Category</th><th>Mobile</th><th></th></thead>
+  <?php  
+  foreach ($employees as $employee) {
+    if($employee->visa_under==-1) $employee->visa_in = "Under Process"; elseif($employee->visa_under==-2) $employee->visa_in = "Spouse"; 
+    elseif($employee->visa_under==-3) $employee->visa_in = "Guardian"; 
+    ?>
+<tr>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$employee->employee_id);?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$employee->fullname);?></td>
+    <td><?php echo $employee->visa_in;?></td>
+    <td>
+        <span class="<?php if($employee->deleted==1) echo "badge badge-inverse"; 
+                      else if($employee->deleted==2) echo "badge badge-danger"; 
+                      else if($employee->deleted==3) echo "badge badge-warning"; ?>">
+                      <?php echo $employee->working_for;?>
+        </span>
+    </td>
+    <td><?php echo $employee->bonus_category;?></td>
+    <td><?php echo str_ireplace($keyword,"<span class=\"text-danger\">".$keyword."</span>",$employee->mobile);?></td>
+    <td><a href="/employees/<?php echo base64_encode($employee->employee_id);?>/profile"><i class="ion-person fa-lg"></i></a></td>
+</tr>
+<?php
+         } //foreach ($students as $students   
+     }//if($students)
+     else echo "<br><span class=\"badge badge-danger\"><strong>No matching results found....</strong></span>";
+}         
 //----------------------------------------------------------------------------------------------------------------------------------------
 
 }
