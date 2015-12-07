@@ -134,30 +134,30 @@ session(['subtitle' => 'grades']); ?>
                                         @if(($student->deleteFlag1+$student->deleteFlag2+$student->deleteFlag3)==0)
                                             <!--<a href="javascript:decision('Are you sure you want to delete this student?','{!! action('StudentsController@delete', base64_encode($student->student_id)) !!}')"><i class="fa fa-trash"></i></a>-->
                                              <button id="Xdel{{$i}}"><i  class="fa fa-trash text-danger"></i></button>
-                                        <script type="text/javascript">
-                                            $('#Xdel{{$i}}').click(function(ev) {
-                                            
-                                              $.msgbox("<p>Are you sure you want to delete this student?</p>", {
-                                                type    : "prompt",
-                                                 inputs  : [
-                                                  {type: "hidden", name: "no", value: "no"} 
-                                                ],
-                                                 
-                                                buttons : [
-                                                  {type: "submit", name: "delete", value: "Delete"},
-                                                  {type: "cancel", value: "Cancel"}
-                                                ],
-                                                form : {
-                                                  active: true,
-                                                  method: 'get',
-                                                  action: '{!! action('StudentsController@delete', base64_encode($student->student_id)) !!}'
-                                                }
-                                              });
-                                              
-                                              ev.preventDefault();
-                                            
-                                            });
-                                        </script>
+                                             <script type="text/javascript">
+                                                $('#Xdel{{$i}}').click(function(ev) {
+                                                
+                                                  $.msgbox("<p>Are you sure you want to delete this student?</p>", {
+                                                    type    : "prompt",
+                                                     inputs  : [
+                                                      {type: "hidden", name: "no", value: "no"} 
+                                                    ],
+                                                     
+                                                    buttons : [
+                                                      {type: "submit", name: "delete", value: "Delete"},
+                                                      {type: "cancel", value: "Cancel"}
+                                                    ],
+                                                    form : {
+                                                      active: true,
+                                                      method: 'get',
+                                                      action: '{!! action('StudentsController@delete', base64_encode($student->student_id)) !!}'
+                                                    }
+                                                  });
+                                                  
+                                                  ev.preventDefault();
+                                                
+                                                });
+                                             </script>
                                         @else 
                                           <button onclick='$.msgbox("You cannot delete this student. There are subscriptions or invoices assigned.", {type: "error"});'><i class="fa fa-trash"></i></button>
                                         @endif

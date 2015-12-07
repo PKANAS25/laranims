@@ -70,27 +70,7 @@ class EmployeesController extends Controller
                      ->where('employee_id',$employeeId)
                      ->orderBy('change_id','DESC')
                      ->get();
-        foreach ($history as $row) {  $row->date_time = Carbon::parse($row->date_time);  }
-        
-
-        $bonuses = DB::table('bonus')
-                     ->select('bonus.*','adminer.name AS admn', 'approver.name AS hrm')
-                     ->leftjoin('users AS adminer','bonus.admin','=','adminer.id')
-                     ->leftjoin('users AS approver','bonus.decided_by','=','approver.id')
-                     ->where('emp_id',$employeeId)
-                     ->where('absent_correction',0)
-                     ->orderBy('dated','DESC')
-                     ->get();
-
-        foreach ($bonuses as $bonus) 
-        { 
-              if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$bonus->bonus_id.'.jpg'))
-                 $bonus->file=1; 
-             
-              else  
-              $bonus->file=0;                  
-        }                          
-
+        foreach ($history as $row) {  $row->date_time = Carbon::parse($row->date_time);  } 
        
          
         $salary = EmployeesSalary::select('employees_salary.*','branches.name AS wps')
@@ -98,7 +78,7 @@ class EmployeesController extends Controller
                                 ->where('employee_id',$employeeId)
                                 ->first();
 
-        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history','bonuses'));                  
+        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history'));                  
     } 
 //----------------------------------------------------------------------------------------------------------------------------------------
     public function add()
@@ -314,9 +294,14 @@ class EmployeesController extends Controller
                 DB::table('staff_docs_details')->insert(['emp_id' => $employeeId,'doc_id' => 14,'expiry_date' => $request->labour_card_expiry]);
         }
 
-        $action = "Details changed by "; 
+        $action = "Details "; 
         if($employee->start_time != $request->start_time || $employee->end_time != $request->end_time)
-           $action = "Details,worktime changed by ";     
+           $action = $action.",worktime  ";     
+        
+        if($employee->designation != $request->designation)
+           $action = $action.",position  "; 
+
+        $action = $action." changed by ";
 
         $action = $edit_reason.$action;
 

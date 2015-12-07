@@ -32,7 +32,7 @@ session(['subtitle' => '']); ?>
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="panel-body">
                               
-                               
+                             <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>  
                                  
                                 <div class="hidden-print">
                                      @if (count($errors) > 0)

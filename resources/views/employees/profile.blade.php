@@ -56,11 +56,15 @@ session(['subtitle' => '']); ?>
                         </div> 
                             
                         
-
+                        <div class="m-b-10">
+                            <a  href="{{action('EmployeesControllerExtra@payContentHistory',base64_encode($employee->employee_id))}}" class="btn bg-purple btn-block btn-sm text-white">Payment History <i class="fa fa-history"></i></a>
+                        </div>  
                         
                         <div class="m-b-10">
                             <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="{{action('EmployeesController@edit',base64_encode($employee->employee_id))}}" @endif  class="btn btn-inverse btn-block btn-sm"><i class="fa fa-edit"></i> Edit</a>
-                        </div>     
+                        </div>   
+
+
                             
                         </div>
 
@@ -214,7 +218,7 @@ session(['subtitle' => '']); ?>
                         <li class=""><a href="#default-tab-3" data-toggle="tab"><i class="fa fa-bars"></i> Attendance</a></li> 
                         <li class=""><a href="#default-tab-4" data-toggle="tab"><i class="fa fa-file"></i> Documents</a></li>
                         <li class=""><a href="#default-tab-5" data-toggle="tab"><i class="fa fa-file-text-o"></i> Forms</a></li>
-                        <li class=""><a href="#default-tab-6" data-toggle="tab"><i class="fa fa-history"></i> Actions History</a></li>
+                        
                     </ul>
                     <div class="tab-content">
                         
@@ -382,206 +386,7 @@ session(['subtitle' => '']); ?>
                       <div class="tab-pane fade" id="default-tab-5"> 
                        CCCCC 
                       </div>
-     <!------------------------------------------------------------Actions History----------------------------------------------------------------------- -->                    
-
-                      <div class="tab-pane fade" id="default-tab-6"> 
-                       <div class="panel-group" id="accordion">
-                        
-                        <div class="panel panel-info overflow-hidden">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                        <i class="fa fa-plus-circle pull-right"></i> 
-                                        Bonus
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                   <table class="table">
-                                       <thead>
-                                           <tr>
-                                               <th>Date</th>
-                                               <th>Amount</th>
-                                               <th>Notes</th>
-                                               <th>Entered By</th>
-                                               <th>Approved By</th> 
-                                               <th></th>
-                                               <th></th>
-                                           </tr>
-                                       </thead>
-                                       <tbody>
-                                        @foreach($bonuses AS $bonus)
-                                           <tr class="@if($bonus->approved==0) text-warning @elseif($bonus->approved==-1) text-danger @elseif($bonus->approved==1) text-success @endif">
-                                               <td>{{$bonus->dated}}</td>
-                                               <td>{{$bonus->amount}}</td>
-                                               <td>{{$bonus->notes}}</td>
-                                               <td>{{$bonus->admn}}</td> 
-                                               <td>{{$bonus->hrm}}</td>
-                                               <td>{{$bonus->reject_reason}}</td>
-                                               <td>@if($bonus->file)
-                                               <a href="#modal-dialogBonus{{$bonus->bonus_id}}"  data-toggle="modal"><i class="fa fa-download text-info"></i></a>
-                                                <div class="modal fade" id="modal-dialogBonus{{$bonus->bonus_id}}">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                                <h4 class="modal-title">Bonus Document</h4> 
-                                                                @if(Auth::user()->hasRole('HRAdmin') && $bonus->approved!=-1)
-                                                                <a href="/employee/upload/bonus/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
-                                                                @endif
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
-                                                            </div>
-                                                            <div class="modal-body" >
-                                                                <img height="100%" width="100%" src="/uploads/hrx/bonus/{{$bonus->bonus_id}}.jpg"  />
-                                                            </div>
-                                                            
-                                                        </div>
-                                                    </div>
-                                                </div> 
-                                                @else
-                                                @if(Auth::user()->hasRole('HRAdmin') && $bonus->approved!=-1)
-                                                <a href="/employee/upload/bonus/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
-                                                <i class="fa fa-upload text-inverse"></i></a>
-                                                @endif                                               
-                                                @endif
-                                               </td>
-                                           </tr>
-                                        @endforeach   
-                                       </tbody>
-                                   </table>
-                                </div>
-                            </div>
-                        </div>
-
-    <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
-
-                        <div class="panel overflow-hidden">
-                            <div class="panel-heading bg-red-lighter">
-                                <h3 class="panel-title text-white">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                                        <i class="fa fa-plus-circle pull-right"></i> 
-                                        Deductions
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseTwo" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-
-
-    <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
-
-                        <div class="panel  overflow-hidden">
-                            <div class="panel-heading bg-black-lighter text-white">
-                                <h3 class="panel-title">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                                        <i class="fa fa-plus-circle pull-right"></i> 
-                                        Loans
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseThree" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-
-        <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
-
-                        <div class="panel  overflow-hidden">
-                            <div class="panel-heading bg-yellow-darker text-white">
-                                <h3 class="panel-title">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-                                        <i class="fa fa-plus-circle pull-right"></i> 
-                                        Vacations
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseFour" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-
-        <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
-
-                        <div class="panel  overflow-hidden">
-                            <div class="panel-heading bg-green-darker">
-                                <h3 class="panel-title text-white">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-                                        <i class="fa fa-plus-circle pull-right"></i> 
-                                        Absent Correction
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseFive" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-
-        <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
-
-                        <div class="panel  overflow-hidden">
-                            <div class="panel-heading  bg-purple">
-                                <h3 class="panel-title text-white">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
-                                        <i class="fa fa-plus-circle pull-right text-white"></i> 
-                                        PRO Payments
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseSix" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-
-        <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
-
-                        <div class="panel panel-primary overflow-hidden">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
-                                        <i class="fa fa-plus-circle pull-right"></i> 
-                                        Personal Benefits
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseSeven" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-        <!-------------------------------------------------------------------------------------------------------------------------------------------- --> 
-
-        <div class="panel overflow-hidden">
-                            <div class="panel-heading bg-orange">
-                                <h3 class="panel-title  text-white">
-                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
-                                        <i class="fa fa-plus-circle pull-right"></i> 
-                                        Overtimes
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="collapseEight" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div> 
-
-                    </div> 
-                      </div>
+     
 
       <!---------------------------------------------------------------------------------------------------------------------------------------- -->                                   
                     </div>

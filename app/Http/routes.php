@@ -250,12 +250,18 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/employees/branch/search',function () {return view('employees.search');});
     Route::get('/employeeSearchBind', 'EmployeesController@searchBind');
 
-//--------------------------------------------------------EmployeesControllerExtra------------------------------------------     
+//--------------------------------------------------------EmployeesControllerExtra------------------------------------------  
 
+    Route::get('/employees/{employeeId}/paymentHistory', 'EmployeesControllerExtra@payContentHistory');   
+    Route::get('/payrollContentUnapprove', ['middleware' => 'Superman','uses'=>'EmployeesControllerExtra@payrollContentUnapprove']);
+    Route::get('/payrollContentDelete/{Id}/{stuff}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@payrollContentDelete']);
+
+    Route::get('/employee/upload/hrx/{doc}/{Id}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@uploadFormHRXDoc']);
+    Route::post('/employee/upload/hrx/{doc}/{Id}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@uploadHRXDoc']);
+ 
     Route::get('/employee/{employeeId}/add/bonus', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addBonus']);
-    Route::post('/employee/{employeeId}/add/bonus', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveBonus']);
-    Route::get('/employee/upload/bonus/{bonusId}/{employeeId}', ['middleware' => 'HRAdmin',function () {return view('employees.uploadBonusDocument');}]);
-    Route::post('/employee/upload/bonus/{bonusId}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@uploadBonus']);
+    Route::post('/employee/{employeeId}/add/bonus', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveBonus']);  
+    
 
     Route::get('/employee/{employeeId}/add/deduction', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addDeduction']);
     Route::post('/employee/{employeeId}/add/deduction', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveDeduction']);
