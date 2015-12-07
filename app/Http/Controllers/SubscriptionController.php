@@ -395,27 +395,30 @@ public function lockUnlock(Request $request)
     {
          
         
-        $subscriptionId =  $request->subscriptionId;         
+        $subscriptionId =  $request->subscriptionId; 
+                
+        if(Auth::user()->hasRole('subscriptionUnlock')
+        {    
+            $subscription = Subscription::where('subscription_id',$subscriptionId)->first();
+            if($subscription && $request->action=="unlock")
+            {
+                $subscription->locked=0;            
+                $subscription->save();
+                ?>
+                &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="subsLock<?php echo $subscriptionId;?>" value="<?php echo $subscriptionId;?>"> <i class="fa fa-unlock"></i></button>
+                <?php
+              
+            }
 
-        $subscription = Subscription::where('subscription_id',$subscriptionId)->first();
-        if($subscription && $request->action=="unlock")
-        {
-            $subscription->locked=0;            
-            $subscription->save();
-            ?>
-            &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="subsLock<?php echo $subscriptionId;?>" value="<?php echo $subscriptionId;?>"> <i class="fa fa-unlock"></i></button>
-            <?php
-          
-        }
-
-        else if($subscription && $request->action=="lock")
-        {
-            $subscription->locked=1;            
-            $subscription->save();
-            ?>
-            &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="subsUnlock<?php echo $subscriptionId;?>" value="<?php echo $subscriptionId;?>"> <i class="fa fa-lock"></i></button>
-            <?php
-          
+            else if($subscription && $request->action=="lock")
+            {
+                $subscription->locked=1;            
+                $subscription->save();
+                ?>
+                &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="subsUnlock<?php echo $subscriptionId;?>" value="<?php echo $subscriptionId;?>"> <i class="fa fa-lock"></i></button>
+                <?php
+              
+            }
         }
 
     }
