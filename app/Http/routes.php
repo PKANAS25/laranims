@@ -252,7 +252,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
 //--------------------------------------------------------EmployeesControllerExtra------------------------------------------  
 
-    Route::get('/employees/{employeeId}/paymentHistory', 'EmployeesControllerExtra@payContentHistory');   
+    Route::get('/employees/{employeeId}/{stuff}/paymentHistory', 'EmployeesControllerExtra@payContentHistory');   
     Route::get('/payrollContentUnapprove', ['middleware' => 'Superman','uses'=>'EmployeesControllerExtra@payrollContentUnapprove']);
     Route::get('/payrollContentDelete/{Id}/{stuff}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@payrollContentDelete']);
 

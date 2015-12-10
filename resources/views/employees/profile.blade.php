@@ -53,11 +53,6 @@ session(['subtitle' => '']); ?>
                             
                         <div class="m-b-10">
                             <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted!=1) href="{{action('EmployeesController@specialDays',base64_encode($employee->employee_id))}}" @endif class="btn btn-info btn-block btn-sm">Assign Special Working Days</a>
-                        </div> 
-                            
-                        
-                        <div class="m-b-10">
-                            <a  href="{{action('EmployeesControllerExtra@payContentHistory',base64_encode($employee->employee_id))}}" class="btn bg-purple btn-block btn-sm text-white">Payment History <i class="fa fa-history"></i></a>
                         </div>  
                         
                         <div class="m-b-10">
@@ -235,13 +230,16 @@ session(['subtitle' => '']); ?>
                                             <tbody> 
                                                 <tr>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/bonus" @endif class="btn btn-info btn-block btn-sm">Add Bonus</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/bonus" @endif class="btn btn-info  btn-sm">Add Bonus</a> 
+                                                    <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'bonus'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/deduction" @endif class="btn btn-danger btn-block btn-sm">Add Deduction</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/deduction" @endif class="btn btn-danger   btn-sm">Add Deduction</a>
+                                                    <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'deduction'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-block btn-sm">Personal Loans</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-sm">Personal Loans</a>
+                                                    <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'loan'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
                                                     <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif  class="btn btn-warning btn-block btn-sm">Vacation</a>

@@ -25,57 +25,76 @@ use Mail;
 class EmployeesControllerExtra extends Controller
 {
    
-   public function payContentHistory($employeeId)
+   public function payContentHistory($employeeId,$stuff)
    {
       $employeeId = base64_decode($employeeId);  
 
       $employee = Employee::where('employees.employee_id',$employeeId)->first();
 
-      $bonuses = DB::table('bonus')
-                     ->select('bonus.*','adminer.name AS admn', 'approver.name AS hrm')
-                     ->leftjoin('users AS adminer','bonus.admin','=','adminer.id')
-                     ->leftjoin('users AS approver','bonus.decided_by','=','approver.id')
-                     ->where('emp_id',$employeeId)
-                     ->where('absent_correction',0)
-                     ->orderBy('dated','DESC')
-                     ->get();
+      if($stuff=='bonus')
+      {
+      
+          $bonuses = DB::table('bonus')
+                         ->select('bonus.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','bonus.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','bonus.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId)
+                         ->where('absent_correction',0)
+                         ->orderBy('dated','DESC')
+                         ->get();
 
-        foreach ($bonuses as $bonus) 
-        { 
-              if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$bonus->bonus_id.'.jpg'))
-                 $bonus->file=1; 
-             
-              else  
-              $bonus->file=0;                  
-        }
+            foreach ($bonuses as $bonus) 
+            { 
+                  if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$bonus->bonus_id.'.jpg'))
+                     $bonus->file=1; 
+                 
+                  else  
+                  $bonus->file=0;                  
+            }
+      } 
+      elseif($stuff=='deduction')
+      {
+            $deductions = DB::table('deductions_xtra')
+                         ->select('deductions_xtra.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','deductions_xtra.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','deductions_xtra.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->orderBy('dated','DESC')
+                         ->get();
 
-        $deductions = DB::table('deductions_xtra')
-                     ->select('deductions_xtra.*','adminer.name AS admn', 'approver.name AS hrm')
-                     ->leftjoin('users AS adminer','deductions_xtra.admin','=','adminer.id')
-                     ->leftjoin('users AS approver','deductions_xtra.decided_by','=','approver.id')
-                     ->where('emp_id',$employeeId) 
-                     ->orderBy('dated','DESC')
-                     ->get();
+            foreach ($deductions as $deduction) 
+            { 
+                  if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$deduction->dedXtra_id.'.jpg'))
+                     $deduction->file=1; 
+                 
+                  else  
+                  $deduction->file=0;                  
+            } 
+       }     
 
-        foreach ($deductions as $deduction) 
-        { 
-              if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$deduction->dedXtra_id.'.jpg'))
-                 $deduction->file=1; 
-             
-              else  
-              $deduction->file=0;                  
-        }      
-
-    return view('employees.paymentHistory',compact('employee','bonuses','deductions')); 
+    return view('employees.paymentHistory',compact('employee','bonuses','deductions','stuff')); 
    }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    public function payrollContentUnapprove(Request $request)
    {
-      if($request->stuff=='bonus')
-      {
-        DB::table('bonus')->where('bonus_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
-        echo "<i class=\"fa fa-check-square-o\"></i>";
-      }  
+      $stuff = $request->stuff;
+       
+        switch ($stuff) 
+       {
+            case "bonus":
+            DB::table('bonus')->where('bonus_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
+            echo "<i class=\"fa fa-check-square-o\"></i>";
+            break;
+
+            case "deduction":
+            DB::table('deductions_xtra')->where('dedXtra_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
+            echo "<i class=\"fa fa-check-square-o\"></i>";
+            break;
+
+            default:
+             echo "??";
+       }
+         
    }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -88,17 +107,22 @@ class EmployeesControllerExtra extends Controller
 
        switch ($stuff) 
        {
-                case "bonus":
-                    //echo $stuff."<br>".$id;
+                case "bonus": 
                     DB::table('bonus')->where('bonus_id',$id)->where('approved',0)->delete(); 
                     if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$imageName))
                          File::delete(base_path().'/public/uploads/hrx/bonus/'.$imageName);
-                    return redirect()->action('EmployeesControllerExtra@payContentHistory',$employeeId)->with('status', 'Bonus removed!');  
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Bonus removed!');  
                     break;
 
+                case "deduction": 
+                    DB::table('deductions_xtra')->where('dedXtra_id',$id)->where('approved',0)->delete(); 
+                    if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$imageName))
+                         File::delete(base_path().'/public/uploads/hrx/deduction/'.$imageName);
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Deduction removed!');  
+                    break;        
                 
                 default:
-                    return redirect()->action('EmployeesControllerExtra@payContentHistory',$employeeId)->with('warningStatus', 'Something wrong happened!');  
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('warningStatus', 'Something wrong happened!');  
         }
    }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -144,12 +168,12 @@ class EmployeesControllerExtra extends Controller
                                File::delete(base_path().'/public/uploads/hrx/deduction/'.$imageName);  
                             $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/deduction/', $imageName); 
 
-                            return redirect()->action('EmployeesControllerExtra@payContentHistory',$employeeId)->with('status', 'Deduction document uploaded!');
+                            return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Deduction document uploaded!');
                             break;    
 
                         
                         default:
-                            return redirect()->action('EmployeesControllerExtra@payContentHistory',$employeeId)->with('warningStatus', 'Something wrong happened!');  
+                            return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('warningStatus', 'Something wrong happened!');  
                 } 
         }
 

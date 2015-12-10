@@ -86,7 +86,7 @@ session(['subtitle' => 'EmpSearch']); ?>
                                             $.get('/employeeSearchBind',{keyword:value }, function(searchBlade){                      
                                             $("#searchResults").html(searchBlade);
                                             });
-                                        },400));
+                                        },100));
                         
                                      }); 
 
@@ -101,7 +101,7 @@ session(['subtitle' => 'EmpSearch']); ?>
                                             $.get('/employeeSearchBind',{keyword:value }, function(searchBlade){                      
                                             $("#searchResults").html(searchBlade);
                                             });
-                                        },400));
+                                        },100));
                         
                                      }); 
                                    </script> 

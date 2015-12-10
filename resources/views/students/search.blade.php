@@ -74,7 +74,7 @@ session(['subtitle' => 'search']); ?>
                                             $.get('/searchBind',{keyword:value }, function(searchBlade){                      
                                             $("#searchResults").html(searchBlade);
                                             });
-                                        },400));
+                                        },100));
                         
                                      }); 
                                    </script> 
