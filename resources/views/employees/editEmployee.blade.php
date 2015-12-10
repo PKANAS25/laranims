@@ -61,6 +61,7 @@ session(['subtitle' => '']); ?>
                                         <select class="form-control" id="select-required" name="designation" data-fv-notempty="true">
                                             
                                             <option value="{{$employee->designation}}">{{$employee->designation}}</option>
+                                            @if(Auth::user()->hasRole('HROfficer'))
                                             <optgroup label="Nursery">
                                             <option value="Teacher">Teacher</option>
                                             <option value="Asst. Teacher">Asst. Teacher</option>
@@ -70,7 +71,7 @@ session(['subtitle' => '']); ?>
                                             <option value="Cleaner">Cleaner</option>
                                             <option value="Trainee">Trainee</option>
                                             </optgroup>
-                                            @if(Auth::user()->admin_type>1) 
+                                             
                                             <optgroup label="Finance">
                                             <option value="Accountant">Accountant</option>
                                             <option value="Senior Accountant">Senior Accountant</option>
@@ -124,10 +125,12 @@ session(['subtitle' => '']); ?>
                                     <div class="col-md-6 col-sm-6">
                                         <select class="form-control"  name="bonus_category" data-fv-notempty="true">
                                             <option value="{{$employee->bonus_category}}">{{$employee->bonus_category}}</option>
+                                            @if(Auth::user()->hasRole('HROfficer'))
                                             <option value="Teacher">Teacher</option>
                                             <option value="Principal">Principal</option>
                                             <option value="Cleaner">Cleaner</option>
                                             <option value="Trainee">Trainee</option>
+                                            @endif
                                         </select>
                                     </div>
                                 </div>
@@ -187,7 +190,11 @@ session(['subtitle' => '']); ?>
                                  <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="joining_date">Joining Date :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="joining_date"  name="joining_date" data-fv-notempty="true"   value="{{$employee->joining_date}}" />
+                                    @if(Auth::user()->hasRole('HROfficer'))
+                                        <input class="form-control" type="text" id="joining_date"  name="joining_date" data-fv-notempty="true"   value="{{$employee->joining_date}}"    />
+                                    @else <input   type="hidden" id="joining_date"  name="joining_date" data-fv-notempty="true"   value="{{$employee->joining_date}}"    />
+                                    {{$employee->joining_date}}
+                                    @endif    
                                     </div>
                                 </div>
 

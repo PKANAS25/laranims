@@ -30,7 +30,7 @@ class EmployeesController extends Controller
 {
     
     public function index()
-    {
+    { 
        $employees = Employee::where('working_under',Auth::user()->branch)->where('deleted',0)->orderBy('fullname')->get();
 
        return view('employees.index',compact('employees'));
@@ -548,8 +548,8 @@ public function searchBind(Request $request)
                              }) 
                              ->orderByRaw(DB::raw("FIELD(deleted, $ids_ordered)"))           
                             ->get();
- if($employees)
- {
+ if(count($employees))
+ {  
 ?>
 <table class="table ">
             <thead><th> Id</th><th>Name</th><th>Visa Under</th><th>Working For</th><th>Bonus Category</th><th>Mobile</th><th></th></thead>

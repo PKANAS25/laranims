@@ -52,7 +52,7 @@ session(['subtitle' => '']); ?>
                         </div>
                             
                         <div class="m-b-10">
-                            <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="{{action('EmployeesController@specialDays',base64_encode($employee->employee_id))}}" @endif class="btn btn-info btn-block btn-sm">Assign Special Working Days</a>
+                            <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted!=1) href="{{action('EmployeesController@specialDays',base64_encode($employee->employee_id))}}" @endif class="btn btn-info btn-block btn-sm">Assign Special Working Days</a>
                         </div> 
                             
                         
@@ -61,7 +61,7 @@ session(['subtitle' => '']); ?>
                         </div>  
                         
                         <div class="m-b-10">
-                            <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted!=1) href="{{action('EmployeesController@edit',base64_encode($employee->employee_id))}}" @endif  class="btn btn-inverse btn-block btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                            <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted!=1) href="{{action('EmployeesController@edit',base64_encode($employee->employee_id))}}" @endif  class="btn btn-inverse btn-block btn-sm"><i class="fa fa-edit"></i> Edit</a>
                         </div>   
 
 
@@ -235,24 +235,24 @@ session(['subtitle' => '']); ?>
                                             <tbody> 
                                                 <tr>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/bonus" @endif class="btn btn-info btn-block btn-sm">Add Bonus</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/bonus" @endif class="btn btn-info btn-block btn-sm">Add Bonus</a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/deduction" @endif class="btn btn-danger btn-block btn-sm">Add Deduction</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/deduction" @endif class="btn btn-danger btn-block btn-sm">Add Deduction</a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-block btn-sm">Personal Loans</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-block btn-sm">Personal Loans</a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="#" @endif  class="btn btn-warning btn-block btn-sm">Vacation</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif  class="btn btn-warning btn-block btn-sm">Vacation</a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="#" @endif  class="btn bg-aqua-darker text-white btn-block btn-sm">Sick Leave</a> 
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif  class="btn bg-aqua-darker text-white btn-block btn-sm">Sick Leave</a> 
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="#" @endif  class="btn bg-yellow-darker text-white btn-block btn-sm">Maternity Leave</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif  class="btn bg-yellow-darker text-white btn-block btn-sm">Maternity Leave</a>
                                                     </td>
                                                     <td>
                                                     <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) href="#" @endif class="btn bg-green-darker text-white btn-block btn-sm">Absent Correction</a>
@@ -261,10 +261,10 @@ session(['subtitle' => '']); ?>
                                                     <a  @if(Auth::user()->hasRole('ProPayments') && $employee->deleted==0) href="#" @endif class="btn bg-purple text-white btn-block btn-sm">Pro payments</a>
                                                     </td>
                                                     <td>
-                                                    <a  @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="#" @endif class="btn bg-blue-lighter text-white btn-block btn-sm">Personal Benefits</a>
+                                                    <a  @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif class="btn bg-blue-lighter text-white btn-block btn-sm">Personal Benefits</a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HRAdmin') && $employee->deleted==0) href="#" @endif class="btn bg-red-lighter text-white btn-block btn-sm">Overtime</a> 
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif class="btn bg-red-lighter text-white btn-block btn-sm">Overtime</a> 
                                                     </td>
                                                 </tr>
                                                 <tr>

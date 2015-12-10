@@ -173,7 +173,7 @@ class EmployeesControllerExtra extends Controller
         'amount' => 'required|numeric',
         'notes' => 'required',]); 
 
-        DB::table('bonus')->insert(['emp_id' => $employeeId, 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
+        DB::table('bonus')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
 
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Bonus Added!');  
     }
@@ -196,7 +196,7 @@ class EmployeesControllerExtra extends Controller
         'amount' => 'required|numeric',
         'reason' => 'required',]); 
 
-        DB::table('deductions_xtra')->insert(['emp_id' => $employeeId, 'reason' => $request->reason, 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
+        DB::table('deductions_xtra')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'reason' => $request->reason, 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
 
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Deduction Added!');  
     } 
@@ -219,7 +219,7 @@ class EmployeesControllerExtra extends Controller
         'amount' => 'required|numeric',
         'max_rounds' => 'required|numeric',]); 
 
-        DB::table('loans')->insert(['emp_id' => $employeeId, 'payment_date' => $request->payment_date, 'deduction_start' => $request->deduction_start, 
+        DB::table('loans')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'payment_date' => $request->payment_date, 'deduction_start' => $request->deduction_start, 
             'loaned_amount' => $request->amount, 'deduction_amount' => $request->per_round, 'admin' => Auth::id()]);  
 
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Loan Added!');  

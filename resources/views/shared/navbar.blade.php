@@ -158,7 +158,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li class="@if(session('subtitle') == 'employeeList') active @endif"><a href="/employees/branch">Employee List</a></li>
-                            @if(Auth::user()->hasRole('HRAdmin') )
+                            @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
                             <li class="@if(session('subtitle') == 'addEmp') active @endif"><a href="/employees/add/new">Add Employee</a></li>
                             @endif
                             <li class="@if(session('subtitle') == 'EmpSearch') active @endif"><a href="/employees/branch/search" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>

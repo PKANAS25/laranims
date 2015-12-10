@@ -16,7 +16,7 @@ class HRAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->hasRole('HRAdmin'))
+        if(Auth::user()->hasRole('HRAdmin') ||Auth::user()->hasRole('HROfficer'))
             return $next($request);  
         
         else
