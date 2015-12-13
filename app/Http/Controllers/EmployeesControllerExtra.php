@@ -52,6 +52,7 @@ class EmployeesControllerExtra extends Controller
                   $bonus->file=0;                  
             }
       } 
+     
       elseif($stuff=='deduction')
       {
             $deductions = DB::table('deductions_xtra')
@@ -70,9 +71,52 @@ class EmployeesControllerExtra extends Controller
                   else  
                   $deduction->file=0;                  
             } 
-       }     
+       }
 
-    return view('employees.paymentHistory',compact('employee','bonuses','deductions','stuff')); 
+      elseif($stuff=='loan')
+      {
+            $loans = DB::table('loans')
+                         ->select('loans.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','loans.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','loans.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->orderBy('payment_date','DESC')
+                         ->get();
+
+            foreach ($loans as $loan) 
+            { 
+                  if (File::exists(base_path().'/public/uploads/hrx/loan/'.$loan->loan_id.'.jpg'))
+                     $loan->file=1; 
+                 
+                  else  
+                  $loan->file=0;                  
+            } 
+       } 
+
+      elseif($stuff=='vacation')
+      {
+            $vacations = DB::table('vacation')
+                         ->select('vacation.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','vacation.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','vacation.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->orderBy('start_date','DESC')
+                         ->get(); 
+            
+            $paid[-1] = "By cheque(Prepaid)";$paid[0] = "Unpaid"; $paid[1] = "Paid With Salary";
+
+            foreach ($vacations as $vacation) 
+            {
+               $starter = new Carbon($vacation->start_date); 
+               $ender = new Carbon($vacation->end_date);
+               $vacation->days = $starter->diffInDays($ender) + 1; 
+               $vacation->category = $paid[$vacation->paid];
+            }
+            
+       }    
+     
+
+    return view('employees.paymentHistory',compact('employee','stuff','bonuses','deductions','loans','vacations')); 
    }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    public function payrollContentUnapprove(Request $request)
@@ -88,6 +132,16 @@ class EmployeesControllerExtra extends Controller
 
             case "deduction":
             DB::table('deductions_xtra')->where('dedXtra_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
+            echo "<i class=\"fa fa-check-square-o\"></i>";
+            break;
+
+            case "loan":
+            DB::table('loans')->where('loan_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
+            echo "<i class=\"fa fa-check-square-o\"></i>";
+            break;
+
+            case "vacation":
+            DB::table('vacation')->where('vacation_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
             echo "<i class=\"fa fa-check-square-o\"></i>";
             break;
 
@@ -119,7 +173,20 @@ class EmployeesControllerExtra extends Controller
                     if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$imageName))
                          File::delete(base_path().'/public/uploads/hrx/deduction/'.$imageName);
                     return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Deduction removed!');  
-                    break;        
+                    break;
+
+                case "loan": 
+                    DB::table('loans')->where('loan_id',$id)->where('approved',0)->delete(); 
+                    if (File::exists(base_path().'/public/uploads/hrx/loan/'.$imageName))
+                         File::delete(base_path().'/public/uploads/hrx/loan/'.$imageName);
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Loan removed!');  
+                    break;
+
+                
+                case "vacation": 
+                    DB::table('vacation')->where('vacation_id',$id)->where('approved',0)->delete(); 
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Vacation removed!');  
+                    break;                   
                 
                 default:
                     return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('warningStatus', 'Something wrong happened!');  
@@ -169,7 +236,15 @@ class EmployeesControllerExtra extends Controller
                             $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/deduction/', $imageName); 
 
                             return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Deduction document uploaded!');
-                            break;    
+                            break;
+
+                        case "loan":
+                           if (File::exists(base_path().'/public/uploads/hrx/loan/'.$imageName))
+                               File::delete(base_path().'/public/uploads/hrx/loan/'.$imageName);  
+                            $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/loan/', $imageName); 
+
+                            return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Loan document uploaded!');
+                            break;          
 
                         
                         default:
@@ -248,5 +323,90 @@ class EmployeesControllerExtra extends Controller
 
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Loan Added!');  
     } 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+   public function addVacation($employeeId)
+    {
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         return view('employees.addVacation',compact('employee'));    
+    } 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   
+    public function saveVacation($employeeId,Request $request)
+    {
+         $employeeId = base64_decode($employeeId); 
+
+         $this->validate($request, [
+        'starter' => 'required|date_format:Y-m-d',
+        'ender' => 'required|date_format:Y-m-d',
+        'paid' => 'required',]); 
+
+         $count = DB::table('vacation')->where('end_date','>=',$request->starter)->where('start_date','<=',$request->ender)->where('emp_id',$employeeId)->count();
+         
+         if($count==0 && $request->starter<=$request->ender)
+         {
+            DB::table('vacation')->insert(['emp_id' => $employeeId, 'start_date' => $request->starter, 'end_date' => $request->ender, 'paid' => $request->paid, 'admin' => Auth::id()]);  
+
+            return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Vacation Added!'); 
+         }
+         else
+           return redirect()->back()->withErrors('Duplication error. Try again')->withInput();
+
+          
+    }
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   
+    public function employeeVacationCheck(Request $request)
+    {
+        $starter = $request->get('starter');  
+        $ender = $request->get('ender');
+        $employeeId = $request->get('employeeId');
+
+        $count = 1; 
+        $count = DB::table('vacation')->where('end_date','>=',$starter)->where('start_date','<=',$ender)->where('emp_id',$employeeId)->count();
+            
+
+        if($count || $starter>$ender)
+        return response()->json(['valid' => 'false', 'message' => 'Date Conflicts. Vacation saved in the given date range','available'=>'false']);
+
+        else
+        {
+          $start = new Carbon($starter);  $end = new Carbon($ender); $days=$start->diffInDays($end) + 1;
+          return response()->json(['valid' => 'true', 'message' => $days.' days','available'=>'true']);   
+        }
+             
+    }  
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+   public function addSicks($employeeId)
+    {
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         
+         $now = Carbon::now();
+         $joining_date = new Carbon($employee->joining_date);
+         $currentYearStart = new Carbon($employee->joining_date); 
+         $currentYearEnd = new Carbon($employee->joining_date); 
+
+         $workedDays = $joining_date->diffInDays($now) + 1;
+
+         if($workedDays > 90)
+           {
+            $yearScale =   intval($workedDays/364);  
+            
+            $currentYearStart->addYears($yearScale);
+ 
+            $currentYearEnd->addYears($yearScale+1);  
+            $currentYearEnd->subDays(1);
+
+            $currentYearStart=$currentYearStart->toDateString();
+            $currentYearEnd=$currentYearEnd->toDateString();
+
+            //echo $joining_date." current start".$currentYearStart." current end".$currentYearEnd;
+           }
+         
+         //return view('employees.addSicks',compact('employee'));    
+    }     
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 } 

@@ -269,6 +269,13 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/employee/{employeeId}/add/loan', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addLoan']);
     Route::post('/employee/{employeeId}/add/loan', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveLoan']);
 
+    Route::get('/employee/{employeeId}/add/vacation', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@addVacation']);
+    Route::post('/employee/{employeeId}/add/vacation', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@saveVacation']);
+    Route::get('/employeeVacationCheck', 'EmployeesControllerExtra@employeeVacationCheck');
+
+    Route::get('/employee/{employeeId}/add/sicks', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@addSicks']);
+    Route::post('/employee/{employeeId}/add/sicks', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@saveSicks']);
+
 });
 
  

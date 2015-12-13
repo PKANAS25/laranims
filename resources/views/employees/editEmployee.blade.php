@@ -51,7 +51,7 @@ session(['subtitle' => '']); ?>
                                  <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="fullname">Fullname :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="fullname"   name="fullname" data-fv-notempty="true"   value="{{$employee->fullname}}" />
+                                        <input class="form-control" type="text" id="fullname"   name="fullname" data-fv-notempty="true" data-fv-remote="true"  value="{{$employee->fullname}}" />
                                     </div>
                                 </div>
 

@@ -51,6 +51,7 @@ session(['subtitle' => '']); ?>
                                    <table  id="data-table" class="table table-striped table-bordered">
                                        <thead>
                                            <tr>
+                                                <th>#</th>
                                                <th>Date</th>
                                                <th>Amount</th>
                                                <th>Notes</th>
@@ -65,6 +66,7 @@ session(['subtitle' => '']); ?>
                                        <tbody>
                                         @foreach($bonuses AS $index => $bonus)
                                            <tr class="@if($bonus->approved==0) text-warning @elseif($bonus->approved==-1) text-danger @elseif($bonus->approved==1) text-success @endif">
+                                                <td>{{$index+1}}</td>
                                                <td>{{$bonus->dated}}</td>
                                                <td>{{$bonus->amount}}</td>
                                                <td>{{$bonus->notes}}</td>
@@ -149,12 +151,13 @@ session(['subtitle' => '']); ?>
                                    </table>
                                
 
-    <!--------------------------------------------------------------Deductions------------------------------------------------------------------------------ -->  
+    <!--------------------------------------------------------------Deductions----------------------------------------------------------------------- -->  
 
                                     @elseif($stuff=='deduction')
                                     <table  id="data-table" class="table table-striped table-bordered">
                                        <thead>
                                            <tr>
+                                                <th>#</th>
                                                <th>Date</th>
                                                <th>Reason</th>
                                                <th>Amount</th>
@@ -170,6 +173,7 @@ session(['subtitle' => '']); ?>
                                        <tbody>
                                         @foreach($deductions AS $index => $deduction)
                                            <tr class="@if($deduction->approved==0) text-warning @elseif($deduction->approved==-1) text-danger @elseif($deduction->approved==1) text-success @endif">
+                                               <td>{{$index+1}}</td>
                                                <td>{{$deduction->dated}}</td>
                                                <td>{{$deduction->reason}}</td>
                                                <td>{{$deduction->amount}}</td>
@@ -253,7 +257,193 @@ session(['subtitle' => '']); ?>
                                         @endforeach   
                                        </tbody>
                                    </table>
-                                
+<!--------------------------------------------------------------Loans----------------------------------------------------------------------- -->  
+
+                                    @elseif($stuff=='loan')
+                                    <table  id="data-table" class="table table-striped table-bordered">
+                                       <thead>
+                                           <tr>
+                                                <th>#</th>
+                                               <th>Payment Date</th>
+                                               <th>Deduction Starts On</th>
+                                               <th>Amount</th>
+                                               <th>Per Round</th>
+                                               <th>Returned</th>
+                                               <th>Balance</th>
+                                               <th>Entered By</th>
+                                               <th>Approved By</th> 
+                                               <th></th>
+                                               <th></th>
+                                               <th></th>
+                                               <th></th>
+                                           </tr>
+                                       </thead>
+                                        <tbody>
+                                        @foreach($loans AS $index => $loan)
+                                           <tr class="@if($loan->approved==0) text-warning @elseif($loan->approved==-1) text-danger @elseif($loan->approved==1) text-success @endif">
+                                               <td>{{$index+1}}</td>
+                                               <td>{{$loan->payment_date}}</td>
+                                               <td>{{$loan->deduction_start}}</td>
+                                               <td>{{$loan->loaned_amount}}</td>
+                                               <td>{{$loan->deduction_amount}}</td>
+                                               <td>{{$loan->total_deducted}}</td>
+                                               <td>{{$loan->loaned_amount - $loan->total_deducted}}</td>
+                                               <td>{{$loan->admn}}</td> 
+                                               <td>{{$loan->hrm}}</td>
+                                               <td>{{$loan->reject_reason}}</td>
+                                               <td>@if($loan->file)
+                                               <a href="#modal-dialogloan{{$loan->loan_id}}"  data-toggle="modal"><i class="fa fa-download text-info"></i></a>
+                                                <div class="modal fade" id="modal-dialogloan{{$loan->loan_id}}">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                <h4 class="modal-title">Loan Document</h4> 
+                                                                @if(Auth::user()->hasRole('HRAdmin') && $loan->approved!=-1)
+                                                                <a href="/employee/upload/hrx/{{base64_encode('loan')}}/{{base64_encode($loan->loan_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                @endif
+                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                            </div>
+                                                            <div class="modal-body" >
+                                                                <img height="100%" width="100%" src="/uploads/hrx/loan/{{$loan->loan_id}}.jpg"  />
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                @else
+                                                @if(Auth::user()->hasRole('HRAdmin') && $loan->approved!=-1)
+                                                <a href="/employee/upload/hrx/{{base64_encode('loan')}}/{{base64_encode($loan->loan_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                <i class="fa fa-upload text-inverse"></i></a>
+                                                @endif                                               
+                                                @endif
+                                               </td>
+                                               <td>
+                                                @if($loan->admin==Auth::id() && $loan->approved==0)
+                                               <button id="loanDel{{$index}}"><i  class="fa fa-trash text-danger"></i></button>
+                                                 <script type="text/javascript">
+                                                    $('#loanDel{{$index}}').click(function(ev) {
+                                                    
+                                                      $.msgbox("<p>Are you sure you want to delete this?</p>", {
+                                                        type    : "prompt",
+                                                         inputs  : [
+                                                          {type: "hidden", name: "no", value: "no"} 
+                                                        ],
+                                                         
+                                                        buttons : [
+                                                          {type: "submit", name: "delete", value: "Delete"},
+                                                          {type: "cancel", value: "Cancel"}
+                                                        ],
+                                                        form : {
+                                                          active: true,
+                                                          method: 'get',
+                                                          action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($loan->loan_id),base64_encode('loan'),base64_encode($employee->employee_id)]) !!}'
+                                                        }
+                                                      });
+                                                      
+                                                      ev.preventDefault();
+                                                    
+                                                    });
+                                                 </script>
+                                                 @endif
+                                                 </td>
+                                               <td>@if(Auth::user()->hasRole('Superman') && $loan->approved==1) 
+                                               <div id="loan{{$loan->loan_id}}">
+                                               <button class="btn btn-xs" id="loanUnapprove{{$loan->loan_id}}" value="{{$loan->loan_id}}"> <i class="fa fa-refresh"></i></button>
+                                               </div>
+                                                <script type="text/javascript">
+                                                    $(document.body).on('click', '#loanUnapprove{{$loan->loan_id}}', function(e){
+                                                        e.preventDefault();
+                                                        id = $(this).val();
+
+                                                         $.get('/payrollContentUnapprove',{stuff:'loan', id:id }, function(actionBlade){                      
+                                                            $("#loan{{$loan->loan_id}}").html(actionBlade);
+                                                             
+                                                        });
+                                                    });
+                                                </script>
+                                               @endif</td>
+                                           </tr>
+                                        @endforeach   
+                                       </tbody>
+                                   </table>                                   
+
+
+<!--------------------------------------------------------------Vacations----------------------------------------------------------------------- -->  
+
+                                    @elseif($stuff=='vacation')
+                                    <table  id="data-table" class="table table-striped table-bordered">
+                                       <thead>
+                                           <tr>
+                                           <th>#</th>
+                                               <th>Date</th>
+                                               <th>Days</th>
+                                               <th>Category</th>
+                                               <th>Entered By</th>
+                                               <th>Approved By</th>  
+                                               <th></th>
+                                               <th></th> 
+                                           </tr>
+                                       </thead>
+                                        <tbody>
+                                        @foreach($vacations AS $index => $vacation)
+                                           <tr class="@if($vacation->approved==0) text-warning @elseif($vacation->approved==-1) text-danger @elseif($vacation->approved==1) text-success @endif">
+                                               <td>{{$index+1}}</td>
+                                               <td>{{$vacation->start_date}} to {{$vacation->end_date}}</td>
+                                               <td>{{$vacation->days}}</td>
+                                               <td>{{$vacation->category}}</td>
+                                               <td>{{$vacation->admn}}</td> 
+                                               <td>{{$vacation->hrm}}</td>
+                                                
+                                               <td>
+                                                @if($vacation->admin==Auth::id() && $vacation->approved==0)
+                                               <button id="vacationDel{{$index}}"><i  class="fa fa-trash text-danger"></i></button>
+                                                 <script type="text/javascript">
+                                                    $('#vacationDel{{$index}}').click(function(ev) {
+                                                    
+                                                      $.msgbox("<p>Are you sure you want to delete this?</p>", {
+                                                        type    : "prompt",
+                                                         inputs  : [
+                                                          {type: "hidden", name: "no", value: "no"} 
+                                                        ],
+                                                         
+                                                        buttons : [
+                                                          {type: "submit", name: "delete", value: "Delete"},
+                                                          {type: "cancel", value: "Cancel"}
+                                                        ],
+                                                        form : {
+                                                          active: true,
+                                                          method: 'get',
+                                                          action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($vacation->vacation_id),base64_encode('vacation'),base64_encode($employee->employee_id)]) !!}'
+                                                        }
+                                                      });
+                                                      
+                                                      ev.preventDefault();
+                                                    
+                                                    });
+                                                 </script>
+                                                 @endif
+                                                 </td>
+                                               <td>@if(Auth::user()->hasRole('Superman') && $vacation->approved==1) 
+                                               <div id="vacation{{$vacation->vacation_id}}">
+                                               <button class="btn btn-xs" id="vacationUnapprove{{$vacation->vacation_id}}" value="{{$vacation->vacation_id}}"> <i class="fa fa-refresh"></i></button>
+                                               </div>
+                                                <script type="text/javascript">
+                                                    $(document.body).on('click', '#vacationUnapprove{{$vacation->vacation_id}}', function(e){
+                                                        e.preventDefault();
+                                                        id = $(this).val();
+
+                                                         $.get('/payrollContentUnapprove',{stuff:'vacation', id:id }, function(actionBlade){                      
+                                                            $("#vacation{{$vacation->vacation_id}}").html(actionBlade);
+                                                             
+                                                        });
+                                                    });
+                                                </script>
+                                               @endif</td>
+                                           </tr>
+                                        @endforeach   
+                                       </tbody>
+                                   </table>                                      
     <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
                                     @endif <!-- if stuff=='xyz'  -->
          

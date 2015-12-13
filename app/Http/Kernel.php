@@ -43,5 +43,6 @@ class Kernel extends HttpKernel
         'StoreAnyRole' =>\App\Http\Middleware\StoreAnyRole::class,
         'HRAdmin' =>\App\Http\Middleware\HRAdmin::class,
         'SalaryEditor' =>\App\Http\Middleware\SalaryEditor::class,
+        'AttendanceManager' =>\App\Http\Middleware\AttendanceManager::class,
     ];
 }
