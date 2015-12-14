@@ -397,7 +397,7 @@ public function lockUnlock(Request $request)
         
         $subscriptionId =  $request->subscriptionId; 
                 
-        if(Auth::user()->hasRole('subscriptionUnlock')
+        if(Auth::user()->hasRole('subscriptionUnlock'))
         {    
             $subscription = Subscription::where('subscription_id',$subscriptionId)->first();
             if($subscription && $request->action=="unlock")
@@ -652,7 +652,7 @@ public function refundPost($studentId,$standard,Request $request)
 
     $addedTrans = DB::table('added_transportations') 
                          ->where('subscription_id',$subscription->subscription_id) 
-                         ->whereRaw('? BETWEEN `start_date` AND `end_date`')->setBindings([$last_date])
+                         ->whereRaw($last_date.' BETWEEN `start_date` AND `end_date`') 
                          ->where('deleted',0)
                          ->first();
     
@@ -695,7 +695,7 @@ public function refundPost($studentId,$standard,Request $request)
 
     $addedTrans2 = DB::table('added_transportations') 
                          ->where('subscription_id',$subscription->subscription_id) 
-                         ->whereRaw('? > `end_date`')->setBindings([$last_date])
+                         ->whereRaw($last_date.' > `end_date`') 
                          ->where('deleted',0)
                          ->first();
     

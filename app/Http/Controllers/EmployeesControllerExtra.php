@@ -403,10 +403,28 @@ class EmployeesControllerExtra extends Controller
             $currentYearStart=$currentYearStart->toDateString();
             $currentYearEnd=$currentYearEnd->toDateString();
 
+           
+            $sickFull = DB::table('staff_attendance')
+                           ->where('attendance_type',2)
+                           ->whereBetween('dated',[$currentYearStart,$currentYearEnd])
+                           ->where('employee_id',$employeeId)
+                           ->count();
+
+            $sickHalf = DB::table('staff_attendance')
+                           ->where('attendance_type',10)
+                           ->whereBetween('dated',[$currentYearStart,$currentYearEnd])
+                           ->where('employee_id',$employeeId)
+                           ->count();
             //echo $joining_date." current start".$currentYearStart." current end".$currentYearEnd;
            }
          
-         //return view('employees.addSicks',compact('employee'));    
-    }     
+         return view('employees.addSicks',compact('employee','currentYearStart','currentYearEnd','sickFull','sickHalf'));    
+    }  
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+   public function saveSicks($employeeId)
+    {
+    }       
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 } 
