@@ -67,17 +67,23 @@ session(['subtitle' => '']); ?>
                                     <label class="control-label col-md-4 col-sm-4"></label>
                                     <div class="col-md-6 col-sm-6">
                                         <button type="reset" class="btn btn-sm btn-error">Reset</button>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                       @if($workedDays>90)<button type="submit" class="btn btn-primary">Submit</button>@endif
                                     </div>
                                 </div>
                                </form>
-                             
+                        @if($workedDays>90)     
                          <div align="center"  class="external-event bg-blue-lighter" data-bg="bg-blue-lighter" > 
                           <h5> Current Period: {{$currentYearStart}} to {{$currentYearEnd}}</h5>
                           <input type="button" class="btn btn-warning m-r-5 m-b-5" value="Full Sick Leave: {{$sickFull}}">   
                          <input type="button" class="btn btn-warning m-r-5 m-b-5" value="Half Sick Leave: {{$sickHalf}}"> 
                          </div>
-                        </div> 
+                         
+                        @else 
+                        <div class="alert alert-danger" align="center">
+                          <h5>Currently not qualified for sick leave</h5> 
+                         </div>
+                         
+                        @endif
                          
                              
                              
@@ -113,7 +119,33 @@ session(['subtitle' => '']); ?>
 
             
             
-       $('#eForm').formValidation(); 
+       $('#eForm').formValidation({
+                
+                fields:{
+                    
+
+                    starter: {
+                      
+                        validators: {
+                           
+                                 callback: {
+                                message: 'End date must be greater than start date',
+                                callback: function(value, validator, $field) {
+                                    var end = $('#eForm').find('[name="ender"]').val();
+                                   if(value>end)
+                                    return false;
+                                    else return true;
+                                }
+                            }
+                        }
+                    }
+
+ 
+
+
+                }                
+ 
+    }) ;
      
 
   });             

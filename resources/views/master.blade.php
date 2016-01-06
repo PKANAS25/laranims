@@ -37,6 +37,8 @@
 
 	<script src="/plugins/jquery/jquery-1.9.1.min.js"></script>
 	<!-- ================== END BASE JS ================== -->
+	 
+
 	<style type="text/css">
 	.onlyprint {display: none;}
 	.onlyprintCenter {display: none;}

@@ -37,6 +37,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
    
          
     Route::get('/home', 'HomeController@home');
+    Route::get('/excelHome', 'ExcelController@home');
 //--------------------------------------StudentsController----------------------------------------
     Route::get('/enroll', ['middleware' => 'nursery_admin','uses'=>'StudentsController@enroll']); 
     Route::get('/enrollCheck', 'StudentsController@enrollCheck');
@@ -95,7 +96,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
  //---------------------------------------GradesController-------------------------------------------------------------
     Route::get('/students/grades', 'GradesController@index');
-    Route::get('/students/grade/{classId}/students/{filter}', 'GradesController@students');    
+    Route::get('/students/grade/{classId}/students/{filter}', 'GradesController@students');   
+    Route::get('/excelStudentsList/{classId}/students/{filter}', 'ExcelController@students');   
     Route::post('/students/grade/{classId}/students/{filter}', 'GradesController@gradeTransfer');
 
     Route::get('/students/grade/{classId}/attendance', 'GradesController@editAttendance');
@@ -275,6 +277,10 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/employee/{employeeId}/add/sicks', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@addSicks']);
     Route::post('/employee/{employeeId}/add/sicks', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@saveSicks']);
+
+    Route::get('/employee/{employeeId}/add/maternity', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addMaternity']);
+    Route::post('/employee/{employeeId}/check/maternity', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@checkMaternity']); 
+    Route::post('/employee/{employeeId}/add/maternity', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveMaternity']);
 
 });
 

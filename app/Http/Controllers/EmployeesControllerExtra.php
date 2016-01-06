@@ -389,11 +389,13 @@ class EmployeesControllerExtra extends Controller
          $currentYearStart = new Carbon($employee->joining_date); 
          $currentYearEnd = new Carbon($employee->joining_date); 
 
+         $sickFull = $sickHalf = 0;
+
          $workedDays = $joining_date->diffInDays($now) + 1;
 
          if($workedDays > 90)
            {
-            $yearScale =   intval($workedDays/364);  
+            $yearScale =   intval($workedDays/366);  
             
             $currentYearStart->addYears($yearScale);
  
@@ -415,16 +417,186 @@ class EmployeesControllerExtra extends Controller
                            ->whereBetween('dated',[$currentYearStart,$currentYearEnd])
                            ->where('employee_id',$employeeId)
                            ->count();
-            //echo $joining_date." current start".$currentYearStart." current end".$currentYearEnd;
+             //echo "year scale: ".$yearScale."workedDays: ".$workedDays." joining_date: ".$joining_date." current start".$currentYearStart." current end".$currentYearEnd."<br>";
            }
          
-         return view('employees.addSicks',compact('employee','currentYearStart','currentYearEnd','sickFull','sickHalf'));    
+         return view('employees.addSicks',compact('employee','currentYearStart','currentYearEnd','sickFull','sickHalf','workedDays'));    
     }  
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 
-   public function saveSicks($employeeId)
+   public function saveSicks($employeeId,Request $request)
     {
-    }       
+       $startDate = $request->starter;
+       $endDate = $request->ender;
+
+       $employeeId = base64_decode($employeeId); 
+       $employee = Employee::where('employee_id',$employeeId)->first();
+
+       
+       $joining_date = new Carbon($employee->joining_date);
+       $startDate = new Carbon($startDate);  
+       $endDate = new Carbon($endDate); 
+       
+
+       $dated = $startDate;
+
+       $inserted = 0;
+
+       $workedDays = $joining_date->diffInDays($startDate) + 1;
+
+       if($workedDays>90)
+       {
+        while($dated<=$endDate)   
+         {
+          $workedDays = $joining_date->diffInDays($dated) + 1;
+
+          $currentYearStart = new Carbon($employee->joining_date); 
+          $currentYearEnd = new Carbon($employee->joining_date); 
+
+          $exists = DB::table('staff_attendance')
+                      ->where('dated',$dated->toDateString())
+                      ->count();
+
+          if(!$exists)
+          { 
+              $yearScale =   intval($workedDays/366);  
+            
+              $currentYearStart->addYears($yearScale);
+   
+              $currentYearEnd->addYears($yearScale+1);  
+              $currentYearEnd->subDays(1);
+
+              $currentYearStart=$currentYearStart->toDateString();
+              $currentYearEnd=$currentYearEnd->toDateString();
+              
+              //echo "year scale: ".$yearScale." dated: ".$dated."workedDays: ".$workedDays." joining_date: ".$joining_date." current start".$currentYearStart." current end".$currentYearEnd."<br>";
+              
+              $sickFull = DB::table('staff_attendance')
+                           ->where('attendance_type',2)
+                           ->whereBetween('dated',[$currentYearStart,$currentYearEnd])
+                           ->where('employee_id',$employeeId)
+                           ->count();
+                            
+              if($sickFull<15) 
+              {
+                 DB::table('staff_attendance')->insert(['dated' => $dated->toDateString(), 'employee_id' => $employeeId, 'attendance_type' => 2, 'admin' => Auth::id()]);   
+                 $inserted=1;
+              }
+              
+              elseif($sickFull>=15)  
+              {
+                $sickHalf = DB::table('staff_attendance')
+                           ->where('attendance_type',10)
+                           ->whereBetween('dated',[$currentYearStart,$currentYearEnd])
+                           ->where('employee_id',$employeeId)
+                           ->count();
+                
+                if($sickHalf<30)
+                {
+                   DB::table('staff_attendance')->insert(['dated' => $dated->toDateString(), 'employee_id' => $employeeId, 'attendance_type' => 10, 'admin' => Auth::id()]);
+                   $inserted=1; 
+                }
+
+              }//elseif($sickFull>=15)  
+
+          }//if(!$exists)            
+
+          $dated->addDays(1);
+         }//while($dated<=$end_date)
+         if($inserted)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Sick Leaves Added! Please confirm with attendance report'); 
+         else
+          return redirect()->back()->withErrors('Something went wrong. Please check this employee\'s previous data and sick leave qualification')->withInput();
+       }//if($workedDays>90)
+       return redirect()->back()->withErrors('Something went wrong. Please check this employee\'s previous data and sick leave qualification')->withInput();
+    }     
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+   public function addMaternity($employeeId)
+    {
+         $checked=0;
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+
+         $joiningDate = new Carbon($employee->joining_date);
+         $now = Carbon::now();
+         $months =  $now->diffInMonths($joiningDate);   
+
+         return view('employees.addMaternity',compact('employee','months','checked'));    
+    } 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    public function checkMaternity($employeeId,Request $request)
+    {
+         $checked=1;
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+
+         $dated = new Carbon($request->dated);
+
+         $joiningDate = new Carbon($employee->joining_date); 
+         $months =  $dated->diffInMonths($joiningDate);   
+
+         $salary = EmployeesSalary::where('employee_id',$employeeId)->first();
+         $total = $salary->basic + $salary->accomodation + $salary->travel + $salary->other;
+         $daySalary = $total/30;
+
+         $previous = DB::table('bonus')
+                       ->where('notes','Maternity Leave Bonus')
+                       ->where('approved','!=',-1)
+                       ->where('emp_id',$employeeId)
+                       ->max('dated');
+
+         if($previous) 
+         {
+          $previous = new Carbon($previous); 
+          $monthdDiffPaid = $dated->diffInMonths($previous);   
+         }
+         else $monthdDiffPaid = 12;
+      
+       $dated = $dated->toDateString();
+
+         return view('employees.addMaternity',compact('employee','months','monthdDiffPaid','checked','dated','daySalary'));  
+    
+    } 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+      public function saveMaternity($employeeId,Request $request)
+    {
+         $employeeId = base64_decode($employeeId); 
+
+         $this->validate($request, [
+        'dated' => 'required|date_format:Y-m-d',
+        'amount' => 'required|numeric',]); 
+
+         $notes = 'Maternity Leave Bonus';
+
+         $previous = DB::table('bonus')
+                       ->where('notes','Maternity Leave Bonus')
+                       ->where('approved','!=',-1)
+                       ->where('emp_id',$employeeId)
+                       ->max('dated');
+
+         if($previous) 
+         {
+          $previous = new Carbon($previous); 
+          $bonus_date = new Carbon($request->dated);
+          $monthdDiffPaid = $bonus_date->diffInMonths($previous);  
+        }
+        else $monthdDiffPaid = 12;
+        
+
+        if($monthdDiffPaid>=12)
+        {
+          DB::table('bonus')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $notes, 'admin' => Auth::id()]);  
+
+          return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Maternity Bonus Added!'); 
+        }
+        else
+          return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'Date manipulations found. Exit with error');
+         
+    }
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 } 
+
+ 

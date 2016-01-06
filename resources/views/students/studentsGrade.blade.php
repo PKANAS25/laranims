@@ -209,6 +209,8 @@ session(['subtitle' => 'grades']); ?>
                                 <a class="btn btn-sm btn-inverse m-b-10 hidden-print" href="{!! action('GradesController@students', array($classId,'deleted')) !!}">Show Deleted</a>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <a href="javascript:;" onclick="window.print()" class="btn btn-sm btn-success m-b-10 hidden-print"><i class="fa fa-print m-r-5"></i> Print</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a class="btn btn-sm text-white bg-yellow-darker m-b-10 hidden-print"  href="{!! action('ExcelController@students', array($classId,$filter)) !!}"><i class="fa fa-file-excel-o"></i> Excel</a>
                         </div> 
                         <div class="panel-body hidden-print">
                              @if($filter!='deleted')

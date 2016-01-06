@@ -251,7 +251,7 @@ session(['subtitle' => '']); ?>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif  class="btn bg-yellow-darker text-white btn-block btn-sm">Maternity Leave</a>
+                                                    <a @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/maternity" @endif  class="btn bg-yellow-darker text-white btn-block btn-sm">Maternity Leave</a>
                                                     </td>
                                                     <td>
                                                     <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) href="#" @endif class="btn bg-green-darker text-white btn-block btn-sm">Absent Correction</a>

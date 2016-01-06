@@ -96,6 +96,7 @@ session(['subtitle' => '']); ?>
                         </div>
                         <div class="panel-body">
                              <div class="table-responsive"> 
+
                             <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
@@ -140,7 +141,8 @@ session(['subtitle' => '']); ?>
                                 @endforeach
                                      
                                 </tbody>
-                            </table>
+                            </table> 
+                            <a class="btn btn-sm text-white bg-yellow-darker"  href="/excelHome"><i class="fa fa-file-excel-o"></i> Excel</a>
                         </div>
                         </div>
                     </div> 
