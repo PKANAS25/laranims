@@ -43,7 +43,7 @@ class ExcelController extends Controller
             
             ->get(); 
 
-        Excel::create(Auth::user()->branch_name.' Home', function($excel) use ($subscriptions)  {
+        Excel::create(Auth::user()->branch_name.' Dashboard', function($excel) use ($subscriptions)  {
 
         // Set the title
         $excel->setTitle('Al Dana NMS');

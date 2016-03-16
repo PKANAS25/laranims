@@ -118,8 +118,16 @@ session(['subtitle' => '']); ?>
                                         <tr>
                                             <th></th>
                                             <th>
-                                                <h4>{{$employee->fullname}} @if($employee->gender=='f') <i class="fa fa-female"></i> @else <i class="fa fa-male"></i> @endif
-                                                <small>{{$employee->designation}} - <span class="@if($employee->deleted==0) text-success @elseif($employee->deleted==1) text-inverse @elseif($employee->deleted==2) text-danger @elseif($employee->deleted==3) text-warning  @endif"><strong>{{$employee->status}}</strong> 
+                                                <h4>
+                                                {{$employee->fullname}} @if($employee->gender=='f') <i class="fa fa-female"></i> @else <i class="fa fa-male"></i> @endif
+                                                <small>{{$employee->designation}} - 
+                                                <span class=
+                                                             @if($employee->deleted==0) "text-success" 
+                                                             @elseif($employee->deleted==1) "text-inverse" 
+                                                             @elseif($employee->deleted==2) "text-danger" 
+                                                             @elseif($employee->deleted==3) "text-warning"  
+                                                             @endif
+                                                             ><strong>{{$employee->status}}</strong> 
                                                 </span>
                                                 </small>
                                                 </h4>
@@ -254,7 +262,8 @@ session(['subtitle' => '']); ?>
                                                     <a @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/maternity" @endif  class="btn bg-yellow-darker text-white btn-block btn-sm">Maternity Leave</a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) href="#" @endif class="btn bg-green-darker text-white btn-block btn-sm">Absent Correction</a>
+                                                    <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/absentCorrection" @endif class="btn bg-green-darker text-white  btn-sm">Absent Correction</a>
+                                                    <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'absentCorrection'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
                                                     <a  @if(Auth::user()->hasRole('ProPayments') && $employee->deleted==0) href="#" @endif class="btn bg-purple text-white btn-block btn-sm">Pro payments</a>

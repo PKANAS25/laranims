@@ -51,7 +51,29 @@ class EmployeesControllerExtra extends Controller
                   else  
                   $bonus->file=0;                  
             }
-      } 
+      }
+
+      if($stuff=='absentCorrection')
+      {
+      
+          $bonuses = DB::table('bonus')
+                         ->select('bonus.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','bonus.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','bonus.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId)
+                         ->where('absent_correction',1)
+                         ->orderBy('dated','DESC')
+                         ->get();
+
+            foreach ($bonuses as $bonus) 
+            { 
+                  if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$bonus->bonus_id.'.jpg'))
+                     $bonus->file=1; 
+                 
+                  else  
+                  $bonus->file=0;                  
+            }
+      }  
      
       elseif($stuff=='deduction')
       {
@@ -227,7 +249,7 @@ class EmployeesControllerExtra extends Controller
                                File::delete(base_path().'/public/uploads/hrx/bonus/'.$imageName);  
                             $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/bonus/', $imageName); 
 
-                            return redirect()->action('EmployeesControllerExtra@payContentHistory',$employeeId)->with('status', 'Bonus document uploaded!');
+                            return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Bonus document uploaded!');
                             break;
 
                         case "deduction":
@@ -595,6 +617,65 @@ class EmployeesControllerExtra extends Controller
         else
           return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'Date manipulations found. Exit with error');
          
+    }
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+   public function absentCorrection($employeeId)
+    { 
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first(); 
+
+         return view('employees.absentCorrection',compact('employee'));    
+    } 
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public function absentCorrectionCheck(Request $request)
+    {
+        $starter = $request->get('starter');  
+        $ender = $request->get('ender');
+        $employeeId = $request->get('employeeId');
+
+        
+        $count = 1; 
+        $count = DB::table('bonus')->where('end_date','>=',$starter)->where('start_date','<=',$ender)->where('emp_id',$employeeId)->where('approved','!=',-1)->count();
+            
+
+        if($count || $starter>$ender)
+        return response()->json(['valid' => 'false', 'message' => 'Date Conflicts. Please check previous absent correction bonus','available'=>'false']);
+
+        else
+         return response()->json(['valid' => 'true', 'message' => ' ','available'=>'true']);
+
+         
+             
+    }  
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public function absentCorrectionSave($employeeId,Request $request)
+    {
+         $employeeId = base64_decode($employeeId); 
+
+         $this->validate($request, [
+        'starter' => 'required|date_format:Y-m-d',
+        'ender' => 'required|date_format:Y-m-d',
+        'dated' => 'required|date_format:Y-m-d',
+        'amount' => 'required|numeric',]); 
+
+         $count = DB::table('bonus')->where('end_date','>=',$request->starter)->where('start_date','<=',$request->ender)->where('emp_id',$employeeId)->where('approved','!=',-1)->count();
+         
+         if($count==0 && $request->starter<=$request->ender)
+         {
+            DB::table('bonus')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'absent_correction' => 1, 'start_date' => $request->starter, 'end_date' => $request->ender, 'admin' => Auth::id()]);  
+
+           return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Absent correction bonus added!');  
+         }
+
+         else
+           return redirect()->back()->withErrors('Something went wrong. Try again')->withInput();
+
+          
     }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 } 

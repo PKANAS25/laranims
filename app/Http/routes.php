@@ -282,6 +282,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/employee/{employeeId}/check/maternity', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@checkMaternity']); 
     Route::post('/employee/{employeeId}/add/maternity', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveMaternity']);
 
+    Route::get('/employee/{employeeId}/absentCorrection', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@absentCorrection']);
+    Route::get('/absentCorrectionCheck', 'EmployeesControllerExtra@absentCorrectionCheck');
+    Route::post('/employee/{employeeId}/absentCorrection', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@absentCorrectionSave']);
 });
 
  
