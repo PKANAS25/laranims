@@ -285,6 +285,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/employee/{employeeId}/absentCorrection', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@absentCorrection']);
     Route::get('/absentCorrectionCheck', 'EmployeesControllerExtra@absentCorrectionCheck');
     Route::post('/employee/{employeeId}/absentCorrection', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@absentCorrectionSave']);
+
+     Route::get('/employee/{employeeId}/proPayment', ['middleware' => 'ProPayments','uses'=>'EmployeesControllerExtra@proPayment']);
 });
 
  

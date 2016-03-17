@@ -188,7 +188,7 @@ session(['subtitle' => '']); ?>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                                 <h4 class="modal-title">Bonus Document</h4> 
                                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $bonus->approved!=-1)
-                                                                <a href="/employee/upload/hrx/{{base64_encode('bonus')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                <a href="/employee/upload/hrx/{{base64_encode('absentCorrection')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
                                                                 @endif
                                                 <i class="fa fa-upload text-inverse"></i> Change File</a>
                                                             </div>
@@ -201,7 +201,7 @@ session(['subtitle' => '']); ?>
                                                 </div> 
                                                 @else
                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $bonus->approved!=-1)
-                                                <a href="/employee/upload/hrx/{{base64_encode('bonus')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                <a href="/employee/upload/hrx/{{base64_encode('absentCorrection')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
                                                 <i class="fa fa-upload text-inverse"></i></a>
                                                 @endif                                               
                                                 @endif
@@ -225,7 +225,7 @@ session(['subtitle' => '']); ?>
                                                         form : {
                                                           active: true,
                                                           method: 'get',
-                                                          action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($bonus->bonus_id),base64_encode('bonus'),base64_encode($employee->employee_id)]) !!}'
+                                                          action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($bonus->bonus_id),base64_encode('absentCorrection'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
                                                       

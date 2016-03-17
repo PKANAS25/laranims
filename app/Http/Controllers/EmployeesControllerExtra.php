@@ -190,6 +190,13 @@ class EmployeesControllerExtra extends Controller
                     return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Bonus removed!');  
                     break;
 
+                case "absentCorrection": 
+                    DB::table('bonus')->where('bonus_id',$id)->where('approved',0)->delete(); 
+                    if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$imageName))
+                         File::delete(base_path().'/public/uploads/hrx/bonus/'.$imageName);
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Bonus removed!');  
+                    break;    
+
                 case "deduction": 
                     DB::table('deductions_xtra')->where('dedXtra_id',$id)->where('approved',0)->delete(); 
                     if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$imageName))
@@ -251,6 +258,14 @@ class EmployeesControllerExtra extends Controller
 
                             return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Bonus document uploaded!');
                             break;
+
+                        case "absentCorrection":
+                           if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$imageName))
+                               File::delete(base_path().'/public/uploads/hrx/bonus/'.$imageName);  
+                            $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/bonus/', $imageName); 
+
+                            return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Bonus document uploaded!');
+                            break;    
 
                         case "deduction":
                            if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$imageName))
@@ -677,6 +692,26 @@ class EmployeesControllerExtra extends Controller
 
           
     }
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+   public function proPayment($employeeId)
+    { 
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first(); 
+
+         $services = DB::table('employee_pro_services')
+                           ->where('removed',0)
+                           ->orderBy('service')
+                           ->get();
+         
+         $companies = DB::table('pro_companies')
+                           ->where('deleted',0)
+                           ->orderBy('company')
+                           ->get();                           
+
+         return view('employees.addProPayment',compact('employee','services','companies'));    
+    }     
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 } 
 

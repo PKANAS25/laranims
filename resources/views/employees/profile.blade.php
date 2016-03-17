@@ -238,35 +238,44 @@ session(['subtitle' => '']); ?>
                                             <tbody> 
                                                 <tr>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/bonus" @endif class="btn btn-info  btn-sm">Add Bonus</a> 
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0)
+                                                     href="/employee/{{base64_encode($employee->employee_id)}}/add/bonus" @endif class="btn btn-info  btn-sm">Add Bonus</a> 
                                                     <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'bonus'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/deduction" @endif class="btn btn-danger   btn-sm">Add Deduction</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/deduction" @endif class="btn btn-danger   btn-sm">Add Deduction</a>
                                                     <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'deduction'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-sm">Personal Loans</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-sm">Personal Loans</a>
                                                     <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'loan'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('AttendanceManager')) && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/vacation" @endif  class="btn btn-warning btn-sm">Vacation</a>
+                                                    <a @if((Auth::user()->hasRole('AttendanceManager')) && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/vacation" @endif  class="btn btn-warning btn-sm">Vacation</a>
                                                     <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'vacation'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/sicks" @endif  class="btn bg-aqua-darker text-white btn-block btn-sm">Sick Leave</a> 
+                                                    <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/sicks" @endif  class="btn bg-aqua-darker text-white btn-block btn-sm">Sick Leave</a> 
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/add/maternity" @endif  class="btn bg-yellow-darker text-white btn-block btn-sm">Maternity Leave</a>
+                                                    <a @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/maternity" @endif  class="btn bg-yellow-darker text-white btn-block btn-sm">Maternity Leave</a>
                                                     </td>
                                                     <td>
-                                                    <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) href="/employee/{{base64_encode($employee->employee_id)}}/absentCorrection" @endif class="btn bg-green-darker text-white  btn-sm">Absent Correction</a>
+                                                    <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/absentCorrection" @endif class="btn bg-green-darker text-white  btn-sm">Absent Correction</a>
                                                     <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'absentCorrection'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a  @if(Auth::user()->hasRole('ProPayments') && $employee->deleted==0) href="#" @endif class="btn bg-purple text-white btn-block btn-sm">Pro payments</a>
+                                                    <a  @if(Auth::user()->hasRole('ProPayments') && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/proPayment" @endif class="btn bg-red-darker text-white btn-sm">Pro Payments</a>
+                                                    <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'absentCorrection'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
                                                     <a  @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif class="btn bg-blue-lighter text-white btn-block btn-sm">Personal Benefits</a>
@@ -283,7 +292,7 @@ session(['subtitle' => '']); ?>
                                                     <a href="#" class="btn bg-blue-darker text-white btn-block btn-sm">Termination</a>
                                                     </td>
                                                     <td>
-                                                    <a href="#" class="btn  bg-red-darker text-white btn-block btn-sm">Transfer</a>
+                                                    <a href="#" class="btn  bg-purple-lighter text-white btn-block btn-sm">Transfer</a>
                                                     </td>
                                                     <td>
                                                     <a href="#" class="btn bg-black-lighter text-white btn-block btn-sm">Delete</a>
@@ -348,13 +357,15 @@ session(['subtitle' => '']); ?>
                            <tr>
                                <td class="field"></td>
                                <td>
-                               <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) href="{{action('EmployeesController@editSalary',base64_encode($employee->employee_id))}}" @endif class="btn btn-inverse btn-sm">
+                               <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) 
+                               href="{{action('EmployeesController@editSalary',base64_encode($employee->employee_id))}}" @endif class="btn btn-inverse btn-sm">
                                <i class="fa fa-edit"></i> Edit</a>
                                </td>
                            </tr>
                        </table>
                        @else
-                       <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) href="{{action('EmployeesController@addSalary',base64_encode($employee->employee_id))}}" @endif class="btn btn-inverse btn-sm">
+                       <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) 
+                       href="{{action('EmployeesController@addSalary',base64_encode($employee->employee_id))}}" @endif class="btn btn-inverse btn-sm">
                                <i class="fa fa-plus"></i> Add Salary Details</a>
                        @endif
                             

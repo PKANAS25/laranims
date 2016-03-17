@@ -20,7 +20,7 @@
                 <ul class="nav">
                     <li class="nav-header">Navigation</li>
 <!-- **************************************************************************************************************************************** -->                    
-                    <li class="@if(session('title') == 'Home')   active @endif"><a href="/home"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
+                    <li class= @if(session('title') == 'Home')   "active" @endif><a href="/home"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
 <!-- ***********************************************************Payments***************************************************************************** -->                                         
                     <li class="has-sub">
                         <a href="javascript:;">
@@ -45,7 +45,7 @@
                     </li>
 
 <!-- ************************************************************Students**************************************************************************** -->                                        
-                    <li class="has-sub @if(session('title') == 'Students')   active @endif">
+                    <li class="has-sub @if(session('title') == 'Students') active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="fa fa-mortar-board"></i>
@@ -61,7 +61,8 @@
                         </ul>
                     </li>
 
-<!-- *******************************************************************Store********************************************************************* -->                    
+<!-- *******************************************************************Store********************************************************************* -->       
+
                     @if(Auth::user()->hasRole('BranchStore') || Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))                    
                     <li class="has-sub @if(session('title') == 'Store')   active @endif">
                         <a href="javascript:;">

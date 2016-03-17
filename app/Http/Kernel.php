@@ -45,5 +45,6 @@ class Kernel extends HttpKernel
         'HROfficer' =>\App\Http\Middleware\HROfficer::class,
         'SalaryEditor' =>\App\Http\Middleware\SalaryEditor::class,
         'AttendanceManager' =>\App\Http\Middleware\AttendanceManager::class,
+        'ProPayments' =>\App\Http\Middleware\ProPayments::class,
     ];
 }
