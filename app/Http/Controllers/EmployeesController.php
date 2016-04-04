@@ -336,6 +336,18 @@ class EmployeesController extends Controller
         //history  
         DB::table('employees_changes')->insert(['employee_id' => $employeeId,'changer_id' => Auth::id(),'action' => $action,'date_time' => Carbon::now()]);
 
+ 
+        if($request->file('fileToUpload'))
+        {
+ 
+             if (File::exists(base_path().'/public/uploads/employee_pics/'.$employeeId.'.jpg'))
+                 File::delete(base_path().'/public/uploads/employee_pics/'.$employeeId.'.jpg');
+            
+            $imageName = $employeeId.'.jpg';
+            Image::make($request->file('fileToUpload'))->save(base_path().'/public/uploads/employee_pics/'.$imageName); 
+
+        }
+
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Employee details changed!');
 
     }    
@@ -410,7 +422,7 @@ class EmployeesController extends Controller
     public function addSalary($employeeId)
     {
         $employeeId = base64_decode($employeeId);
-        $employee = Employee::select('fullname')->where('employee_id',$employeeId)->first();
+        $employee = Employee::select('fullname','employee_id')->where('employee_id',$employeeId)->first();
         $branches = Branch::orderBy('name')->get();
 
         return view('employees.addSalary',compact('branches','employee'));  
@@ -450,7 +462,7 @@ class EmployeesController extends Controller
     public function editSalary($employeeId)
     {
         $employeeId = base64_decode($employeeId);
-        $employee = Employee::select('fullname')->where('employee_id',$employeeId)->first();
+        $employee = Employee::select('fullname','employee_id')->where('employee_id',$employeeId)->first();
         $branches = Branch::orderBy('name')->get();
         
         $salary = EmployeesSalary::select('employees_salary.*','branches.name AS wps')

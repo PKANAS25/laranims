@@ -51,6 +51,8 @@ class EmployeesControllerExtra extends Controller
                   else  
                   $bonus->file=0;                  
             }
+
+            return view('employees.paymentHistory',compact('employee','stuff','bonuses')); 
       }
 
       if($stuff=='absentCorrection')
@@ -73,6 +75,8 @@ class EmployeesControllerExtra extends Controller
                   else  
                   $bonus->file=0;                  
             }
+
+            return view('employees.paymentHistory',compact('employee','stuff','bonuses')); 
       }  
      
       elseif($stuff=='deduction')
@@ -93,6 +97,8 @@ class EmployeesControllerExtra extends Controller
                   else  
                   $deduction->file=0;                  
             } 
+
+            return view('employees.paymentHistory',compact('employee','stuff','deductions')); 
        }
 
       elseif($stuff=='loan')
@@ -113,6 +119,8 @@ class EmployeesControllerExtra extends Controller
                   else  
                   $loan->file=0;                  
             } 
+
+            return view('employees.paymentHistory',compact('employee','stuff','loans')); 
        } 
 
       elseif($stuff=='vacation')
@@ -134,11 +142,24 @@ class EmployeesControllerExtra extends Controller
                $vacation->days = $starter->diffInDays($ender) + 1; 
                $vacation->category = $paid[$vacation->paid];
             }
-            
-       }    
-     
 
-    return view('employees.paymentHistory',compact('employee','stuff','bonuses','deductions','loans','vacations')); 
+            return view('employees.paymentHistory',compact('employee','stuff','vacations','expenses'));             
+       }    
+      
+      elseif($stuff=='expenses')
+      {
+            $expenses = DB::table('employee_expenses')
+                         ->select('employee_expenses.*','users.name AS pro','pro_companies.company AS service_from')
+                         ->leftjoin('users','employee_expenses.pro_id','=','users.id')
+                         ->leftjoin('pro_companies','employee_expenses.company','=','pro_companies.id')
+                         ->where('employee_id',$employeeId) 
+                         ->orderBy('dated_on','DESC')
+                         ->get();  
+
+            return view('employees.paymentHistory',compact('employee','stuff','expenses'));              
+       }
+
+    
    }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    public function payrollContentUnapprove(Request $request)
@@ -167,6 +188,11 @@ class EmployeesControllerExtra extends Controller
             echo "<i class=\"fa fa-check-square-o\"></i>";
             break;
 
+            case "expenses":
+            DB::table('employee_expenses')->where('id',$request->id)->update(['locked'=>0,'decided_by'=>0]);
+            echo "<i class=\"fa fa-check-square-o\"></i>";
+            break;
+
             default:
              echo "??";
        }
@@ -178,7 +204,7 @@ class EmployeesControllerExtra extends Controller
    {  
        $stuff = base64_decode($request->stuff);
        $id = base64_decode($request->Id);
-       $employeeId = $request->employeeId;
+       $employeeId = $request->employeeId; 
        $imageName = $id.".jpg";
 
        switch ($stuff) 
@@ -215,7 +241,10 @@ class EmployeesControllerExtra extends Controller
                 case "vacation": 
                     DB::table('vacation')->where('vacation_id',$id)->where('approved',0)->delete(); 
                     return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Vacation removed!');  
-                    break;                   
+
+                 case "expenses": 
+                    DB::table('employee_expenses')->where('id',$id)->where('locked',0)->where('pro_id',Auth::id())->delete(); 
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Expense removed!');       
                 
                 default:
                     return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('warningStatus', 'Something wrong happened!');  
@@ -711,8 +740,63 @@ class EmployeesControllerExtra extends Controller
                            ->get();                           
 
          return view('employees.addProPayment',compact('employee','services','companies'));    
-    }     
+    } 
+
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   
+    public function employeeExpenseCheck(Request $request)
+    {
+        $company = $request->get('company');  
+        $bill_no = $request->get('bill_no');
+        $employeeId = $request->get('employeeId');
+
+        $count = $count2 = 1; 
+        
+        $count = DB::table('employee_expenses')->where('company',$company)->where('bill_no',$bill_no)->count();
+        $count2 = DB::table('company_expenses')->where('company',$company)->where('bill_no',$bill_no)->count();
+            
+
+        if($count || $count2)
+        return response()->json(['valid' => 'false', 'message' => 'Duplicate bill','available'=>'false']);
+
+        else 
+          return response()->json(['valid' => 'true', 'message' => '  ','available'=>'true']);   
+         
+             
+    }  
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+   public function proPaymentSave($employeeId,Request $request)
+    {
+         $employeeId = base64_decode($employeeId); 
+
+         $this->validate($request, [
+        'being' => 'required',
+        'company' => 'required',
+        'amount' => 'required|numeric',  
+        'bill_no' => 'required',      
+        'bill_date' => 'required|date_format:Y-m-d',]); 
+
+         
+        $count = $count2 = 1; 
+        
+        $count = DB::table('employee_expenses')->where('company',$request->company)->where('bill_no',$request->bill_no)->count();
+        $count2 = DB::table('company_expenses')->where('company',$request->company)->where('bill_no',$request->bill_no)->count();
+         
+         if($count==0 && $count2==0)
+         { 
+            DB::table('employee_expenses')->insert(['being' => $request->being, 'dated_on' => Carbon::now(), 'employee_id' => $employeeId, 'amount' => $request->amount, 'company' => $request->company, 'bill_no' => $request->bill_no, 'bill_date' => $request->bill_date, 'notes' => $request->notes, 'pro_id' => Auth::id()]);  
+
+           return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Employee expense added!');  
+         }
+
+         else
+           return redirect()->back()->withErrors('Something went wrong. Try again')->withInput();
+
+          
+    }
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 } 
 
  

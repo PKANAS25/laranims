@@ -372,15 +372,7 @@ session(['subtitle' => 'addEmp']); ?>
 
                                 </fieldset>
                             </form>
-
-                              <script>
-                                
-
-                                    
-                                  
-
-
-                                </script>
+ 
                         </div> 
                     <!-- end panel --> 
                 </div>

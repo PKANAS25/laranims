@@ -31,9 +31,9 @@
 	<!-- begin #page-loader -->
 	<div id="page-loader" class="fade in"><span class="spinner"></span></div>
 	<!-- end #page-loader -->
-	
+	 <?php $img = rand(1,6);?>
 	<div class="login-cover">
-	    <div class="login-cover-image"><img src="/img/login-bg/bg-2.jpg" data-id="login-cover-image" alt="" /></div>
+	    <div class="login-cover-image"><img src="/img/login-bg/bg-{{ $img }}.jpg" data-id="login-cover-image" alt="" /></div>
 	    <div class="login-cover-bg"></div>
 	</div>
 	<!-- begin #page-container -->
@@ -80,15 +80,14 @@
                 <br><a href="password/email">Forgot password?</a>
             </div>
         </div>
-        <!-- end login -->
-        
+       
         <ul class="login-bg-list">
-            <li ><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-1.jpg" alt="" /></a></li>
-            <li class="active"><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-2.jpg" alt="" /></a></li>
-            <li><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-3.jpg" alt="" /></a></li>
-            <li><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-4.jpg" alt="" /></a></li>
-            <li><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-5.jpg" alt="" /></a></li>
-            <li><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-6.jpg" alt="" /></a></li>
+            <li @if($img==1) class="active" @endif><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-1.jpg" alt="" /></a></li>
+            <li @if($img==2) class="active" @endif><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-2.jpg" alt="" /></a></li>
+            <li @if($img==3) class="active" @endif><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-3.jpg" alt="" /></a></li>
+            <li @if($img==4) class="active" @endif><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-4.jpg" alt="" /></a></li>
+            <li @if($img==5) class="active" @endif><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-5.jpg" alt="" /></a></li>
+            <li @if($img==6) class="active" @endif><a href="#" data-click="change-bg"><img src="/img/login-bg/bg-6.jpg" alt="" /></a></li>
         </ul>
         
         <!-- begin theme-panel -->

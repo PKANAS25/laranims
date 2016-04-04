@@ -548,7 +548,87 @@ session(['subtitle' => '']); ?>
                                            </tr>
                                         @endforeach   
                                        </tbody>
-                                   </table>                                      
+                                   </table>    
+<!--------------------------------------------------------------PRO Payments(Expenses)----------------------------------------------------------------------- -->  
+
+                                    @elseif($stuff=='expenses')
+                                    <table  id="data-table" class="table table-striped table-bordered">
+                                       <thead>
+                                           <tr>
+                                                <th>#</th>
+                                               <th>Entry Date</th>
+                                               <th>Being</th>
+                                               <th>Amount</th>
+                                               <th>Bill No</th>
+                                               <th>Bill Date</th>
+                                               <th>Company</th>
+                                               <th>PRO</th> 
+                                               
+                                               <th></th>
+                                               <th></th>
+                                           </tr>
+                                       </thead>
+                                        <tbody>
+                                        @foreach($expenses AS $index => $expense)
+                                           <tr class= @if($expense->locked==0) "text-warning" @elseif($expense->locked==-1) "text-danger" @elseif($expense->locked==1) "text-success" @endif>
+                                               <td>{{$index+1}}</td>
+                                               <td>{{$expense->dated_on}}</td>
+                                               <td>{{$expense->being}}</td>
+                                               <td>{{$expense->amount}}</td>
+                                               <td>{{$expense->bill_no}}</td>
+                                               <td>{{$expense->bill_date}}</td>
+                                               <td>{{$expense->service_from}}</td>
+                                               <td>{{$expense->pro}}</td> 
+                                               
+                                               <td>
+                                                @if($expense->pro_id==Auth::id() && $expense->locked==0)
+                                               <button id="expenseDel{{$index}}"><i  class="fa fa-trash text-danger"></i></button>
+                                                 <script type="text/javascript">
+                                                    $('#expenseDel{{$index}}').click(function(ev) {
+                                                    
+                                                      $.msgbox("<p>Are you sure you want to delete this?</p>", {
+                                                        type    : "prompt",
+                                                         inputs  : [
+                                                          {type: "hidden", name: "no", value: "no"} 
+                                                        ],
+                                                         
+                                                        buttons : [
+                                                          {type: "submit", name: "delete", value: "Delete"},
+                                                          {type: "cancel", value: "Cancel"}
+                                                        ],
+                                                        form : {
+                                                          active: true,
+                                                          method: 'get',
+                                                          action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($expense->id),base64_encode('expenses'),base64_encode($employee->employee_id)]) !!}'
+                                                        }
+                                                      });
+                                                      
+                                                      ev.preventDefault();
+                                                    
+                                                    });
+                                                 </script>
+                                                 @endif
+                                                 </td>
+                                               <td>@if(Auth::user()->hasRole('Superman') && $expense->locked==1) 
+                                               <div id="expense{{$expense->id}}">
+                                               <button class="btn btn-xs" id="expenseUnapprove{{$expense->id}}" value="{{$expense->id}}"> <i class="fa fa-refresh"></i></button>
+                                               </div>
+                                                <script type="text/javascript">
+                                                    $(document.body).on('click', '#expenseUnapprove{{$expense->id}}', function(e){
+                                                        e.preventDefault();
+                                                        id = $(this).val();
+
+                                                         $.get('/payrollContentUnapprove',{stuff:'expenses', id:id }, function(actionBlade){                      
+                                                            $("#expense{{$expense->id}}").html(actionBlade);
+                                                             
+                                                        });
+                                                    });
+                                                </script>
+                                               @endif</td>
+                                           </tr>
+                                        @endforeach   
+                                       </tbody>
+                                   </table>                                                                       
     <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
                                     @endif <!-- if stuff=='xyz'  -->
          

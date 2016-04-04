@@ -32,7 +32,7 @@ session(['subtitle' => '']); ?>
                             <h4 class="panel-title">{{$employee->fullname}}</h4>
                         </div>
                         <div class="panel-body">
-
+<a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>
                              
                             <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered"  enctype="multipart/form-data"  data-fv-framework="bootstrap"  data-fv-message="Required Field"  data-fv-icon-invalid="glyphicon glyphicon-remove"  data-fv-icon-validating="glyphicon glyphicon-refresh">
 

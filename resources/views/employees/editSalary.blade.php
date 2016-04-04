@@ -33,7 +33,7 @@ session(['subtitle' => '']); ?>
                         </div>
                         <div class="panel-body">
 
-                             
+                           <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>  
                             <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered"  enctype="multipart/form-data"  data-fv-framework="bootstrap"  data-fv-message="Required Field"  data-fv-icon-invalid="glyphicon glyphicon-remove"  data-fv-icon-validating="glyphicon glyphicon-refresh">
 
                                 @foreach ($errors->all() as $error)
@@ -232,109 +232,8 @@ session(['subtitle' => '']); ?>
                 }).on('changeDate', function(e) { 
                     $('#eForm').formValidation('revalidateField', 'visa_expiry');
                 });         
-                                             
-            //$('#eForm').formValidation();
-
-            $('#eForm').formValidation({
-                message: 'This value is not valid',
-                
-
-                fields: {
-                      
-                
-                    mobile: {
-                        validators: {
-                            notEmpty: {},
-                            digits: {},
-                            phone: {
-                                country: 'AE'
-                            }
-                        }
-                    },
-                 
-            lname: {
-                     
-                     verbose: false,
-                     
-                     validators: {
-                     
-                     notEmpty: {},
-                     remote: {
-                        url: '/employeeAddCheck' ,
-                        data: function(validator, $field, value) {
-                            return {                                 
-                                fname: validator.getFieldElements('fname').val(),
-                                mname: validator.getFieldElements('mname').val()
-                            };
-                        }
-
-                    }
-                }
-            }
-        }
-    })
-    // This event will be triggered when the field passes given validator
-    .on('success.validator.fv', function(e, data) {
-        // data.field     --> The field name
-        // data.element   --> The field element
-        // data.result    --> The result returned by the validator
-        // data.validator --> The validator name
-
-         
-
-        if (data.field === 'lname'
-            && data.validator === 'remote'
-            && (data.result.available === false || data.result.available === 'false'))
-        {
-
-            // The userName field passes the remote validator
-            data.element                    // Get the field element
-                .closest('.form-group')     // Get the field parent
-
-                // Add has-warning class
-                .removeClass('has-success')
-                .addClass('has-warning')
-
-                // Show message
-                .find('small[data-fv-validator="remote"][data-fv-for="lname"]')
-                    .show();
-        }
-
-
-        if (data.field === 'lname'
-            && data.validator === 'remote'
-            && (data.result.available === true || data.result.available === 'true'))
-        {
-             
-            // The userName field passes the remote validator
-            data.element                    // Get the field element
-                .closest('.form-group')     // Get the field parent
-
-                // Add has-warning class
-                .removeClass('has-warning')
-                .addClass('has-success')
-
-                // Show message
-                .find('small[data-fv-validator="remote"][data-fv-for="lname"]')
-                    .show();
-        }
-
-    })
-    // This event will be triggered when the field doesn't pass given validator
-    .on('err.validator.fv', function(e, data) { 
-         
-        // We need to remove has-warning class
-        // when the field doesn't pass any validator
-         
-
-        if (data.field === 'lname') {
-            data.element
-                .closest('.form-group')
-                .removeClass('has-warning')
-                  
-
-        }
-    });
+            
+            $('#eForm').formValidation();
 
   });
 

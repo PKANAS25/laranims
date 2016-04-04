@@ -275,7 +275,7 @@ session(['subtitle' => '']); ?>
                                                     <td>
                                                     <a  @if(Auth::user()->hasRole('ProPayments') && $employee->deleted==0) 
                                                     href="/employee/{{base64_encode($employee->employee_id)}}/proPayment" @endif class="btn bg-red-darker text-white btn-sm">Pro Payments</a>
-                                                    <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'absentCorrection'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
+                                                    <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'expenses'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
                                                     <a  @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif class="btn bg-blue-lighter text-white btn-block btn-sm">Personal Benefits</a>
