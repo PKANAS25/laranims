@@ -121,7 +121,53 @@ class EmployeesControllerExtra extends Controller
             } 
 
             return view('employees.paymentHistory',compact('employee','stuff','loans')); 
-       } 
+       }
+
+      elseif($stuff=='personal benefits')
+      {
+      
+          $benefits = DB::table('personal_benefits')
+                         ->select('personal_benefits.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','personal_benefits.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','personal_benefits.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->orderBy('benefit_start','DESC')
+                         ->get();
+
+            foreach ($benefits as $benefit) 
+            { 
+                  if (File::exists(base_path().'/public/uploads/hrx/benefit/'.$benefit->benefit_id.'.jpg'))
+                     $benefit->file=1; 
+                 
+                  else  
+                  $benefit->file=0;                  
+            }
+
+            return view('employees.paymentHistory',compact('employee','stuff','benefits')); 
+      }
+
+      elseif($stuff=='overtime')
+      {
+      
+          $overtimes = DB::table('over_time')
+                         ->select('over_time.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','over_time.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','over_time.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->orderBy('dated','DESC')
+                         ->get();
+
+            foreach($overtimes as $overtime) 
+            { 
+                  if (File::exists(base_path().'/public/uploads/hrx/overtime/'.$overtime->over_id.'.jpg'))
+                     $overtime->file=1; 
+                 
+                  else  
+                  $overtime->file=0;                  
+            }
+
+            return view('employees.paymentHistory',compact('employee','stuff','overtimes')); 
+      }
 
       elseif($stuff=='vacation')
       {
@@ -183,6 +229,16 @@ class EmployeesControllerExtra extends Controller
             echo "<i class=\"fa fa-check-square-o\"></i>";
             break;
 
+            case "personal benefits":
+            DB::table('personal_benefits')->where('benefit_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
+            echo "<i class=\"fa fa-check-square-o\"></i>";
+            break;
+
+            case "overtime":
+            DB::table('over_time')->where('over_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
+            echo "<i class=\"fa fa-check-square-o\"></i>";
+            break;
+
             case "vacation":
             DB::table('vacation')->where('vacation_id',$request->id)->update(['approved'=>0,'decided_by'=>0]);
             echo "<i class=\"fa fa-check-square-o\"></i>";
@@ -237,7 +293,20 @@ class EmployeesControllerExtra extends Controller
                     return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Loan removed!');  
                     break;
 
-                
+                case "personal benefits": 
+                    DB::table('personal_benefits')->where('benefit_id',$id)->where('approved',0)->delete(); 
+                    if (File::exists(base_path().'/public/uploads/hrx/benefit/'.$imageName))
+                         File::delete(base_path().'/public/uploads/hrx/benefit/'.$imageName);
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Benefit removed!');  
+                    break;
+
+               case "overtime": 
+                    DB::table('over_time')->where('over_id',$id)->where('approved',0)->delete(); 
+                    if (File::exists(base_path().'/public/uploads/hrx/overtime/'.$imageName))
+                         File::delete(base_path().'/public/uploads/hrx/overtime/'.$imageName);
+                    return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Overtime removed!');  
+                    break;
+
                 case "vacation": 
                     DB::table('vacation')->where('vacation_id',$id)->where('approved',0)->delete(); 
                     return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$stuff])->with('status', 'Vacation removed!');  
@@ -310,8 +379,23 @@ class EmployeesControllerExtra extends Controller
                             $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/loan/', $imageName); 
 
                             return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Loan document uploaded!');
-                            break;          
+                            break;  
 
+                        case "personal benefits":
+                           if (File::exists(base_path().'/public/uploads/hrx/benefit/'.$imageName))
+                               File::delete(base_path().'/public/uploads/hrx/benefit/'.$imageName);  
+                            $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/benefit/', $imageName); 
+
+                            return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Personal benefit document uploaded!');
+                            break;             
+
+                      case "overtime":
+                           if (File::exists(base_path().'/public/uploads/hrx/overtime/'.$imageName))
+                               File::delete(base_path().'/public/uploads/hrx/overtime/'.$imageName);  
+                            $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/overtime/', $imageName); 
+
+                            return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('status', 'Overtime document uploaded!');
+                            break;       
                         
                         default:
                             return redirect()->action('EmployeesControllerExtra@payContentHistory',[$employeeId,$doc])->with('warningStatus', 'Something wrong happened!');  

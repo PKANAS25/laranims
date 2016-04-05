@@ -471,7 +471,225 @@ session(['subtitle' => '']); ?>
                                            </tr>
                                         @endforeach   
                                        </tbody>
-                                   </table>                                   
+                                   </table>  
+ 
+<!--------------------------------------------------------------Personal Benefits----------------------------------------------------------------------- -->                                                                      
+                                    @elseif($stuff=='personal benefits')
+                                   <table  id="data-table" class="table table-striped table-bordered">
+                                       <thead>
+                                           <tr>
+                                                <th>#</th>
+                                               <th>Being</th> 
+                                               <th>Start Date</th>
+                                               <th>Amount</th>
+                                               <th>Max Rounds</th> 
+                                               <th>Rounds Given</th>
+                                               <th>Status</th>
+                                               <th>Entered By</th>
+                                               <th>Approved By</th> 
+                                               <th></th>
+                                               <th></th>
+                                               <th></th>
+                                               <th></th>
+                                           </tr>
+                                       </thead>
+                                       <tbody>
+                                        @foreach($benefits AS $index => $benefit)
+                                           <tr class=@if($benefit->approved==0) "text-warning" @elseif($benefit->approved==-1) "text-danger" @elseif($benefit->approved==1) "text-success" @endif>
+                                               <td>{{$index+1}}</td>
+                                               <td>{{$benefit->benefit}}</td> 
+                                               <td>{{$benefit->benefit_start}}</td>
+                                               <td>{{$benefit->amount}}</td>
+                                               <td>{{$benefit->max_rounds}}</td>
+                                               <td>{{$benefit->rounds_given}}</td>
+                                               <td> @if($benefit->max_rounds==$benefit->rounds_given) Completed @elseif($benefit->cancelled==1) Cancelled @else Active @endif</td>
+                                               <td>{{$benefit->admn}}</td> 
+                                               <td>{{$benefit->hrm}}</td>
+                                               <td>{{$benefit->reject_reason}}</td>
+                                               <td>@if($benefit->file)
+                                               <a href="#modal-dialogbenefit{{$benefit->benefit_id}}"  data-toggle="modal"><i class="fa fa-download text-info"></i></a>
+                                                <div class="modal fade" id="modal-dialogbenefit{{$benefit->benefit_id}}">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                <h4 class="modal-title">Personal Benefit Document</h4> 
+                                                                @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $benefit->approved!=-1)
+                                                                <a href="/employee/upload/hrx/{{base64_encode('personal benefits')}}/{{base64_encode($benefit->benefit_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                @endif
+                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                            </div>
+                                                            <div class="modal-body" >
+                                                                <img height="100%" width="100%" src="/uploads/hrx/benefit/{{$benefit->benefit_id}}.jpg"  />
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                @else
+                                                @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $benefit->approved!=-1)
+                                                <a href="/employee/upload/hrx/{{base64_encode('personal benefits')}}/{{base64_encode($benefit->benefit_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                <i class="fa fa-upload text-inverse"></i></a>
+                                                @endif                                               
+                                                @endif
+                                               </td>
+                                               <td>
+                                                @if($benefit->admin==Auth::id() && $benefit->approved==0)
+                                               <button id="benefitDel{{$index}}"><i  class="fa fa-trash text-danger"></i></button>
+                                                 <script type="text/javascript">
+                                                    $('#benefitDel{{$index}}').click(function(ev) {
+                                                    
+                                                      $.msgbox("<p>Are you sure you want to delete this?</p>", {
+                                                        type    : "prompt",
+                                                         inputs  : [
+                                                          {type: "hidden", name: "no", value: "no"} 
+                                                        ],
+                                                         
+                                                        buttons : [
+                                                          {type: "submit", name: "delete", value: "Delete"},
+                                                          {type: "cancel", value: "Cancel"}
+                                                        ],
+                                                        form : {
+                                                          active: true,
+                                                          method: 'get',
+                                                          action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($benefit->benefit_id),base64_encode('personal benefits'),base64_encode($employee->employee_id)]) !!}'
+                                                        }
+                                                      });
+                                                      
+                                                      ev.preventDefault();
+                                                    
+                                                    });
+                                                 </script>
+                                                 @endif
+                                                 </td>
+                                               <td>@if(Auth::user()->hasRole('Superman') && $benefit->approved==1) 
+                                               <div id="benefit{{$benefit->benefit_id}}">
+                                               <button class="btn btn-xs" id="benefitUnapprove{{$benefit->benefit_id}}" value="{{$benefit->benefit_id}}"> <i class="fa fa-refresh"></i></button>
+                                               </div>
+                                                <script type="text/javascript">
+                                                    $(document.body).on('click', '#benefitUnapprove{{$benefit->benefit_id}}', function(e){
+                                                        e.preventDefault();
+                                                        id = $(this).val();
+
+                                                         $.get('/payrollContentUnapprove',{stuff:'personal benefits', id:id }, function(actionBlade){                      
+                                                            $("#benefit{{$benefit->benefit_id}}").html(actionBlade);
+                                                             
+                                                        });
+                                                    });
+                                                </script>
+                                               @endif</td>
+                                           </tr>
+                                        @endforeach   
+                                       </tbody>
+                                   </table>
+ 
+
+ <!--------------------------------------------------------------Overtimes----------------------------------------------------------------------- -->  
+
+                                    @elseif($stuff=='overtime')
+                                    <table  id="data-table" class="table table-striped table-bordered">
+                                       <thead>
+                                           <tr>
+                                                <th>#</th>
+                                               <th>Date</th>
+                                               <th>Hours</th>
+                                               <th>Amount</th>
+                                               <th>Notes</th>
+                                               <th>Entered By</th>
+                                               <th>Approved By</th> 
+                                               <th></th>
+                                               <th></th>
+                                               <th></th>
+                                               <th></th>
+                                           </tr>
+                                       </thead>
+                                       <tbody>
+                                        @foreach($overtimes AS $index => $overtime)
+                                           <tr class=@if($overtime->approved==0) "text-warning" @elseif($overtime->approved==-1)" text-danger" @elseif($overtime->approved==1) "text-success" @endif>
+                                               <td>{{$index+1}}</td>
+                                               <td>{{$overtime->dated}}</td>
+                                               <td>{{$overtime->hours}}</td>
+                                               <td>{{$overtime->amount}}</td>
+                                               <td>{!! $overtime->notes !!}</td>
+                                               <td>{{$overtime->admn}}</td> 
+                                               <td>{{$overtime->hrm}}</td>
+                                               <td>{{$overtime->reject_reason}}</td>
+                                               <td>@if($overtime->file)
+                                               <a href="#modal-dialogOvertime{{$overtime->over_id}}"  data-toggle="modal"><i class="fa fa-download text-info"></i></a>
+                                                <div class="modal fade" id="modal-dialogOvertime{{$overtime->over_id}}">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                <h4 class="modal-title">overtime Document</h4> 
+                                                                @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $overtime->approved!=-1)
+                                                                <a href="/employee/upload/hrx/{{base64_encode('overtime')}}/{{base64_encode($overtime->over_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                @endif
+                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                            </div>
+                                                            <div class="modal-body" >
+                                                                <img height="100%" width="100%" src="/uploads/hrx/overtime/{{$overtime->over_id}}.jpg"  />
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                @else
+                                                @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $overtime->approved!=-1)
+                                                <a href="/employee/upload/hrx/{{base64_encode('overtime')}}/{{base64_encode($overtime->over_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                <i class="fa fa-upload text-inverse"></i></a>
+                                                @endif                                               
+                                                @endif
+                                               </td>
+                                               <td>
+                                                @if($overtime->admin==Auth::id() && $overtime->approved==0)
+                                               <button id="overtimeDel{{$index}}"><i  class="fa fa-trash text-danger"></i></button>
+                                                 <script type="text/javascript">
+                                                    $('#overtimeDel{{$index}}').click(function(ev) {
+                                                    
+                                                      $.msgbox("<p>Are you sure you want to delete this?</p>", {
+                                                        type    : "prompt",
+                                                         inputs  : [
+                                                          {type: "hidden", name: "no", value: "no"} 
+                                                        ],
+                                                         
+                                                        buttons : [
+                                                          {type: "submit", name: "delete", value: "Delete"},
+                                                          {type: "cancel", value: "Cancel"}
+                                                        ],
+                                                        form : {
+                                                          active: true,
+                                                          method: 'get',
+                                                          action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($overtime->over_id),base64_encode('overtime'),base64_encode($employee->employee_id)]) !!}'
+                                                        }
+                                                      });
+                                                      
+                                                      ev.preventDefault();
+                                                    
+                                                    });
+                                                 </script>
+                                                 @endif
+                                                 </td>
+                                               <td>@if(Auth::user()->hasRole('Superman') && $overtime->approved==1) 
+                                               <div id="overtime{{$overtime->over_id}}">
+                                               <button class="btn btn-xs" id="overtimeUnapprove{{$overtime->over_id}}" value="{{$overtime->over_id}}"> <i class="fa fa-refresh"></i></button>
+                                               </div>
+                                                <script type="text/javascript">
+                                                    $(document.body).on('click', '#overtimeUnapprove{{$overtime->over_id}}', function(e){
+                                                        e.preventDefault();
+                                                        id = $(this).val();
+
+                                                         $.get('/payrollContentUnapprove',{stuff:'overtime', id:id }, function(actionBlade){                      
+                                                            $("#overtime{{$overtime->over_id}}").html(actionBlade);
+                                                             
+                                                        });
+                                                    });
+                                                </script>
+                                               @endif</td>
+                                           </tr>
+                                        @endforeach   
+                                       </tbody>
+                                   </table>
 
 
 <!--------------------------------------------------------------Vacations----------------------------------------------------------------------- -->  

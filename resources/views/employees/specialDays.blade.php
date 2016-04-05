@@ -47,35 +47,35 @@ session(['subtitle' => '']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="day1">Day 1:</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="day1" name="day1"   data-fv-notempty="true" value="{{old('day1')}}" />
+                                        <input class="form-control" type="text" id="day1" name="day1"   data-fv-notempty="true" value="{{old('day1')}}" readonly />
                                     </div>
                                 </div> 
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="day2">Day 2:</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="day2" name="day2"  value="{{old('day2')}}" />
+                                        <input class="form-control" type="text" id="day2" name="day2"  value="{{old('day2')}}" readonly />
                                     </div>
                                 </div> 
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="day3">Day 3:</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="day3" name="day3"  value="{{old('day3')}}" />
+                                        <input class="form-control" type="text" id="day3" name="day3"  value="{{old('day3')}}" readonly />
                                     </div>
                                 </div> 
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="day4">Day 4:</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="day4" name="day4"  value="{{old('day4')}}" />
+                                        <input class="form-control" type="text" id="day4" name="day4"  value="{{old('day4')}}" readonly />
                                     </div>
                                 </div> 
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="day5">Day 5:</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="day5" name="day5"  value="{{old('day5')}}" />
+                                        <input class="form-control" type="text" id="day5" name="day5"  value="{{old('day5')}}" readonly />
                                     </div>
                                 </div> 
  
