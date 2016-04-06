@@ -38,6 +38,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
          
     Route::get('/home', 'HomeController@home');
     Route::get('/excelHome', 'ExcelController@home');
+
 //--------------------------------------StudentsController----------------------------------------
     Route::get('/enroll', ['middleware' => 'nursery_admin','uses'=>'StudentsController@enroll']); 
     Route::get('/enrollCheck', 'StudentsController@enrollCheck');
@@ -169,8 +170,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/transfer/callback/{transferId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferCallback']);
 
     Route::get('/store/branch/transfers/pending', ['middleware' => 'BranchStore','uses'=>'StoreController@pendingTransfers']);
-    Route::get('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);
-    Route::get('/store/branch/transfers/reject/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@rejectTransfer']);
+    Route::post('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);
+    Route::post('/store/branch/transfers/reject/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@rejectTransfer']);
 
     Route::get('/store/branch/items', ['middleware' => 'StoreAnyRole','uses'=>'StoreController@branchStore']); 
     Route::get('/store/branch/items/{itemId}', ['middleware' => 'StoreAnyRole','uses'=>'StoreController@itemViewBranch']); 
@@ -256,7 +257,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/employees/{employeeId}/{stuff}/paymentHistory', 'EmployeesControllerExtra@payContentHistory');   
     Route::get('/payrollContentUnapprove', ['middleware' => 'Superman','uses'=>'EmployeesControllerExtra@payrollContentUnapprove']);
-    Route::get('/payrollContentDelete/{Id}/{stuff}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@payrollContentDelete']);
+    Route::post('/payrollContentDelete/{Id}/{stuff}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@payrollContentDelete']);
 
     Route::get('/employee/upload/hrx/{doc}/{Id}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@uploadFormHRXDoc']);
     Route::post('/employee/upload/hrx/{doc}/{Id}/{employeeId}', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@uploadHRXDoc']);
@@ -289,6 +290,19 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/employee/{employeeId}/proPayment', ['middleware' => 'ProPayments','uses'=>'EmployeesControllerExtra@proPayment']);
     Route::get('/employeeExpenseCheck', 'EmployeesControllerExtra@employeeExpenseCheck');
     Route::post('/employee/{employeeId}/proPayment', ['middleware' => 'ProPayments','uses'=>'EmployeesControllerExtra@proPaymentSave']);
+
+//--------------------------------------------------------EmployeesControllerHR------------------------------------------  
+    Route::get('/employees/hr/search',['middleware' => 'OfficeStaff', function () {return view('employees.searchAll');}]);
+    Route::get('/employeeSearchBindAll', 'EmployeesControllerHR@searchBind');
+
+    Route::post('/employees/hr/resign/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@resignation']);
+    Route::post('/employees/hr/restore/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@restore']);
+    Route::post('/employees/hr/terminate/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@terminate']);
+    Route::post('/employees/hr/remove/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@remove']);
+
+    Route::get('/employees/hr/transfer/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@transfer']);
+
+
 
 });
 

@@ -109,7 +109,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                         ],
                                                          
                                                         buttons : [
@@ -118,7 +118,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($bonus->bonus_id),base64_encode('bonus'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
@@ -215,7 +215,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"}  
                                                         ],
                                                          
                                                         buttons : [
@@ -224,7 +224,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($bonus->bonus_id),base64_encode('absentCorrection'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
@@ -322,7 +322,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                         ],
                                                          
                                                         buttons : [
@@ -331,7 +331,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($deduction->dedXtra_id),base64_encode('deduction'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
@@ -432,7 +432,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"}  
                                                         ],
                                                          
                                                         buttons : [
@@ -441,7 +441,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($loan->loan_id),base64_encode('loan'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
@@ -542,7 +542,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"}  
                                                         ],
                                                          
                                                         buttons : [
@@ -551,7 +551,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($benefit->benefit_id),base64_encode('personal benefits'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
@@ -650,7 +650,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                         ],
                                                          
                                                         buttons : [
@@ -659,7 +659,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($overtime->over_id),base64_encode('overtime'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
@@ -710,7 +710,7 @@ session(['subtitle' => '']); ?>
                                        </thead>
                                         <tbody>
                                         @foreach($vacations AS $index => $vacation)
-                                           <tr class="@if($vacation->approved==0) text-warning @elseif($vacation->approved==-1) text-danger @elseif($vacation->approved==1) text-success @endif">
+                                           <tr class=@if($vacation->approved==0) "text-warning" @elseif($vacation->approved==-1) "text-danger" @elseif($vacation->approved==1) "text-success" @endif>
                                                <td>{{$index+1}}</td>
                                                <td>{{$vacation->start_date}} to {{$vacation->end_date}}</td>
                                                <td>{{$vacation->days}}</td>
@@ -727,7 +727,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                         ],
                                                          
                                                         buttons : [
@@ -736,7 +736,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($vacation->vacation_id),base64_encode('vacation'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });
@@ -807,7 +807,7 @@ session(['subtitle' => '']); ?>
                                                       $.msgbox("<p>Are you sure you want to delete this?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"}  
                                                         ],
                                                          
                                                         buttons : [
@@ -816,7 +816,7 @@ session(['subtitle' => '']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('EmployeesControllerExtra@payrollContentDelete', [base64_encode($expense->id),base64_encode('expenses'),base64_encode($employee->employee_id)]) !!}'
                                                         }
                                                       });

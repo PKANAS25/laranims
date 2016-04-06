@@ -176,7 +176,7 @@ class EmployeesController extends Controller
              
             Mail::queue([], [], function ($message) use($subject,$emails,$body) 
             {
-               $message->from('anas.acmg@gmail.com', 'Al Dana NMS');
+               $message->from('anas.acmg@gmail.com', 'NMS v3.0');
                $message->to($emails);
                $message->subject($subject);
                $message->setBody($body);

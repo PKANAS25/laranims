@@ -34,10 +34,12 @@ class BranchingController extends Controller
        $branch = $request->get('branch');
        $branches = Branch::where('id',$branch)->first();
        $branchName =$branches->name;
+       $branchType = $branches->non_nursery;
        
        $user=Auth::user();
        $user->branch = $branch;
        $user->branch_name = $branchName;
+       $user->branch_type = $branchType;
        $user->save();
 
        //Session::put('currentBranchName',$branchName );

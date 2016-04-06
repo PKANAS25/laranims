@@ -21,7 +21,8 @@
                     <li class="nav-header">Navigation</li>
 <!-- **************************************************************************************************************************************** -->                    
                     <li class= @if(session('title') == 'Home')   "active" @endif><a href="/home"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
-<!-- ***********************************************************Payments***************************************************************************** -->                                         
+<!-- ***********************************************************Payments***************************************************************************** -->                   
+        @if(Auth::user()->branch_type==0)                     
                     <li class="has-sub">
                         <a href="javascript:;">
                              <b class="caret pull-right"></b>
@@ -52,12 +53,12 @@
                             <span>Students</span> 
                         </a>
                         <ul class="sub-menu">
-                            <li class="@if(session('subtitle') == 'grades')   active @endif"><a href="/students/grades">Grades</a></li>
-                            <li class="@if(session('subtitle') == 'search')   active @endif"><a href="/students/search">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
+                            <li class=@if(session('subtitle') == 'grades') " active" @endif><a href="/students/grades">Grades</a></li>
+                            <li class=@if(session('subtitle') == 'search') " active" @endif><a href="/students/search">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             @if(Auth::user()->hasRole('nursery_admin')) 
-                            <li class="@if(session('subtitle') == 'enroll')   active @endif"><a href="/enroll">Enroll</a></li> 
+                            <li class= @if(session('subtitle') == 'enroll') " active" @endif ><a href="/enroll">Enroll</a></li> 
                             @endif
-                            <li class="@if(session('subtitle') == 'attendance')   active @endif"><a href="/students/reports/attendance">Attendance Report</a></li> 
+                            <li class=@if(session('subtitle') == 'attendance')   " active" @endif><a href="/students/reports/attendance">Attendance Report</a></li> 
                         </ul>
                     </li>
 
@@ -103,6 +104,8 @@
                         </ul>
                     </li>
                     @endif
+
+                    @endif<!-- if branch type -- >
 <!-- ***********************************************************Payroll***************************************************************************** -->                                        
                     
                     <li class="has-sub">
@@ -124,14 +127,14 @@
 <!-- *************************************************************HR*************************************************************************** -->                    
 
                     @if(Auth::user()->admin_type>1)
-                    <li class="has-sub">
+                    <li  class="has-sub @if(session('title') == 'HR')   active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="ion-person-stalker"></i>
                             <span>HR</span>
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="table_basic.html">Employees Search</a></li> 
+                            <li class=@if(session('subtitle') == 'EmpSearchAll') " active" @endif><a href="/employees/hr/search" >Employees Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             <li><a href="table_basic.html">Customized Search</a></li> 
                                                         
                             <li class="has-sub">
@@ -158,11 +161,11 @@
                             <span>Employees</span>
                         </a>
                         <ul class="sub-menu">
-                            <li class="@if(session('subtitle') == 'employeeList') active @endif"><a href="/employees/branch">Employee List</a></li>
+                            <li class=@if(session('subtitle') == 'employeeList') " active" @endif><a href="/employees/branch">Employee List</a></li>
                             @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
-                            <li class="@if(session('subtitle') == 'addEmp') active @endif"><a href="/employees/add/new">Add Employee</a></li>
+                            <li class=@if(session('subtitle') == 'addEmp') " active" @endif><a href="/employees/add/new">Add Employee</a></li>
                             @endif
-                            <li class="@if(session('subtitle') == 'EmpSearch') active @endif"><a href="/employees/branch/search" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
+                            <li class=@if(session('subtitle') == 'EmpSearch') " active" @endif><a href="/employees/branch/search" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             <li><a href="#" >Bonus Hold</a></li>
                             <li><a href="#" >Attendance Report</a></li>
                             <li><a href="#" >Exit Permits</a></li>

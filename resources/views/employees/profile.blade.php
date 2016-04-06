@@ -4,7 +4,11 @@
 session(['subtitle' => '']); ?> 
 
 @section('content') 
-  
+ <link rel="stylesheet" type="text/css" href="/dist/msgbox/jquery.msgbox.css" />
+<script type="text/javascript" src="/dist/msgbox/jquery.msgbox.min.js"></script>    
+
+<link rel="stylesheet" type="text/css" href="/js/msgbox/messagebox.css" />
+<script type="text/javascript" src="/js/msgbox/messagebox.min.js"></script>    
 <div id="content" class="content">
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right hidden-print">
@@ -52,11 +56,13 @@ session(['subtitle' => '']); ?>
                         </div>
                             
                         <div class="m-b-10">
-                            <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted!=1) href="{{action('EmployeesController@specialDays',base64_encode($employee->employee_id))}}" @endif class="btn btn-info btn-block btn-sm">Assign Special Working Days</a>
+                            <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted!=1) 
+                            href="{{action('EmployeesController@specialDays',base64_encode($employee->employee_id))}}" @endif class="btn btn-info btn-block btn-sm">Assign Special Working Days</a>
                         </div>  
                         
                         <div class="m-b-10">
-                            <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted!=1) href="{{action('EmployeesController@edit',base64_encode($employee->employee_id))}}" @endif  class="btn btn-inverse btn-block btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                            <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted!=1) 
+                            href="{{action('EmployeesController@edit',base64_encode($employee->employee_id))}}" @endif  class="btn btn-inverse btn-block btn-sm"><i class="fa fa-edit"></i> Edit</a>
                         </div>   
 
 
@@ -261,7 +267,8 @@ session(['subtitle' => '']); ?>
                                                     <a @if(Auth::user()->hasRole('AttendanceManager') && $employee->deleted==0) 
                                                     href="/employee/{{base64_encode($employee->employee_id)}}/add/sicks" @endif  class="btn bg-aqua-darker text-white btn-block btn-sm">Sick Leave</a> 
                                                     </td>
-                                                </tr>
+                                                </tr> 
+
                                                 <tr>
                                                     <td>
                                                     <a @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0) 
@@ -286,21 +293,159 @@ session(['subtitle' => '']); ?>
                                                     <a href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'overtime'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a> 
                                                     </td>
                                                 </tr>
+
+
+
+<!-- -------------------------------------------------------------Resignation,terrmination,deletion etc------------------------------------------------------------------- -->
+
+ 
                                                 <tr>
                                                     <td>
-                                                    <a href="#" class="btn bg-orange-darker text-white btn-block btn-sm">Resignation</a>
+                                                     @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0)  
+                                                     <button id="resignButton" class="btn bg-orange-darker text-white btn-block btn-sm">Resignation</button>
+                                                     <script type="text/javascript">
+                                                        $('#resignButton').click(function(ev) {
+                                                        
+                                                          $.msgbox("<p>Are you sure about this resignation?</p>", {
+                                                            type    : "prompt",
+                                                             inputs  : [
+                                                              {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
+                                                            ],
+                                                             
+                                                            buttons : [
+                                                              {type: "submit", name: "resign", value: "Yes"},
+                                                              {type: "cancel", value: "No"}
+                                                            ],
+                                                            form : {
+                                                              active: true,
+                                                              method: 'post',
+                                                              action: '{!! action('EmployeesControllerHR@resignation',base64_encode($employee->employee_id)) !!}'
+                                                            }
+                                                          });
+                                                          
+                                                          ev.preventDefault();
+                                                        
+                                                        });
+                                                     </script>
+                                                     @elseif(Auth::user()->hasRole('HROfficer') && $employee->deleted!=0)  
+                                                     <button id="restoreButton" class="btn bg-blue-darker text-white btn-block btn-sm">Restore</button>
+                                                     <script type="text/javascript">
+                                                        $('#restoreButton').click(function(ev) {
+                                                        
+                                                          $.msgbox("<p>Are you sure about this restore?</p>", {
+                                                            type    : "prompt",
+                                                             inputs  : [
+                                                              {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
+                                                            ],
+                                                             
+                                                            buttons : [
+                                                              {type: "submit", name: "restore", value: "Yes"},
+                                                              {type: "cancel", value: "No"}
+                                                            ],
+                                                            form : {
+                                                              active: true,
+                                                              method: 'post',
+                                                              action: '{!! action('EmployeesControllerHR@restore',base64_encode($employee->employee_id)) !!}'
+                                                            }
+                                                          });
+                                                          
+                                                          ev.preventDefault();
+                                                        
+                                                        });
+                                                     </script>
+                                                     @endif
                                                     </td>
                                                     <td>
-                                                    <a href="#" class="btn bg-blue-darker text-white btn-block btn-sm">Termination</a>
+                                                    @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0)  
+                                                    <button id="terminateButton" class="btn bg-blue-darker text-white btn-block btn-sm">Termination</button>
+                                                     <script type="text/javascript">
+                                                        $('#terminateButton').click(function(ev) {
+                                                        
+                                                          $.msgbox("<p>Are you sure about this termination?</p>", {
+                                                            type    : "prompt",
+                                                             inputs  : [
+                                                              {type: "hidden", name: "_token", value: "{{ csrf_token() }}"}  
+                                                            ],
+                                                             
+                                                            buttons : [
+                                                              {type: "submit", name: "terminate", value: "Yes"},
+                                                              {type: "cancel", value: "No"}
+                                                            ],
+                                                            form : {
+                                                              active: true,
+                                                              method: 'post',
+                                                              action: '{!! action('EmployeesControllerHR@terminate',base64_encode($employee->employee_id)) !!}'
+                                                            }
+                                                          });
+                                                          
+                                                          ev.preventDefault();
+                                                        
+                                                        });
+                                                     </script>
+                                                    @endif
                                                     </td>
                                                     <td>
-                                                    <a href="#" class="btn  bg-purple-lighter text-white btn-block btn-sm">Transfer</a>
+                                                    @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0)  
+                                                    <button id="transferButton" class="btn  bg-purple-lighter text-white btn-block btn-sm">Transfer</button>
+                                                     <script type="text/javascript">
+                                                        $('#transferButton').click(function(ev) {
+                                                        
+                                                          var select = $("<select>");
+                                                            select.append("<option value='1'>Option One</option>");
+                                                            select.append("<option value='2'>Option Two</option>");
+                                                            select.append("<option>Option Three</option>");
+
+                                                            // Show a MessageBox with custom Input
+                                                            $.MessageBox({
+                                                                buttonDone  : "Confirm",
+                                                                buttonFail  : "Cancel",
+                                                                message : "Choose target branch",
+                                                                input   : select
+                                                            }).done(function(data){
+                                                                   
+                                                               $.post( " ", { employeeId: "John" } );
+                                                                 
+                                                            });
+                                                          
+                                                          ev.preventDefault();
+                                                        
+                                                        });
+                                                     </script>
+                                                    @endif
                                                     </td>
                                                     <td>
-                                                    <a href="#" class="btn bg-black-lighter text-white btn-block btn-sm">Delete</a>
+                                                    @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0)  
+                                                    <button id="deleteButton" class="btn bg-black-lighter text-white btn-block btn-sm">Delete</button>
+                                                     <script type="text/javascript">
+                                                        $('#deleteButton').click(function(ev) {
+                                                        
+                                                          $.msgbox("<p>Are you sure about this deletion?</p>", {
+                                                            type    : "prompt",
+                                                             inputs  : [
+                                                              {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
+                                                            ],
+                                                             
+                                                            buttons : [
+                                                              {type: "submit", name: "delete", value: "Yes"},
+                                                              {type: "cancel", value: "No"}
+                                                            ],
+                                                            form : {
+                                                              active: true,
+                                                              method: 'post',
+                                                              action: '{!! action('EmployeesControllerHR@remove',base64_encode($employee->employee_id)) !!}'
+                                                            }
+                                                          });
+                                                          
+                                                          ev.preventDefault();
+                                                        
+                                                        });
+                                                     </script>
+                                                    @endif
                                                     </td>
                                                     <td>
-                                                    <a href="#" class="btn bg-yellow-lighter   btn-block btn-sm">View Payroll</a> 
+                                                    @if(Auth::user()->hasRole('HROfficer') && $employee->deleted==0) 
+                                                    <a href="#" class="btn bg-yellow-lighter   btn-block btn-sm">Personal Payroll</a> 
+                                                    @endif
                                                     </td>
                                                 </tr>
                                                

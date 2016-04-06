@@ -81,7 +81,7 @@ session(['subtitle' => '']); ?>
                                         type    : "prompt",
                                          
                                         inputs  : [
-                                          {type: "hidden", name: "ok", value: "ok"}
+                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                           
                                         ],
                                         buttons : [
@@ -90,7 +90,7 @@ session(['subtitle' => '']); ?>
                                         ],
                                         form : {
                                           active: true,
-                                          method: 'get',
+                                          method: 'post',
                                           action: '{!! action('StoreController@approveTransfer', base64_encode($transfer->transfer_id)) !!}'
                                         }
                                       });
@@ -108,6 +108,7 @@ session(['subtitle' => '']); ?>
                                         type    : "prompt",
                                          
                                         inputs  : [
+                                           {type: "hidden", name: "_token", value: "{{ csrf_token() }}"},
                                           {type: "text", name: "reject_reason", value: "", required: true}
                                           
                                         ],
@@ -117,7 +118,7 @@ session(['subtitle' => '']); ?>
                                         ],
                                         form : {
                                           active: true,
-                                          method: 'get',
+                                          method: 'post',
                                           action: '{!! action('StoreController@rejectTransfer', base64_encode($transfer->transfer_id)) !!}'
                                         }
                                       });
