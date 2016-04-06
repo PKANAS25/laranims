@@ -140,7 +140,7 @@ session(['subtitle' => 'grades']); ?>
                                                   $.msgbox("<p>Are you sure you want to delete this student?</p>", {
                                                     type    : "prompt",
                                                      inputs  : [
-                                                      {type: "hidden", name: "no", value: "no"} 
+                                                      {type: "hidden", name: "_token", value: "{{ csrf_token() }}"}
                                                     ],
                                                      
                                                     buttons : [
@@ -149,7 +149,7 @@ session(['subtitle' => 'grades']); ?>
                                                     ],
                                                     form : {
                                                       active: true,
-                                                      method: 'get',
+                                                      method: 'post',
                                                       action: '{!! action('StudentsController@delete', base64_encode($student->student_id)) !!}'
                                                     }
                                                   });
@@ -172,16 +172,16 @@ session(['subtitle' => 'grades']); ?>
                                               $.msgbox("<p>Are you sure you want to restore this student?</p>", {
                                                 type    : "prompt",
                                                  inputs  : [
-                                                  {type: "hidden", name: "no", value: "no"} 
+                                                  {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                 ],
                                                  
                                                 buttons : [
-                                                  {type: "submit", name: "delete", value: "Delete"},
+                                                  {type: "submit", name: "destorelete", value: "Restore"},
                                                   {type: "cancel", value: "Cancel"}
                                                 ],
                                                 form : {
                                                   active: true,
-                                                  method: 'get',
+                                                  method: 'post',
                                                   action: '{!! action('StudentsController@restore', base64_encode($student->student_id)) !!}'
                                                 }
                                               });

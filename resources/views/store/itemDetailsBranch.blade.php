@@ -235,7 +235,7 @@ session(['subtitle' => 'branchStore']); ?>
                                                       $.msgbox("<p>Are you sure you want to callback this transfer?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                         ],
                                                          
                                                         buttons : [
@@ -244,7 +244,7 @@ session(['subtitle' => 'branchStore']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('StoreController@itemReturnCallback', base64_encode($return->return_id)) !!}'
                                                         }
                                                       });

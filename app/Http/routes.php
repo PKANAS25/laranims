@@ -49,8 +49,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/profile/student/{studentId}', 'StudentsController@profile');
 
-    Route::get('/student/{studentId}/delete', ['middleware' => 'nursery_admin','uses'=>'StudentsController@delete']);
-    Route::get('/student/{studentId}/restore',['middleware' => 'nursery_admin','uses'=>'StudentsController@restore']);
+    Route::post('/student/{studentId}/delete', ['middleware' => 'nursery_admin','uses'=>'StudentsController@delete']);
+    Route::post('/student/{studentId}/restore',['middleware' => 'nursery_admin','uses'=>'StudentsController@restore']);
 
     Route::get('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editForm']);
     Route::post('/student/{studentId}/edit', ['middleware' => 'nursery_admin','uses'=>'StudentsController@editSave']); 
@@ -160,14 +160,14 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@addStock']);
     Route::post('/store/add/stock/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@saveStock']);
 
-    Route::get('/store/delete/stock/{stockId}', ['middleware' => 'StoreManager','uses'=>'StoreController@deleteStock']);
+    Route::post('/store/delete/stock/{stockId}', ['middleware' => 'StoreManager','uses'=>'StoreController@deleteStock']);
 
     Route::get('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager',function () {return view('store.uploadStockInvoice');}]);
     Route::post('/store/upload/invoice/{stockId}', ['middleware' => 'StoreManager','uses'=>'StoreController@uploadInvoice']);
 
     Route::get('/store/transfer/item/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransfer']);
     Route::post('/store/transfer/item/{itemId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferSave']);
-    Route::get('/store/transfer/callback/{transferId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferCallback']);
+    Route::post('/store/transfer/callback/{transferId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemTransferCallback']);
 
     Route::get('/store/branch/transfers/pending', ['middleware' => 'BranchStore','uses'=>'StoreController@pendingTransfers']);
     Route::post('/store/branch/transfers/approve/{transferId}', ['middleware' => 'BranchStore','uses'=>'StoreController@approveTransfer']);
@@ -178,14 +178,14 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/store/return/item/{itemId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturn']);
     Route::post('/store/return/item/{itemId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturnSave']);
-    Route::get('/store/return/callback/{returnId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturnCallback']);
+    Route::post('/store/return/callback/{returnId}', ['middleware' => 'BranchStore','uses'=>'StoreController@itemReturnCallback']);
 
     Route::get('/store/main/rejections/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreController@transferRejections']);
     Route::get('/transferRejectRead', ['middleware' => 'StoreManager','uses'=>'StoreController@transferRejectRead']);
 
     Route::get('/store/main/returns/{viewer}', ['middleware' => 'StoreManager','uses'=>'StoreController@storeReturns']);
-    Route::get('/store/main/returns/approve/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnApprove']);
-    Route::get('/store/main/returns/reject/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnReject']);
+    Route::post('/store/main/returns/approve/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnApprove']);
+    Route::post('/store/main/returns/reject/{returnId}', ['middleware' => 'StoreManager','uses'=>'StoreController@itemReturnReject']);
 
     Route::get('/store/branch/returns/rejections/{viewer}', ['middleware' => 'BranchStore','uses'=>'StoreController@returnRejections']);
     Route::get('/returnRejectRead', ['middleware' => 'BranchStore','uses'=>'StoreController@returnRejectRead']);

@@ -230,9 +230,10 @@ session(['subtitle' => 'main']); ?>
                                                 <script type="text/javascript">                                                
                                                     $('#XDel{{$index+1}}').click(function(ev) {
                                                     
-                                                      $.msgbox("<p>Are you sure you want to delete this stock?</p>", {
+                                                      $.msgbox("<p>Are you sure you want to delete this stock? then please provide a reason</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
+                                                         {type: "hidden", name: "_token", value: "{{ csrf_token() }}"},
                                                           {type: "text", name: "delete_reason", value: "",  required: true} 
                                                         ],
                                                          
@@ -242,7 +243,7 @@ session(['subtitle' => 'main']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('StoreController@deleteStock', base64_encode($stock->stock_id)) !!}'
                                                         }
                                                       });
@@ -387,7 +388,7 @@ session(['subtitle' => 'main']); ?>
                                                       $.msgbox("<p>Are you sure you want to callback this transfer?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                         ],
                                                          
                                                         buttons : [
@@ -396,7 +397,7 @@ session(['subtitle' => 'main']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('StoreController@itemTransferCallback', base64_encode($transfer->transfer_id)) !!}'
                                                         }
                                                       });

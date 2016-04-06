@@ -108,7 +108,7 @@ session(['subtitle' => '']); ?>
                                         type    : "prompt",
                                          
                                         inputs  : [
-                                           {type: "hidden", name: "_token", value: "{{ csrf_token() }}"},
+                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"},
                                           {type: "text", name: "reject_reason", value: "", required: true}
                                           
                                         ],

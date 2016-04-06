@@ -86,7 +86,7 @@ session(['subtitle' => 'returns']); ?>
                                                       $.msgbox("<p>This action will store these items to main store. Are you sure that you want to accept this transfer?</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
-                                                          {type: "hidden", name: "no", value: "no"} 
+                                                          {type: "hidden", name: "_token", value: "{{ csrf_token() }}"} 
                                                         ],
                                                          
                                                         buttons : [
@@ -95,7 +95,7 @@ session(['subtitle' => 'returns']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('StoreController@itemReturnApprove', base64_encode($return->return_id)) !!}'
                                                         }
                                                       });
@@ -112,6 +112,7 @@ session(['subtitle' => 'returns']); ?>
                                                       $.msgbox("<p>This action will restore these items to the branch store. Are you sure that you want to reject this transfer?. Then please enter a reason for rejection</p>", {
                                                         type    : "prompt",
                                                          inputs  : [
+                                                         {type: "hidden", name: "_token", value: "{{ csrf_token() }}"},
                                                           {type: "text", name: "rejection_reason", value: ""} 
                                                         ],
                                                          
@@ -121,7 +122,7 @@ session(['subtitle' => 'returns']); ?>
                                                         ],
                                                         form : {
                                                           active: true,
-                                                          method: 'get',
+                                                          method: 'post',
                                                           action: '{!! action('StoreController@itemReturnReject', base64_encode($return->return_id)) !!}'
                                                         }
                                                       });
