@@ -122,7 +122,7 @@ session(['subtitle' => '']); ?>
                                         <td><a href="{!! action('StudentsController@profile', base64_encode($subs->student_id)) !!}">{!!  $subs->full_name !!} </a></td>
                                         <td>{!! $subs->standard !!}</td>
                                         <td>{!! $subs->group_name !!}</td>
-                                        <td>{!!  $subs->subscription_type==5 ? date("d-M-y",strtotime($subs->start_date)) : date("d-M-y",strtotime($subs->start_date))." To ".date("d-M-y",strtotime($subs->end_date)) !!}</td>
+                                        <td>{!! $subs->subscription_type==5 ? date("d-M-y",strtotime($subs->start_date)) : date("d-M-y",strtotime($subs->start_date))." To ".date("d-M-y",strtotime($subs->end_date)) !!}</td>
                                         <td>@if($subs->added)
                                                 Added
                                                 @elseif($subs->trans==3)

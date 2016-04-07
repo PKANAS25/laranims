@@ -38,11 +38,11 @@ session(['subtitle' => '']); ?>
                         <div class="profile-highlight">
                             
                         <div class="m-b-10">
-                            <a class="btn btn-primary btn-block btn-sm">  ID: <strong>{{$employee->employee_id}}</strong></a>
+                            <a class="btn btn-primary btn-block btn-sm">ID: <strong>{{$employee->employee_id}}</strong></a>
                         </div>
                         </div> 
 
-                        <div class="profile-highlight"  >
+                        <div class="profile-highlight">
                         <div class="m-b-10">
                             <a class="btn btn-success btn-block btn-sm">Timings : <strong>{{$employee->start_time}} to {{$employee->end_time}}</strong></a>
                         </div>
@@ -391,20 +391,22 @@ session(['subtitle' => '']); ?>
                                                         $('#transferButton').click(function(ev) {
                                                         
                                                           var select = $("<select>");
-                                                            select.append("<option value='1'>Option One</option>");
-                                                            select.append("<option value='2'>Option Two</option>");
-                                                            select.append("<option>Option Three</option>");
+                                                          select.append("<option value='0'>Select</option>");
+                                                          @foreach ($branches as $branch)
+                                                            select.append("<option value='{{ $branch->id }}'>{{ $branch->name }}</option>");
+                                                          @endforeach 
 
                                                             // Show a MessageBox with custom Input
                                                             $.MessageBox({
                                                                 buttonDone  : "Confirm",
                                                                 buttonFail  : "Cancel",
-                                                                message : "Choose target branch",
+                                                                message : "Select target branch",
                                                                 input   : select
-                                                            }).done(function(data){
-                                                                   
-                                                               $.post( " ", { employeeId: "John" } );
-                                                                 
+                                                            }).done(function(data){ 
+                                                                if(data==0) 
+                                                                $.msgbox("You must select target branch.", {buttons : [{type: "cancel", value: "OK"}]});
+                                                                else
+                                                                 window.location.href = '/employees/hr/transfer/{{ base64_encode($employee->employee_id) }}/'+data;
                                                             });
                                                           
                                                           ev.preventDefault();

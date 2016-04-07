@@ -78,7 +78,9 @@ class EmployeesController extends Controller
                                 ->where('employee_id',$employeeId)
                                 ->first();
 
-        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history'));                  
+        $branches = Branch::where('id','!=',$employee->working_under)->orderBy('non_nursery','asc')->orderBy('name')->get();
+
+        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history','branches'));                  
     } 
 //----------------------------------------------------------------------------------------------------------------------------------------
     public function add()

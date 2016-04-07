@@ -300,7 +300,7 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/employees/hr/terminate/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@terminate']);
     Route::post('/employees/hr/remove/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@remove']);
 
-    Route::get('/employees/hr/transfer/{employeeId}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@transfer']);
+    Route::get('/employees/hr/transfer/{employeeId}/{branch}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@transfer']);
 
 
 

@@ -99,6 +99,10 @@ public function resignation($employeeId)
 
         $mailingList = DB::table('hr_mailing_lists')->where('action',1)->get();
         $emails = array_pluck($mailingList, 'mail'); 
+
+        $sourcePrincipal = Employee::select('email')->where('bonus_category','Principal')->where('deleted',0)->where('working_under',$employee->working_under)->first();
+        if($sourcePrincipal)
+        array_push($emails, $sourcePrincipal->email);
             
         $subject = "Employee Resignation Alert ";
 
@@ -131,6 +135,10 @@ public function resignation($employeeId)
 
         $mailingList = DB::table('hr_mailing_lists')->where('action',1)->get();
         $emails = array_pluck($mailingList, 'mail'); 
+
+        $sourcePrincipal = Employee::select('email')->where('bonus_category','Principal')->where('deleted',0)->where('working_under',$employee->working_under)->first();
+        if($sourcePrincipal)
+        array_push($emails, $sourcePrincipal->email);
             
         $subject = "Employee Restore Alert ";
 
@@ -163,6 +171,10 @@ public function terminate($employeeId)
 
         $mailingList = DB::table('hr_mailing_lists')->where('action',1)->get();
         $emails = array_pluck($mailingList, 'mail'); 
+
+        $sourcePrincipal = Employee::select('email')->where('bonus_category','Principal')->where('deleted',0)->where('working_under',$employee->working_under)->first();
+        if($sourcePrincipal)
+        array_push($emails, $sourcePrincipal->email);
             
         $subject = "Employee Termination Alert ";
 
@@ -194,6 +206,10 @@ public function terminate($employeeId)
 
         $mailingList = DB::table('hr_mailing_lists')->where('action',1)->get();
         $emails = array_pluck($mailingList, 'mail'); 
+
+        $sourcePrincipal = Employee::select('email')->where('bonus_category','Principal')->where('deleted',0)->where('working_under',$employee->working_under)->first();
+        if($sourcePrincipal)
+        array_push($emails, $sourcePrincipal->email);
             
         $subject = "Employee Deletion Alert ";
 
@@ -216,11 +232,56 @@ public function terminate($employeeId)
 
 //----------------------------------------------------------------------------------------------------------------------------------------
 
-    public function transfer($employeeId)
+    public function transfer($employeeId,$branch)
     {
         $employeeId = base64_decode($employeeId);
-        echo $employeeId;
+        
+        if($branch==0)
+            return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'You must select a target branch.Please try again');
+        else
+        {
+         
+         $employee = Employee::where('employee_id',$employeeId)->first();
+
+         $branchSource = Branch::where('id',$employee->working_under)->first(); 
+         $branchTarget = Branch::where('id',$branch)->first();
+
+         $sourcePrincipal = Employee::select('email')->where('bonus_category','Principal')->where('deleted',0)->where('working_under',$employee->working_under)->first();
+         $targetPrincipal = Employee::select('email')->where('bonus_category','Principal')->where('deleted',0)->where('working_under',$branch)->first();
+
+         $employee->working_under=$branch;
+         $employee->biometric=0;
+         $employee->save();
+
+        $mailingList = DB::table('hr_mailing_lists')->where('action',1)->get();
+        $emails = array_pluck($mailingList, 'mail'); 
+
+        if($sourcePrincipal)
+        array_push($emails, $sourcePrincipal->email);
+
+        if($targetPrincipal)
+        array_push($emails, $targetPrincipal->email);
+            
+        $subject = "Employee Transfer Alert ";
+
+        $body = "General details of the employee\n\nEmployee ID: ".$employeeId."\nName: ".$employee->fullname."\nJoining Date: ".$employee->joining_date."\nEmployee transferred from: ".$branchSource->name." to ".$branchTarget->name."\n\n--Transferred by: ".Auth::user()->name; 
+             
+            Mail::queue([], [], function ($message) use($subject,$emails,$body) 
+            {
+               $message->from('anas.acmg@gmail.com', 'NMS v3.0');
+               $message->to($emails);
+               $message->subject($subject);
+               $message->setBody($body);
+            });
+
+        $action = "Employee transferred from ".$branchSource->name." to ".$branchTarget->name." by ";
+        DB::table('employees_changes')->insert(['employee_id' => $employeeId,'changer_id' => Auth::id(),'action' => $action,'date_time' => Carbon::now()]);
+
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Employee successfully transferred!');   
+        }
+        
     }
 //----------------------------------------------------------------------------------------------------------------------------------------
 
 }
+ 

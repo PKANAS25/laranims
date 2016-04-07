@@ -410,12 +410,19 @@ class EmployeesControllerExtra extends Controller
     {
          $employeeId = base64_decode($employeeId); 
          $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
          return view('employees.addBonus',compact('employee'));    
     } 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public function saveBonus($employeeId,Request $request)
     {
          $employeeId = base64_decode($employeeId); 
+
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $this->validate($request, [
         'dated' => 'required|date_format:Y-m-d',
@@ -433,12 +440,18 @@ class EmployeesControllerExtra extends Controller
     {
          $employeeId = base64_decode($employeeId); 
          $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
          return view('employees.addDeduction',compact('employee'));    
     } 
 
     public function saveDeduction($employeeId,Request $request)
     {
          $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $this->validate($request, [
         'dated' => 'required|date_format:Y-m-d',
@@ -455,12 +468,18 @@ class EmployeesControllerExtra extends Controller
     {
          $employeeId = base64_decode($employeeId); 
          $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
          return view('employees.addLoan',compact('employee'));    
     } 
 
     public function saveLoan($employeeId,Request $request)
     {
          $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $this->validate($request, [
         'payment_date' => 'required|date_format:Y-m-d',
@@ -479,6 +498,9 @@ class EmployeesControllerExtra extends Controller
     {
          $employeeId = base64_decode($employeeId); 
          $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
          return view('employees.addVacation',compact('employee'));    
     } 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -486,6 +508,9 @@ class EmployeesControllerExtra extends Controller
     public function saveVacation($employeeId,Request $request)
     {
          $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $this->validate($request, [
         'starter' => 'required|date_format:Y-m-d',
@@ -533,6 +558,8 @@ class EmployeesControllerExtra extends Controller
     {
          $employeeId = base64_decode($employeeId); 
          $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
          
          $now = Carbon::now();
          $joining_date = new Carbon($employee->joining_date);
@@ -582,6 +609,8 @@ class EmployeesControllerExtra extends Controller
 
        $employeeId = base64_decode($employeeId); 
        $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
        
        $joining_date = new Carbon($employee->joining_date);
@@ -669,6 +698,8 @@ class EmployeesControllerExtra extends Controller
          $checked=0;
          $employeeId = base64_decode($employeeId); 
          $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $joiningDate = new Carbon($employee->joining_date);
          $now = Carbon::now();
@@ -714,6 +745,9 @@ class EmployeesControllerExtra extends Controller
       public function saveMaternity($employeeId,Request $request)
     {
          $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $this->validate($request, [
         'dated' => 'required|date_format:Y-m-d',
@@ -752,7 +786,9 @@ class EmployeesControllerExtra extends Controller
    public function absentCorrection($employeeId)
     { 
          $employeeId = base64_decode($employeeId); 
-         $employee = Employee::where('employee_id',$employeeId)->first(); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          return view('employees.absentCorrection',compact('employee'));    
     } 
@@ -784,6 +820,9 @@ class EmployeesControllerExtra extends Controller
     public function absentCorrectionSave($employeeId,Request $request)
     {
          $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $this->validate($request, [
         'starter' => 'required|date_format:Y-m-d',
@@ -811,7 +850,9 @@ class EmployeesControllerExtra extends Controller
    public function proPayment($employeeId)
     { 
          $employeeId = base64_decode($employeeId); 
-         $employee = Employee::where('employee_id',$employeeId)->first(); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!');  
 
          $services = DB::table('employee_pro_services')
                            ->where('removed',0)
@@ -853,6 +894,9 @@ class EmployeesControllerExtra extends Controller
    public function proPaymentSave($employeeId,Request $request)
     {
          $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
          $this->validate($request, [
         'being' => 'required',
