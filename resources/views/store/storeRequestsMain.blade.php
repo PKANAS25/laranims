@@ -36,7 +36,7 @@ session(['subtitle' => 'storeRequestsMain']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                  <thead>
                                     <tr>
-                                     <th>#</th>
+                                     <th class="nosort">#</th>
                                      <th>Admin</th>
                                      <th>Branch</th>
                                      <th>Date</th>

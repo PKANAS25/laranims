@@ -108,19 +108,31 @@
                     @endif<!-- if branch type -- >
 <!-- ***********************************************************Payroll***************************************************************************** -->                                        
                     
-                    <li class="has-sub">
+                     <li class="has-sub">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="fa fa-suitcase"></i>
                             <span>Payroll</span>
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="table_basic.html">Generate Payroll</a></li>
-                            <li><a href="table_basic.html">History</a></li> 
-                            <li><a href="table_basic.html">Salary Verification</a></li> 
-                            <li><a href="table_basic.html">Approvals</a></li> 
+                        @if(Auth::user()->admin_type>1)
+                            @if(Auth::user()->hasRole('Payroll')) 
+                            <li><a href="table_basic.html">Generate Payroll</a></li> 
+                            @endif
+
+                            @if(Auth::user()->hasRole('PayrollApprovals')) 
+                            <li><a href="table_basic.html">Approvals</a></li>
+                            @endif
+
+                            @if(Auth::user()->hasRole('PayrollReports'))                            
+                            <li><a href="table_basic.html">History</a></li>
+                            <li><a href="/payroll/salary/verification">Salary Verification</a></li> 
                             <li><a href="table_basic.html">Salary Contents Report</a></li> 
                             <li><a href="table_basic.html">Bank Rejections</a></li> 
+                            @endif
+                        @else  
+                            <li><a href="payrollHistoryAdmin">History</a></li>   
+                        @endif    
                         </ul>
                     </li>
                     

@@ -87,7 +87,7 @@ session(['subtitle' => 'RequestsNTransfers']); ?>
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th class="nosort">#</th>
                                         <th>Item</th>
                                         <th>Total Request</th>
                                         <th>Transfered</th>

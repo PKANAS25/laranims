@@ -97,7 +97,7 @@ session(['subtitle' => 'grades']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                    <th>#</th>
+                                    <th class="nosort">#</th>
                                     <th >Id</th>
                                     <th>Name</th>
                                     <th class="hidden-print">Name in Arabic</th>  
@@ -255,7 +255,12 @@ session(['subtitle' => 'grades']); ?>
                 "paging":   false,
                 "ordering": true,
                 "info":     false,
-
+                "aaSorting": [],
+                "columnDefs": [ {
+                      "targets": 'nosort',
+                      "bSortable": false,
+                      "searchable": false
+                    } ]
             } );
                                              
             //$('#eForm').formValidation();

@@ -45,7 +45,7 @@ session(['subtitle' => 'suppliers']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th class="nosort">#</th>
                                         <th>Supplier</th>
                                         <th>Mobile</th>
                                         <th>Tel</th>

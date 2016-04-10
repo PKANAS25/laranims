@@ -45,7 +45,7 @@ session(['subtitle' => 'categories']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th class="nosort">#</th>
                                         <th>Category</th>
                                         <th>Description</th>                                      
                                         <th></th>

@@ -45,7 +45,7 @@ session(['subtitle' => 'exchanged']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th class="nosort">#</th>
                                         <th>Receipt</th>
                                         <th width="15%">Receipt Date</th> 
                                         <th width="30%">Student</th>  

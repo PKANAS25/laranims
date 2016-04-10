@@ -54,7 +54,7 @@ session(['subtitle' => 'employeeList']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th class="nosort">#</th>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Joining Date</th>
@@ -66,7 +66,7 @@ session(['subtitle' => 'employeeList']); ?>
                                 <tbody>
                                     @foreach($employees As $index => $employee)
                                     <tr>
-                                        <td>{{$index+1}}</td>
+                                        <td class="nosort">{{$index+1}}</td>
                                         <td>{{$employee->employee_id}}</td>
                                         <td><a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}">{{$employee->fullname}}</a></td>
                                         <td>{{$employee->joining_date}}</td>

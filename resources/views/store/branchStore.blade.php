@@ -45,7 +45,7 @@ session(['subtitle' => 'branchStore']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th class="nosort">#</th>
                                         <th>Item</th>
                                         <th>Price</th>
                                         <th>Stock</th>   

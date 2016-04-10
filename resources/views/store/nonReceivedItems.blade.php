@@ -56,7 +56,7 @@ session(['subtitle' => 'nonReceived']); ?>
                               <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th class="nosort">#</th>
                                         <th>Receipt</th>
                                         <th width="15%">Date</th>
                                         <th>Student</th>

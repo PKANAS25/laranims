@@ -93,8 +93,6 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/invoice/exchange/{customId}','InvoiceController@exchangeForm');
     Route::post('/invoice/exchange/{customId}','InvoiceController@exchangeSave');
 
-
-
  //---------------------------------------GradesController-------------------------------------------------------------
     Route::get('/students/grades', 'GradesController@index');
     Route::get('/students/grade/{classId}/students/{filter}', 'GradesController@students');   
@@ -302,12 +300,16 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/employees/hr/transfer/{employeeId}/{branch}', ['middleware' => 'HROfficer','uses'=>'EmployeesControllerHR@transfer']);
 
+//--------------------------------------------------------PayrollController------------------------------------------------ 
+
+    Route::get('/payroll/salary/verification', ['middleware' => 'OfficeStaff','middleware' => 'PayrollReports','uses'=>'PayrollController@salaryVerification']);
+    Route::get('/verifySalary', ['middleware' => 'OfficeStaff','middleware' => 'PayrollReports','uses'=>'PayrollController@verifySalary']);
+
 
 
 });
 
  
-
 
 
  

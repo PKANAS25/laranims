@@ -132,7 +132,12 @@
 		        "paging":   false,
 		        "ordering": true,
 		        "info":     false,
-
+		        "aaSorting": [],
+				"columnDefs": [ {
+				      "targets": 'nosort',
+				      "bSortable": false,
+				      "searchable": false
+				    } ]
 		    } );
  
 		

@@ -100,7 +100,7 @@ session(['subtitle' => '']); ?>
                             <table id="data-table" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                    <th>#</th>
+                                    <th class="nosort">#</th>
                                     <th>ID</th>
                                     <th>Student</th> 
                                     <th>Grade</th>                                    
