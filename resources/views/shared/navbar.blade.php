@@ -129,6 +129,9 @@
                             <li><a href="table_basic.html">Salary Contents Report</a></li> 
                             <li><a href="table_basic.html">Bank Rejections</a></li> 
                             @endif
+                            @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')))
+                            <li><a href="/payroll/content/rejections/unread">Payroll Rejections Unseen</a></li>
+                            @endif
                         @else  
                             <li><a href="payrollHistoryAdmin">History</a></li>   
                         @endif    

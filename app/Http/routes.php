@@ -308,6 +308,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/payroll/salary/approvals', ['middleware' => 'OfficeStaff','middleware' => 'PayrollApprovals','uses'=>'PayrollController@pendingApprovals']);
     Route::get('/approvePayrollContent', ['middleware' => 'OfficeStaff','middleware' => 'PayrollApprovals','uses'=>'PayrollController@approvePayrollContent']);
 
+    Route::get('/payroll/content/rejections/unread', ['middleware' => 'HRAdmin','uses'=>'PayrollController@approvePayrollContent']);
+
 
 
 });

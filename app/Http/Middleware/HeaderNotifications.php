@@ -93,14 +93,22 @@ class HeaderNotifications
          $TotalNotifications+=$ReturnRejectionsCount;
         }
 //-------------------------------------------------------------------------------------------------------------------------------------
-        $payrollContentRejectionsCount=DB::table('bonus')->where('approval',-1)->where('reject_read',0)->where('admin',Auth::id())->count();
+        if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')))
+        {
+
+        $payrollContentRejectionsCount=DB::table('bonus')->where('approved',-1)->where('reject_read',0)->where('admin',Auth::id())->count();
+        $payrollContentRejectionsCount+=DB::table('deductions_xtra')->where('approved',-1)->where('reject_read',0)->where('admin',Auth::id())->count();
+        $payrollContentRejectionsCount+=DB::table('loans')->where('approved',-1)->where('reject_read',0)->where('admin',Auth::id())->count();
+        $payrollContentRejectionsCount+=DB::table('personal_benefits')->where('approved',-1)->where('reject_read',0)->where('admin',Auth::id())->count();
+        $payrollContentRejectionsCount+=DB::table('over_time')->where('approved',-1)->where('reject_read',0)->where('admin',Auth::id())->count();
 
         $TotalNotifications+=$payrollContentRejectionsCount;
+      }
 //-------------------------------------------------------------------------------------------------------------------------------------        
 
             view()->composer('shared.header', function ($view) 
             use($TotalNotifications,$CallCenterManagerCallUnassigns,$NotDepositedCount,$NotDepositedChequeCount,$StoreRequestsCount,$StoreReturnsCount,
-                $StoreRejectionsCount,$CallCenterAgentCallAssigns,$StoreTransferCount,$ReturnRejectionsCount) 
+                $StoreRejectionsCount,$CallCenterAgentCallAssigns,$StoreTransferCount,$ReturnRejectionsCount,$payrollContentRejectionsCount) 
                 {
                            $view->with('TotalNotifications', $TotalNotifications)
 
@@ -116,7 +124,8 @@ class HeaderNotifications
                           ->with('StoreRejectionsCount', $StoreRejectionsCount)
 
                           ->with('StoreTransferCount', $StoreTransferCount)
-                          ->with('ReturnRejectionsCount', $ReturnRejectionsCount);
+                          ->with('ReturnRejectionsCount', $ReturnRejectionsCount)
+                          ->with('payrollContentRejectionsCount', $payrollContentRejectionsCount);
                 });
 
         return $next($request);
