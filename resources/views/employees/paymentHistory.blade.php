@@ -129,7 +129,7 @@ session(['subtitle' => '']); ?>
                                                  </script>
                                                  @endif
                                                  </td>
-                                               <td>@if(Auth::user()->hasRole('Superman') && $bonus->approved==1) 
+                                               <td>@if(Auth::user()->hasRole('Superman') && $bonus->approved!=0) 
                                                <div id="bonus{{$bonus->bonus_id}}">
                                                <button class="btn btn-xs" id="bonusUnapprove{{$bonus->bonus_id}}" value="{{$bonus->bonus_id}}"> <i class="fa fa-refresh"></i></button>
                                                </div>
@@ -235,7 +235,7 @@ session(['subtitle' => '']); ?>
                                                  </script>
                                                  @endif
                                                  </td>
-                                               <td>@if(Auth::user()->hasRole('Superman') && $bonus->approved==1) 
+                                               <td>@if(Auth::user()->hasRole('Superman') && $bonus->approved!=0) 
                                                <div id="bonus{{$bonus->bonus_id}}">
                                                <button class="btn btn-xs" id="bonusUnapprove{{$bonus->bonus_id}}" value="{{$bonus->bonus_id}}"> <i class="fa fa-refresh"></i></button>
                                                </div>
@@ -342,7 +342,7 @@ session(['subtitle' => '']); ?>
                                                  </script>
                                                  @endif
                                                  </td>
-                                               <td>@if(Auth::user()->hasRole('Superman') && $deduction->approved==1) 
+                                               <td>@if(Auth::user()->hasRole('Superman') && $deduction->approved!=0) 
                                                <div id="deduction{{$deduction->dedXtra_id}}">
                                                <button class="btn btn-xs" id="deductionUnapprove{{$deduction->dedXtra_id}}" value="{{$deduction->dedXtra_id}}"> <i class="fa fa-refresh"></i></button>
                                                </div>
@@ -452,7 +452,7 @@ session(['subtitle' => '']); ?>
                                                  </script>
                                                  @endif
                                                  </td>
-                                               <td>@if(Auth::user()->hasRole('Superman') && $loan->approved==1) 
+                                               <td>@if(Auth::user()->hasRole('Superman') && $loan->approved!=0) 
                                                <div id="loan{{$loan->loan_id}}">
                                                <button class="btn btn-xs" id="loanUnapprove{{$loan->loan_id}}" value="{{$loan->loan_id}}"> <i class="fa fa-refresh"></i></button>
                                                </div>
@@ -562,7 +562,7 @@ session(['subtitle' => '']); ?>
                                                  </script>
                                                  @endif
                                                  </td>
-                                               <td>@if(Auth::user()->hasRole('Superman') && $benefit->approved==1) 
+                                               <td>@if(Auth::user()->hasRole('Superman') && $benefit->approved!=0) 
                                                <div id="benefit{{$benefit->benefit_id}}">
                                                <button class="btn btn-xs" id="benefitUnapprove{{$benefit->benefit_id}}" value="{{$benefit->benefit_id}}"> <i class="fa fa-refresh"></i></button>
                                                </div>
@@ -670,7 +670,7 @@ session(['subtitle' => '']); ?>
                                                  </script>
                                                  @endif
                                                  </td>
-                                               <td>@if(Auth::user()->hasRole('Superman') && $overtime->approved==1) 
+                                               <td>@if(Auth::user()->hasRole('Superman') && $overtime->approved!=0) 
                                                <div id="overtime{{$overtime->over_id}}">
                                                <button class="btn btn-xs" id="overtimeUnapprove{{$overtime->over_id}}" value="{{$overtime->over_id}}"> <i class="fa fa-refresh"></i></button>
                                                </div>
@@ -747,7 +747,7 @@ session(['subtitle' => '']); ?>
                                                  </script>
                                                  @endif
                                                  </td>
-                                               <td>@if(Auth::user()->hasRole('Superman') && $vacation->approved==1) 
+                                               <td>@if(Auth::user()->hasRole('Superman') && $vacation->approved!=0) 
                                                <div id="vacation{{$vacation->vacation_id}}">
                                                <button class="btn btn-xs" id="vacationUnapprove{{$vacation->vacation_id}}" value="{{$vacation->vacation_id}}"> <i class="fa fa-refresh"></i></button>
                                                </div>

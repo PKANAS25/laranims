@@ -5,10 +5,10 @@ session(['subtitle' => 'verification']); ?>
 
 @section('content') 
 <style type="text/css">
-    .table{
-            table-layout:fixed;
-            width: 100%;
-            word-wrap: break-word;
+    .breakWord{
+            
+            max-width: 80px;
+            word-wrap: break-word;  
 
     }
 </style>  
@@ -65,12 +65,12 @@ session(['subtitle' => 'verification']); ?>
                                     <tr> 
                                         <td>{{$employee->employee_id}}</td>
                                         <td><a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}" target="_blank">{{$employee->fullname}}</a></td>
-                                        <td>{{$employee->working_for}}</td>
+                                        <td>{{ str_replace( "Al Dana - ", '',$employee->working_for) }}</td>
                                         <td>{{$employee->joining_date}}</td>
-                                        <td>{{$employee->iban}}</td>
+                                        <td class="breakWord">{{$employee->iban}}</td>
                                         <td>{{$employee->labour_card_no}}</td>
-                                        <td>{{$employee->lc_in}}</td>
-                                        <td>{{$employee->person_code}}</td>
+                                        <td>{{ str_replace( "Al Dana - ", '',$employee->lc_in) }}</td>
+                                        <td class="breakWord">{{$employee->person_code}}</td>
                                         <td>{{$employee->basic}}</td>
                                         <td>{{$employee->accomodation}}</td>
                                         <td>{{$employee->travel}}</td>
@@ -84,7 +84,7 @@ session(['subtitle' => 'verification']); ?>
                                         <i class="fa fa-check-circle text-success"></i> 
 
                                         @elseif($employee->{'verification'.$i}==-1)
-                                        <a title="{{ $employee->{'reason'.$i} }}"><i class="fa fa-minus-circle text-danger"></i></a> <br>&nbsp;
+                                        <a title="{{ $employee->{'reason'.$i} }}"><i class="fa fa-minus-circle text-danger"></i></a><br>&nbsp;
                                          
 
                                         @elseif($employee->{'verification'.$i}==0 && Auth::id()!=$team->{'verifier'.$i})

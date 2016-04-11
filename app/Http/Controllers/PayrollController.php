@@ -87,6 +87,72 @@ class PayrollController extends Controller
    }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   
+   public function pendingApprovals(Request $request)
+   { 
+     $working_under = $request->branch;
+     $branches = Branch::orderBy('non_nursery','asc')->orderBy('name')->get();
+
+      if($working_under)
+      {
+        $bonuses = DB::table('bonus')
+                         ->select('bonus.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','bonus.admin','=','users.id')
+                         ->leftjoin('employees','bonus.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->where('employees.working_under',$working_under)  
+                         ->orderBy('dated','DESC')
+                         ->get(); 
+
+      }
+
+      else
+      {
+
+        $bonuses = DB::table('bonus')
+                         ->select('bonus.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','bonus.admin','=','users.id')
+                         ->leftjoin('employees','bonus.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0)                            
+                         ->orderBy('employees.working_under')
+                         ->orderBy('dated','DESC')
+                         ->get(); 
+
+      }
+      
+
+     return view('payroll.salaryApprovals',compact('branches','working_under','bonuses'));
+   }
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   
+   public function approvePayrollContent(Request $request)
+   {
+      $id = $request->id;
+      $item = $request->item;  
+      $action = $request->action;
+      $reason = $request->reason;  
+
+        
+      if($action==1 && $item=='bonus')
+      { 
+         DB::table('bonus')->where('bonus_id',$id)->update(['approved'=>1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now()]);
+         echo "<i class=\"fa fa-check-circle-o  text-success\"></i>";
+      }
+
+      else if($action==-1 && $item=='bonus' && $reason)
+      { 
+         DB::table('bonus')->where('bonus_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
+         echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
+      }
+
+      
+   }
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
 
 

@@ -20,7 +20,7 @@
                 <ul class="nav">
                     <li class="nav-header">Navigation</li>
 <!-- **************************************************************************************************************************************** -->                    
-                    <li class= @if(session('title') == 'Home')   "active" @endif><a href="/home"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
+                    <li @if(session('title') == 'Home') class="active" @endif><a href="/home"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
 <!-- ***********************************************************Payments***************************************************************************** -->                   
         @if(Auth::user()->branch_type==0)                     
                     <li class="has-sub">
@@ -46,26 +46,26 @@
                     </li>
 
 <!-- ************************************************************Students**************************************************************************** -->                                        
-                    <li class="has-sub @if(session('title') == 'Students') active @endif">
+                    <li class="has-sub @if(session('title') == 'Students') active @endif ">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="fa fa-mortar-board"></i>
                             <span>Students</span> 
                         </a>
                         <ul class="sub-menu">
-                            <li class=@if(session('subtitle') == 'grades') " active" @endif><a href="/students/grades">Grades</a></li>
-                            <li class=@if(session('subtitle') == 'search') " active" @endif><a href="/students/search">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
+                            <li @if(session('subtitle') == 'grades') class="active" @endif><a href="/students/grades">Grades</a></li>
+                            <li @if(session('subtitle') == 'search') class="active" @endif><a href="/students/search">Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             @if(Auth::user()->hasRole('nursery_admin')) 
-                            <li class= @if(session('subtitle') == 'enroll') " active" @endif ><a href="/enroll">Enroll</a></li> 
+                            <li @if(session('subtitle') == 'enroll') class="active" @endif ><a href="/enroll">Enroll</a></li> 
                             @endif
-                            <li class=@if(session('subtitle') == 'attendance')   " active" @endif><a href="/students/reports/attendance">Attendance Report</a></li> 
+                            <li @if(session('subtitle') == 'attendance') class="active" @endif><a href="/students/reports/attendance">Attendance Report</a></li> 
                         </ul>
                     </li>
 
 <!-- *******************************************************************Store********************************************************************* -->       
 
                     @if(Auth::user()->hasRole('BranchStore') || Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))                    
-                    <li class="has-sub @if(session('title') == 'Store')   active @endif">
+                    <li class="has-sub @if(session('title') == 'Store') active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="ion-ios-cart"></i>
@@ -73,34 +73,33 @@
                         </a>
                         <ul class="sub-menu">
                             @if(Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))
-                            <li class="@if(session('subtitle') == 'main')   active @endif"><a href="/store/main">Main Store</a></li>
+                            <li @if(session('subtitle') == 'main') class="active" @endif><a href="/store/main">Main Store</a></li>
                                
                                 @if(Auth::user()->hasRole('StoreManager') )
-                                <li class="@if(session('subtitle') == 'addItem')   active @endif"><a href="/store/add/item/new">Add Item</a></li> 
+                                <li @if(session('subtitle') == 'addItem') class="active" @endif><a href="/store/add/item/new">Add Item</a></li> 
                                 
                                 <li class="has-sub @if(session('subtitle') == 'returns' || session('subtitle') == 'rejections' || session('subtitle') == 'storeRequestsMain' || session('subtitle') == 'RequestsNTransfers')   active @endif">
                                 <a href="javascript:;"><b class="caret pull-right"></b> Reports</a>
                                 <ul class="sub-menu">                                
-                                <li class="@if(session('subtitle') == 'returns')   active @endif"><a href="/store/main/returns/pending">Store Returns</a></li>
-                                <li class="@if(session('subtitle') == 'rejections') active @endif"><a href="/store/main/rejections/unread">Transfer Rejections</a></li>
-                                <li class="@if(session('subtitle') == 'storeRequestsMain') active @endif"><a href="/store/main/requests/unread">Store Requests</a></li> 
-                                <li class="@if(session('subtitle') == 'RequestsNTransfers') active @endif"><a href="/store/main/report/requests/transfers">Requests & Transfers</a></li>
+                                <li @if(session('subtitle') == 'returns') class="active" @endif><a href="/store/main/returns/pending">Store Returns</a></li>
+                                <li @if(session('subtitle') == 'rejections') class="active" @endif><a href="/store/main/rejections/unread">Transfer Rejections</a></li>
+                                <li @if(session('subtitle') == 'storeRequestsMain') class="active" @endif><a href="/store/main/requests/unread">Store Requests</a></li> 
+                                <li @if(session('subtitle') == 'RequestsNTransfers') class="active" @endif><a href="/store/main/report/requests/transfers">Requests & Transfers</a></li>
                                 </ul>
-                                </li>
-                                
+                                </li> 
                                 @endif
 
-                            <li class="@if(session('subtitle') == 'categories') active @endif"><a href="/store/categories">Categories</a></li>
-                            <li class="@if(session('subtitle') == 'suppliers') active @endif"><a href="/store/suppliers">Suppliers</a></li>
+                            <li @if(session('subtitle') == 'categories') class="active" @endif><a href="/store/categories">Categories</a></li>
+                            <li @if(session('subtitle') == 'suppliers') class="active" @endif><a href="/store/suppliers">Suppliers</a></li>
                             @endif                           
                             
-                            <li class="@if(session('subtitle') == 'branchStore') active @endif"><a href="/store/branch/items">Branch Store</a></li> 
+                            <li @if(session('subtitle') == 'branchStore') class="active" @endif><a href="/store/branch/items">Branch Store</a></li> 
                             @if(Auth::user()->hasRole('BranchStore') )
-                             <li class="@if(session('subtitle') == 'returnRejections') active @endif"><a href="/store/branch/returns/rejections/unread">Return Rejections</a></li>
-                             <li class="@if(session('subtitle') == 'storeRequests') active @endif"><a href="/store/branch/requests">Store Requests</a></li>
+                             <li @if(session('subtitle') == 'returnRejections') class="active" @endif><a href="/store/branch/returns/rejections/unread">Return Rejections</a></li>
+                             <li @if(session('subtitle') == 'storeRequests') class="active" @endif><a href="/store/branch/requests">Store Requests</a></li>
                             @endif
-                             <li class="@if(session('subtitle') == 'nonReceived') active @endif"><a href="/store/students/nonreceived/waiting">Non-Received Items</a></li>
-                            <li class="@if(session('subtitle') == 'exchanged') active @endif"><a href="/store/receipts/exchanged/items">Exchanged Items</a></li>
+                             <li @if(session('subtitle') == 'nonReceived') class="active" @endif><a href="/store/students/nonreceived/waiting">Non-Received Items</a></li>
+                            <li @if(session('subtitle') == 'exchanged') class="active" @endif><a href="/store/receipts/exchanged/items">Exchanged Items</a></li>
                         </ul>
                     </li>
                     @endif
@@ -108,7 +107,7 @@
                     @endif<!-- if branch type -- >
 <!-- ***********************************************************Payroll***************************************************************************** -->                                        
                     
-                     <li class="has-sub">
+                     <li class="has-sub @if(session('title') == 'Payroll')   active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="fa fa-suitcase"></i>
@@ -121,12 +120,12 @@
                             @endif
 
                             @if(Auth::user()->hasRole('PayrollApprovals')) 
-                            <li><a href="table_basic.html">Approvals</a></li>
+                            <li @if(session('subtitle') == 'approvals') class="active" @endif><a href="/payroll/salary/approvals">Approvals</a></li>
                             @endif
 
                             @if(Auth::user()->hasRole('PayrollReports'))                            
                             <li><a href="table_basic.html">History</a></li>
-                            <li><a href="/payroll/salary/verification">Salary Verification</a></li> 
+                            <li @if(session('subtitle') == 'verification') class="active" @endif><a href="/payroll/salary/verification">Salary Verification</a></li> 
                             <li><a href="table_basic.html">Salary Contents Report</a></li> 
                             <li><a href="table_basic.html">Bank Rejections</a></li> 
                             @endif
@@ -139,14 +138,14 @@
 <!-- *************************************************************HR*************************************************************************** -->                    
 
                     @if(Auth::user()->admin_type>1)
-                    <li  class="has-sub @if(session('title') == 'HR')   active @endif">
+                    <li  class="has-sub @if(session('title') == 'HR') active @endif">
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="ion-person-stalker"></i>
                             <span>HR</span>
                         </a>
                         <ul class="sub-menu">
-                            <li class=@if(session('subtitle') == 'EmpSearchAll') " active" @endif><a href="/employees/hr/search" >Employees Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
+                            <li @if(session('subtitle') == 'EmpSearchAll') class="active" @endif><a href="/employees/hr/search" >Employees Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             <li><a href="table_basic.html">Customized Search</a></li> 
                                                         
                             <li class="has-sub">
@@ -173,11 +172,11 @@
                             <span>Employees</span>
                         </a>
                         <ul class="sub-menu">
-                            <li class=@if(session('subtitle') == 'employeeList') " active" @endif><a href="/employees/branch">Employee List</a></li>
+                            <li @if(session('subtitle') == 'employeeList') class="active" @endif><a href="/employees/branch">Employee List</a></li>
                             @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
-                            <li class=@if(session('subtitle') == 'addEmp') " active" @endif><a href="/employees/add/new">Add Employee</a></li>
+                            <li @if(session('subtitle') == 'addEmp') class="active" @endif><a href="/employees/add/new">Add Employee</a></li>
                             @endif
-                            <li class=@if(session('subtitle') == 'EmpSearch') " active" @endif><a href="/employees/branch/search" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
+                            <li @if(session('subtitle') == 'EmpSearch') class="active" @endif><a href="/employees/branch/search" >Search <i class="fa fa-binoculars text-theme m-l-5"></i></a></li>
                             <li><a href="#" >Bonus Hold</a></li>
                             <li><a href="#" >Attendance Report</a></li>
                             <li><a href="#" >Exit Permits</a></li>
@@ -198,10 +197,10 @@
                         </a>
                         <ul class="sub-menu">
                             @if(Auth::user()->hasRole('CallCenterManager'))
-                            <li class="@if(session('subtitle') == 'unassigned')   active @endif"><a href="/refunds/tickets/unassigned">Unassigned Refund Tickets</a></li>
+                            <li @if(session('subtitle') == 'unassigned') class="active" @endif><a href="/refunds/tickets/unassigned">Unassigned Refund Tickets</a></li>
                             @endif
                             @if(Auth::user()->hasRole('CallCenterAgent'))
-                            <li class="@if(session('subtitle') == 'feedbacksPending')   active @endif"><a href="/refunds/agents/tickets/noreview">Refund Pending Reviews</a></li>
+                            <li @if(session('subtitle') == 'feedbacksPending') class="active" @endif><a href="/refunds/agents/tickets/noreview">Refund Pending Reviews</a></li>
                             @endif
                             <li><a href="email_inbox_v2.html">Receipt Book</a></li>
                             <li><a href="email_compose.html">Paments Lock</a></li>                            
@@ -219,12 +218,12 @@
                         </a>
                         <ul class="sub-menu">
                             @if(Auth::user()->hasRole('user_view'))
-                            <li class="@if(session('subtitle') == 'users')   active @endif"><a href="/users">Users</a></li>@endif
+                            <li @if(session('subtitle') == 'users') class="active" @endif><a href="/users">Users</a></li>@endif
                             @if(Auth::user()->hasRole('user_add'))
-                            <li class="@if(session('subtitle') == 'register')   active @endif"><a href="/users/register">Add Users</a></li>@endif
+                            <li @if(session('subtitle') == 'register') class="active" @endif><a href="/users/register">Add Users</a></li>@endif
                             @if(Auth::user()->hasRole('Superman'))
-                            <li class="@if(session('subtitle') == 'Roles')   active @endif"><a href="/roles">Roles</a></li>
-                            <li class="@if(session('subtitle') == 'addRoles')   active @endif"><a href="/roles/create">Add Roles</a></li>@endif
+                            <li @if(session('subtitle') == 'Roles') class="active" @endif><a href="/roles">Roles</a></li>
+                            <li @if(session('subtitle') == 'addRoles') class="active" @endif><a href="/roles/create">Add Roles</a></li>@endif
                              
                         </ul>
                     </li>
