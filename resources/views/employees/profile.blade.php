@@ -255,7 +255,7 @@ session(['subtitle' => '']); ?>
                                                     </td>
                                                     <td>
                                                     <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) 
-                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-sm">Personal Loans</a>
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/loan" @endif  class="btn btn-inverse btn-sm">Add Loan</a>
                                                     <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'loan'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
@@ -285,7 +285,8 @@ session(['subtitle' => '']); ?>
                                                     <a   href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'expenses'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a  @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif class="btn bg-blue-lighter text-white btn-sm">Personal Benefits</a>
+                                                    <a  @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/benefit" @endif class="btn bg-blue-lighter text-white btn-sm">Personal Benefits</a>
                                                     <a href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'personal benefits'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>

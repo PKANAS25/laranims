@@ -129,10 +129,10 @@
                             @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $payrollContentRejectionsCount)
                             <li class="media">
                                 <a href="/payroll/content/rejections/unread">
-                                    <div class="media-left"><i class="fa fa-suitcase media-object bg-red"></i></div>
+                                    <div class="media-left"><i class="fa fa-suitcase media-object bg-purple-lighter"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$payrollContentRejectionsCount}} Payroll Rejections</h6>
-                                        <div class="text-muted f-s-11">Please View & Proceed</div>
+                                        <div class="text-muted f-s-11">verify & Re-issue</div>
                                     </div>
                                 </a>
                             </li>

@@ -9,12 +9,12 @@ session(['subtitle' => '']); ?>
             <!-- begin breadcrumb -->
             <ol class="breadcrumb pull-right hidden-print">
                 <li><a href="javascript:;">Employee</a></li>
-                <li class="active"><a href="javascript:;">Add Deduction</a></li>
+                <li class="active"><a href="javascript:;">Add Benefit</a></li>
                  
             </ol> 
             <!-- end breadcrumb -->
             <!-- begin page-header -->
-            <h1 class="page-header hidden-print">Add <small> Deduction</small></h1>
+            <h1 class="page-header hidden-print">Add <small> Benefit</small></h1>
             <!-- end page-header -->
             <!-- begin row -->
              <div class="col-md-12">
@@ -32,7 +32,7 @@ session(['subtitle' => '']); ?>
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="panel-body">
                               
-                               <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>
+                            <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>   
                                  
                                 <div class="hidden-print">
                                      @if (count($errors) > 0)
@@ -45,20 +45,20 @@ session(['subtitle' => '']); ?>
                                     </div>
                                     @endif
                                      
-                                </div> 
-
-                                <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="reason">Reason :</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="reason" name="reason" data-fv-notempty="true"   value="{{ old('reason') }}" />
-                                    </div>
-                                </div>   
-
-                            
+                                </div>    
+    
                               <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="dated">Date :</label>
+                                    <label class="control-label col-md-4 col-sm-4" for="benefit">Being :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="dated"   name="dated" data-fv-notempty="true"   value="{{ old('dated') }}" />
+                                        <input class="form-control" type="text" id="benefit" name="benefit" data-fv-notempty="true"   value="{{ old('benefit') }}" />
+                                    </div>
+                                </div>  
+
+
+                              <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="benefit_start">Start Date :</label>
+                                    <div class="col-md-6 col-sm-6">
+                                    <input class="form-control" type="text" id="benefit_start"   name="benefit_start" data-fv-notempty="true"   value="{{ old('benefit_start') }}" />
                                     </div>
                                 </div>
 
@@ -69,19 +69,21 @@ session(['subtitle' => '']); ?>
                                     </div>
                                 </div> 
 
-                               <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="notes">Notes :</label>
+                             <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="max_rounds">Max Rounds :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <textarea class="form-control" name="notes" >{{ old('notes') }}</textarea>  
+                                        <input class="form-control" type="number" id="max_rounds" name="max_rounds"   data-fv-notempty="true"  min="1"  value="{{ old('max_rounds') }}" />  
+                                    </div>
+                                </div> 
+
+                               
+                               <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="fileToUpload">Document</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control" type="file"  accept="image/*" data-fv-file="true"  data-fv-file-extension="jpeg,jpg"  data-fv-file-type="image/jpeg,image/jpg"  data-fv-file-maxsize="629760" data-fv-file-message="The selected file is not valid" id="fileToUpload" name="fileToUpload" /> <span class="text-info">Max size 500 Kb, JPG only</span>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="fileToUpload">Document</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="file"  accept="image/*"   data-fv-file="true"  data-fv-file-extension="jpeg,jpg"  data-fv-file-type="image/jpeg,image/jpg"  data-fv-file-maxsize="629760" data-fv-file-message="The selected file is not valid" id="fileToUpload" name="fileToUpload" /> <span class="text-info">Max size 500 Kb, JPG only</span>
-                                    </div>
-                                </div>
                                
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4"></label>
@@ -110,11 +112,11 @@ session(['subtitle' => '']); ?>
             App.init();
 
 
-            $('#dated').datepicker({
+            $('#benefit_start').datepicker({
                 format: "yyyy-mm-dd",
                 autoclose: true
             }).on('changeDate', function(e) { 
-            $('#eForm').formValidation('revalidateField', 'dated');
+            $('#eForm').formValidation('revalidateField', 'benefit_start');
             });
 
             

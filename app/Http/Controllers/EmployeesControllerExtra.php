@@ -427,9 +427,14 @@ class EmployeesControllerExtra extends Controller
          $this->validate($request, [
         'dated' => 'required|date_format:Y-m-d',
         'amount' => 'required|numeric',
-        'notes' => 'required',]); 
+        'notes' => 'required',
+        'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
 
-        DB::table('bonus')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
+        $id = DB::table('bonus')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
+
+        $imageName = $id.'.jpg';
+        if($request->file('fileToUpload'))
+        $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/bonus/', $imageName); 
 
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Bonus Added!');  
     }
@@ -456,9 +461,14 @@ class EmployeesControllerExtra extends Controller
          $this->validate($request, [
         'dated' => 'required|date_format:Y-m-d',
         'amount' => 'required|numeric',
-        'reason' => 'required',]); 
+        'reason' => 'required',
+        'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
 
-        DB::table('deductions_xtra')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'reason' => $request->reason, 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
+        $id = DB::table('deductions_xtra')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'reason' => $request->reason, 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
+
+        $imageName = $id.'.jpg';
+        if($request->file('fileToUpload'))
+        $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/deduction/', $imageName); 
 
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Deduction Added!');  
     } 
@@ -485,13 +495,55 @@ class EmployeesControllerExtra extends Controller
         'payment_date' => 'required|date_format:Y-m-d',
         'deduction_start' => 'required|date_format:Y-m-d',
         'amount' => 'required|numeric',
-        'max_rounds' => 'required|numeric',]); 
+        'max_rounds' => 'required|numeric',
+        'per_round' => 'required|numeric|min:1',
+        'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
 
-        DB::table('loans')->insert(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'payment_date' => $request->payment_date, 'deduction_start' => $request->deduction_start, 
-            'loaned_amount' => $request->amount, 'deduction_amount' => $request->per_round, 'admin' => Auth::id()]);  
+       $id = DB::table('loans')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'payment_date' => $request->payment_date, 'deduction_start' => $request->deduction_start, 'loaned_amount' => $request->amount, 'deduction_amount' => $request->per_round, 'admin' => Auth::id()]);  
+
+       $imageName = $id.'.jpg';
+        if($request->file('fileToUpload'))
+        $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/loan/', $imageName); 
 
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Loan Added!');  
     } 
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+
+    public function addBenefit($employeeId)
+    {
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
+         return view('employees.addBenefit',compact('employee'));    
+    } 
+
+    public function saveBenefit($employeeId,Request $request)
+    {
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
+         $this->validate($request, [
+        'benefit' => 'required', 
+        'benefit_start' => 'required|date_format:Y-m-d',
+        'amount' => 'required|numeric',
+        'max_rounds' => 'required|numeric',
+        'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
+
+        $id = DB::table('personal_benefits')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'benefit_start' => $request->benefit_start, 'benefit' => $request->benefit, 'amount' => $request->amount, 'max_rounds' => $request->max_rounds, 'admin' => Auth::id()]);  
+
+        $imageName = $id.'.jpg';
+        if($request->file('fileToUpload'))
+        $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/benefit/', $imageName); 
+
+        return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Benefit Added!');  
+    } 
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 
    public function addVacation($employeeId)

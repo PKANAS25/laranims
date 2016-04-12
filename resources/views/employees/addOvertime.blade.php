@@ -4,17 +4,18 @@
 session(['subtitle' => '']); ?> 
 
 @section('content') 
-  
+<link rel="stylesheet" type="text/css" href="/js/timepicker/jquery.ui.timepicker.css" />
+<script type="text/javascript" src="/js/timepicker/jquery.msgbox.min.js"></script>    
 <div id="content" class="content">
             <!-- begin breadcrumb -->
             <ol class="breadcrumb pull-right hidden-print">
                 <li><a href="javascript:;">Employee</a></li>
-                <li class="active"><a href="javascript:;">Add Deduction</a></li>
+                <li class="active"><a href="javascript:;">Add Overtime</a></li>
                  
             </ol> 
             <!-- end breadcrumb -->
             <!-- begin page-header -->
-            <h1 class="page-header hidden-print">Add <small> Deduction</small></h1>
+            <h1 class="page-header hidden-print">Add <small> Overtime</small></h1>
             <!-- end page-header -->
             <!-- begin row -->
              <div class="col-md-12">
@@ -32,7 +33,7 @@ session(['subtitle' => '']); ?>
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="panel-body">
                               
-                               <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>
+                             <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>  
                                  
                                 <div class="hidden-print">
                                      @if (count($errors) > 0)
@@ -48,33 +49,47 @@ session(['subtitle' => '']); ?>
                                 </div> 
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="reason">Reason :</label>
+                                    <label class="control-label col-md-4 col-sm-4" for="payment_date">Loan Payment Date :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="reason" name="reason" data-fv-notempty="true"   value="{{ old('reason') }}" />
+                                        <input class="form-control" type="text" id="payment_date" name="payment_date" data-fv-notempty="true"   value="{{ old('payment_date') }}" />
                                     </div>
                                 </div>   
 
                             
                               <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="dated">Date :</label>
+                                    <label class="control-label col-md-4 col-sm-4" for="time_1">Start time :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="dated"   name="dated" data-fv-notempty="true"   value="{{ old('dated') }}" />
+                                        <input class="form-control" type="text" id="time_1"   name="time_1" data-fv-notempty="true"   value="{{ old('time_1') }}" />
                                     </div>
                                 </div>
+
+                             <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="time_2">End time :</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control" type="text" id="time_2"   name="time_2" data-fv-notempty="true"   value="{{ old('time_2') }}" />
+                                    </div>
+                                </div>   
 
                             <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="amount">Amount :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="amount" name="amount"   data-fv-notempty="true"  min="1"  value="{{ old('amount') }}" />  
+                                        <input class="form-control" type="number" id="amount" name="amount"   data-fv-notempty="true"  min="1"  value="{{ old('amount') }}" onKeyUp="totalRes()" onChange="totalRes()" />  
                                     </div>
                                 </div> 
 
-                               <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="notes">Notes :</label>
+                              <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="max_rounds">Max Rounds :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <textarea class="form-control" name="notes" >{{ old('notes') }}</textarea>  
+                                        <input class="form-control" type="number" id="max_rounds" name="max_rounds"   data-fv-notempty="true"  min="1"  value="1"  onKeyUp="totalRes()" onChange="totalRes()" />  
                                     </div>
-                                </div>
+                                </div>   
+
+                              <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="per_round">Deduction amount per round :</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control" type="number" id="per_round" name="per_round"  value="{{ old('per_round') }}" readonly="readonly" min="1" />  
+                                    </div>
+                                </div> 
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="fileToUpload">Document</label>
@@ -106,25 +121,49 @@ session(['subtitle' => '']); ?>
 
 
     <script>
+
+    function totalRes()
+    {
+        
+        var amount = window.document.getElementById("amount").value;
+        var max_rounds = window.document.getElementById("max_rounds").value;
+        
+        amount = parseInt(amount);
+        max_rounds = parseInt(max_rounds);
+        
+        var per_rounder = amount/max_rounds;
+        per_rounder = parseInt(per_rounder);
+        
+     document.eForm.per_round.value=per_rounder;
+     
+    }
+
+
         $(document).ready(function() {
             App.init();
 
 
-            $('#dated').datepicker({
+            $('#payment_date').datepicker({
                 format: "yyyy-mm-dd",
                 autoclose: true
             }).on('changeDate', function(e) { 
-            $('#eForm').formValidation('revalidateField', 'dated');
+            $('#eForm').formValidation('revalidateField', 'payment_date');
             });
 
-            
-            
+            $('#time_1').timepicker({
+                            showPeriodLabels: false,
+                             minutes: { interval: 1 }
+                        });
+           $('#time_2').timepicker({
+                            showPeriodLabels: false,
+                             minutes: { interval: 1 }
+                        }); 
+             
                                              
         $('#eForm').formValidation();  
 
           });             
-    </script>
-
+    </script> 
 
  
         @endsection

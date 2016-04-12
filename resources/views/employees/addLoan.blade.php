@@ -65,25 +65,30 @@ session(['subtitle' => '']); ?>
                             <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="amount">Amount :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="amount" name="amount"   data-fv-notempty="true"  min="1"  value="{{ old('amount') }}" onKeyUp="totalRes()" />  
+                                        <input class="form-control" type="number" id="amount" name="amount"   data-fv-notempty="true"  min="1"  value="{{ old('amount') }}" onKeyUp="totalRes()" onChange="totalRes()" />  
                                     </div>
                                 </div> 
 
                               <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="max_rounds">Max Rounds :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="max_rounds" name="max_rounds"   data-fv-notempty="true"  min="1"  value="1"  onKeyUp="totalRes()" />  
+                                        <input class="form-control" type="number" id="max_rounds" name="max_rounds"   data-fv-notempty="true"  min="1"  value="1"  onKeyUp="totalRes()" onChange="totalRes()" />  
                                     </div>
                                 </div>   
 
                               <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="per_round">Deduction amount per round :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="per_round" name="per_round"  value="{{ old('per_round') }}" readonly="readonly" />  
+                                        <input class="form-control" type="number" id="per_round" name="per_round"  value="{{ old('per_round') }}" readonly="readonly" min="1" />  
                                     </div>
                                 </div> 
 
-                               
+                                <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="fileToUpload">Document</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control" type="file"  accept="image/*"   data-fv-file="true"  data-fv-file-extension="jpeg,jpg"  data-fv-file-type="image/jpeg,image/jpg"  data-fv-file-maxsize="629760" data-fv-file-message="The selected file is not valid" id="fileToUpload" name="fileToUpload" /> <span class="text-info">Max size 500 Kb, JPG only</span>
+                                    </div>
+                                </div>
                                
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4"></label>
@@ -119,7 +124,7 @@ session(['subtitle' => '']); ?>
         max_rounds = parseInt(max_rounds);
         
         var per_rounder = amount/max_rounds;
-        
+        per_rounder = parseInt(per_rounder);
         
      document.eForm.per_round.value=per_rounder;
      
@@ -142,10 +147,8 @@ session(['subtitle' => '']); ?>
                 autoclose: true
             }).on('changeDate', function(e) { 
             $('#eForm').formValidation('revalidateField', 'deduction_start');
-            });
-
-            
-            
+            }); 
+             
                                              
         $('#eForm').formValidation();  
 

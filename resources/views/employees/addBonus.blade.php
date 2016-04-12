@@ -70,6 +70,13 @@ session(['subtitle' => '']); ?>
                                 </div>
 
                                
+                               <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="fileToUpload">Document</label>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control" type="file"  accept="image/*" data-fv-file="true"  data-fv-file-extension="jpeg,jpg"  data-fv-file-type="image/jpeg,image/jpg"  data-fv-file-maxsize="629760" data-fv-file-message="The selected file is not valid" id="fileToUpload" name="fileToUpload" /> <span class="text-info">Max size 500 Kb, JPG only</span>
+                                    </div>
+                                </div>
+
                                
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4"></label>

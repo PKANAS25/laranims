@@ -104,6 +104,90 @@ class PayrollController extends Controller
                          ->where('employees.working_under',$working_under)  
                          ->orderBy('dated','DESC')
                          ->get(); 
+                         foreach ($bonuses as $bonus) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$bonus->bonus_id.'.jpg'))
+                                         $bonus->file=1; 
+                                     
+                                      else  
+                                      $bonus->file=0;                  
+                                }
+
+        $deductions = DB::table('deductions_xtra')
+                         ->select('deductions_xtra.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','deductions_xtra.admin','=','users.id')
+                         ->leftjoin('employees','deductions_xtra.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->where('employees.working_under',$working_under)  
+                         ->orderBy('dated','DESC')
+                         ->get(); 
+
+                         foreach ($deductions as $deduction) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$deduction->dedXtra_id.'.jpg'))
+                                         $deduction->file=1; 
+                                     
+                                      else  
+                                      $deduction->file=0;                  
+                                } 
+
+        $loans = DB::table('loans')
+                         ->select('loans.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','loans.admin','=','users.id')
+                         ->leftjoin('employees','loans.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->where('employees.working_under',$working_under)  
+                         ->orderBy('payment_date','DESC')
+                         ->get();  
+
+                         foreach ($loans as $loan) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/loan/'.$loan->loan_id.'.jpg'))
+                                         $loan->file=1; 
+                                     
+                                      else  
+                                      $loan->file=0;                  
+                                } 
+
+        $overtimes = DB::table('over_time')
+                         ->select('over_time.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','over_time.admin','=','users.id')
+                         ->leftjoin('employees','over_time.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->where('employees.working_under',$working_under)  
+                         ->orderBy('dated','DESC')
+                         ->get();
+
+                         foreach($overtimes as $overtime) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/overtime/'.$overtime->over_id.'.jpg'))
+                                         $overtime->file=1; 
+                                     
+                                      else  
+                                      $overtime->file=0;                  
+                                }   
+
+        $benefits = DB::table('personal_benefits')
+                         ->select('personal_benefits.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','personal_benefits.admin','=','users.id')
+                         ->leftjoin('employees','personal_benefits.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->where('employees.working_under',$working_under)  
+                         ->orderBy('benefit_start','DESC')
+                         ->get(); 
+
+                        foreach ($benefits as $benefit) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/benefit/'.$benefit->benefit_id.'.jpg'))
+                                         $benefit->file=1; 
+                                     
+                                      else  
+                                      $benefit->file=0;                  
+                                } 
 
       }
 
@@ -120,10 +204,95 @@ class PayrollController extends Controller
                          ->orderBy('dated','DESC')
                          ->get(); 
 
+                         foreach ($bonuses as $bonus) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/bonus/'.$bonus->bonus_id.'.jpg'))
+                                         $bonus->file=1; 
+                                     
+                                      else  
+                                      $bonus->file=0;                  
+                                }
+
+        $deductions = DB::table('deductions_xtra')
+                         ->select('deductions_xtra.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','deductions_xtra.admin','=','users.id')
+                         ->leftjoin('employees','deductions_xtra.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->orderBy('employees.working_under') 
+                         ->orderBy('dated','DESC')
+                         ->get(); 
+
+                         foreach ($deductions as $deduction) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/deduction/'.$deduction->dedXtra_id.'.jpg'))
+                                         $deduction->file=1; 
+                                     
+                                      else  
+                                      $deduction->file=0;                  
+                                }
+
+        $loans = DB::table('loans')
+                         ->select('loans.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','loans.admin','=','users.id')
+                         ->leftjoin('employees','loans.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->orderBy('employees.working_under')  
+                         ->orderBy('payment_date','DESC')
+                         ->get(); 
+
+                         foreach ($loans as $loan) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/loan/'.$loan->loan_id.'.jpg'))
+                                         $loan->file=1; 
+                                     
+                                      else  
+                                      $loan->file=0;                  
+                                } 
+
+        $overtimes = DB::table('over_time')
+                         ->select('over_time.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','over_time.admin','=','users.id')
+                         ->leftjoin('employees','over_time.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->orderBy('employees.working_under')
+                         ->orderBy('dated','DESC')
+                         ->get(); 
+
+                         foreach($overtimes as $overtime) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/overtime/'.$overtime->over_id.'.jpg'))
+                                         $overtime->file=1; 
+                                     
+                                      else  
+                                      $overtime->file=0;                  
+                                } 
+
+        $benefits = DB::table('personal_benefits')
+                         ->select('personal_benefits.*','users.name AS admn', 'employees.employee_id', 'employees.fullname', 'employees.working_under','branches.name AS branch_name')
+                         ->leftjoin('users','personal_benefits.admin','=','users.id')
+                         ->leftjoin('employees','personal_benefits.emp_id','=','employees.employee_id')
+                         ->leftjoin('branches','branches.id','=','employees.working_under')
+                         ->where('approved',0) 
+                         ->orderBy('employees.working_under')  
+                         ->orderBy('benefit_start','DESC')
+                         ->get(); 
+
+                         foreach ($benefits as $benefit) 
+                                { 
+                                      if (File::exists(base_path().'/public/uploads/hrx/benefit/'.$benefit->benefit_id.'.jpg'))
+                                         $benefit->file=1; 
+                                     
+                                      else  
+                                      $benefit->file=0;                  
+                                }                                                                  
+
       }
       
 
-     return view('payroll.salaryApprovals',compact('branches','working_under','bonuses'));
+     return view('payroll.salaryApprovals',compact('branches','working_under','bonuses','deductions','loans','overtimes','benefits'));
    }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -136,17 +305,68 @@ class PayrollController extends Controller
       $reason = $request->reason;  
 
         
-      if($action==1 && $item=='bonus')
+      if($item=='bonus')
       { 
-         DB::table('bonus')->where('bonus_id',$id)->update(['approved'=>1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now()]);
-         echo "<i class=\"fa fa-check-circle-o  text-success\"></i>";
+        if($action==1)
+        {
+           DB::table('bonus')->where('bonus_id',$id)->update(['approved'=>1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now()]);
+           echo "<i class=\"fa fa-check-circle-o  text-success\"></i>"; 
+        }
+
+        else if($action==-1 && $reason)
+        { 
+           DB::table('bonus')->where('bonus_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
+           echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
+        } 
       }
 
-      else if($action==-1 && $item=='bonus' && $reason)
+      elseif($item=='deduction')
       { 
-         DB::table('bonus')->where('bonus_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
-         echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
+        if($action==1)
+        {
+           DB::table('deductions_xtra')->where('dedXtra_id',$id)->update(['approved'=>1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now()]);
+           echo "<i class=\"fa fa-check-circle-o  text-success\"></i>"; 
+        }
+
+        else if($action==-1 && $reason)
+        { 
+           DB::table('deductions_xtra')->where('dedXtra_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
+           echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
+        } 
       }
+
+      elseif($item=='loan')
+      { 
+        if($action==1)
+        {
+           DB::table('loans')->where('loan_id',$id)->update(['approved'=>1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now()]);
+           echo "<i class=\"fa fa-check-circle-o  text-success\"></i>"; 
+        }
+
+        else if($action==-1 && $reason)
+        { 
+           DB::table('loans')->where('loan_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
+           echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
+        } 
+      }
+
+
+      elseif($item=='overtime')
+      { 
+        if($action==1)
+        {
+           DB::table('over_time')->where('over_id',$id)->update(['approved'=>1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now()]);
+           echo "<i class=\"fa fa-check-circle-o  text-success\"></i>"; 
+        }
+
+        else if($action==-1 && $reason)
+        { 
+           DB::table('over_time')->where('over_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
+           echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
+        } 
+      }
+
+      
 
       
    }
