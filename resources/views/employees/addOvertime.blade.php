@@ -4,8 +4,9 @@
 session(['subtitle' => '']); ?> 
 
 @section('content') 
+ 
 <link rel="stylesheet" type="text/css" href="/js/timepicker/jquery.ui.timepicker.css" />
-<script type="text/javascript" src="/js/timepicker/jquery.msgbox.min.js"></script>    
+<script type="text/javascript" src="/js/timepicker/jquery.ui.timepicker.js?v=0.3.3"></script>    
 <div id="content" class="content">
             <!-- begin breadcrumb -->
             <ol class="breadcrumb pull-right hidden-print">
@@ -49,9 +50,9 @@ session(['subtitle' => '']); ?>
                                 </div> 
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="payment_date">Loan Payment Date :</label>
+                                    <label class="control-label col-md-4 col-sm-4" for="dated">Date :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="payment_date" name="payment_date" data-fv-notempty="true"   value="{{ old('payment_date') }}" />
+                                        <input class="form-control" type="text" id="dated" name="dated" data-fv-notempty="true"   value="{{ old('dated') }}" />
                                     </div>
                                 </div>   
 
@@ -70,26 +71,12 @@ session(['subtitle' => '']); ?>
                                     </div>
                                 </div>   
 
-                            <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="amount">Amount :</label>
+                             <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4" for="notes">Notes :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="amount" name="amount"   data-fv-notempty="true"  min="1"  value="{{ old('amount') }}" onKeyUp="totalRes()" onChange="totalRes()" />  
+                                        <textarea class="form-control" name="notes" >{{ old('notes') }}</textarea>  
                                     </div>
-                                </div> 
-
-                              <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="max_rounds">Max Rounds :</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="max_rounds" name="max_rounds"   data-fv-notempty="true"  min="1"  value="1"  onKeyUp="totalRes()" onChange="totalRes()" />  
-                                    </div>
-                                </div>   
-
-                              <div class="form-group">
-                                    <label class="control-label col-md-4 col-sm-4" for="per_round">Deduction amount per round :</label>
-                                    <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="number" id="per_round" name="per_round"  value="{{ old('per_round') }}" readonly="readonly" min="1" />  
-                                    </div>
-                                </div> 
+                                </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="fileToUpload">Document</label>
@@ -143,24 +130,64 @@ session(['subtitle' => '']); ?>
             App.init();
 
 
-            $('#payment_date').datepicker({
+            $('#dated').datepicker({
                 format: "yyyy-mm-dd",
                 autoclose: true
             }).on('changeDate', function(e) { 
-            $('#eForm').formValidation('revalidateField', 'payment_date');
+            $('#eForm').formValidation('revalidateField', 'dated');
             });
 
             $('#time_1').timepicker({
                             showPeriodLabels: false,
                              minutes: { interval: 1 }
-                        });
-           $('#time_2').timepicker({
+                        }).on('change', function(e) { 
+            $('#eForm').formValidation('revalidateField', 'time_1');
+            $('#eForm').formValidation('revalidateField', 'time_2');
+            });
+
+            $('#time_2').timepicker({
                             showPeriodLabels: false,
                              minutes: { interval: 1 }
-                        }); 
+                        }).on('change', function(e) { 
+            $('#eForm').formValidation('revalidateField', 'time_2');
+            $('#eForm').formValidation('revalidateField', 'time_1');
+            });
+               
              
                                              
-        $('#eForm').formValidation();  
+       $('#eForm').formValidation({
+                fields: {
+                    time_1: {
+                        verbose: false,
+                        validators: {
+                            callback: {
+                                message: 'The start time must be earlier then the end one',
+                                callback: function(value, validator, $field) {
+                                    
+                                   var endTime = $('#eForm').find('[name="time_2"]').val();
+                                   if(value>endTime)
+                                    return false;
+                                    else return true;
+                                }
+                            }
+                        }
+                    },
+                    time_2: {
+                        verbose: false,
+                        validators: {
+                            callback: {
+                                message: 'The end time must be later then the start one',
+                                callback: function(value, validator, $field) {
+                                    var startTime = $('#eForm').find('[name="time_1"]').val();
+                                   if(value<startTime)
+                                    return false;
+                                    else return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
 
           });             
     </script> 

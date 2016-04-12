@@ -290,7 +290,8 @@ session(['subtitle' => '']); ?>
                                                     <a href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'personal benefits'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a>
                                                     </td>
                                                     <td>
-                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) href="#" @endif class="btn bg-red-lighter text-white btn-sm">Overtime</a>
+                                                    <a @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $employee->deleted==0) 
+                                                    href="/employee/{{base64_encode($employee->employee_id)}}/add/overtime" @endif class="btn bg-red-lighter text-white btn-sm">Overtime</a>
                                                     <a href="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'overtime'])}}" class="btn bg-purple  btn-sm text-white"><i class="fa fa-history"></i></a> 
                                                     </td>
                                                 </tr>

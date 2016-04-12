@@ -544,6 +544,45 @@ class EmployeesControllerExtra extends Controller
         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Benefit Added!');  
     } 
 
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+
+    public function addOvertime($employeeId)
+    {
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
+         return view('employees.addOvertime',compact('employee'));    
+    } 
+
+    public function saveOvertime($employeeId,Request $request)
+    {
+         $employeeId = base64_decode($employeeId); 
+         $employee = Employee::where('employee_id',$employeeId)->first();
+         if($employee->deleted!=0)
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+
+         $this->validate($request, [
+        'benefit' => 'required', 
+        'benefit_start' => 'required|date_format:Y-m-d',
+        'amount' => 'required|numeric',
+        'max_rounds' => 'required|numeric',
+        'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
+
+        $id = DB::table('personal_benefits')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'benefit_start' => $request->benefit_start, 'benefit' => $request->benefit, 'amount' => $request->amount, 'max_rounds' => $request->max_rounds, 'admin' => Auth::id()]);  
+
+        $imageName = $id.'.jpg';
+        if($request->file('fileToUpload'))
+        $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/benefit/', $imageName); 
+
+        return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Benefit Added!');  
+    } 
+
+
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 
    public function addVacation($employeeId)

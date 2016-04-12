@@ -273,6 +273,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/employee/{employeeId}/add/benefit', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addBenefit']);
     Route::post('/employee/{employeeId}/add/benefit', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveBenefit']);
 
+    Route::get('/employee/{employeeId}/add/overtime', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@addOvertime']);
+    Route::post('/employee/{employeeId}/add/overtime', ['middleware' => 'HRAdmin','uses'=>'EmployeesControllerExtra@saveOvertime']);
+
     Route::get('/employee/{employeeId}/add/vacation', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@addVacation']);
     Route::post('/employee/{employeeId}/add/vacation', ['middleware' => 'AttendanceManager','uses'=>'EmployeesControllerExtra@saveVacation']);
     Route::get('/employeeVacationCheck', 'EmployeesControllerExtra@employeeVacationCheck');

@@ -24,7 +24,7 @@
 .ui-timepicker-table td span {
 	display:block;
     padding:0.2em 0.3em 0.2em 0.5em;
-    width: 1.2em;
+    width: 2.2em;
 
     text-align:right;
     text-decoration:none;
@@ -33,7 +33,7 @@
 .ui-timepicker-table td a {
     display:block;
     padding:0.2em 0.3em 0.2em 0.5em;
-    width: 1.2em;
+    width: 2.2em;
     cursor: pointer;
     text-align:right;
     text-decoration:none;
