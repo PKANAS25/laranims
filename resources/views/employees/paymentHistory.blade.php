@@ -847,33 +847,40 @@ session(['subtitle' => '']); ?>
                       
                       
 
-                      <form class="form-inline hidden-print" name="eForm" id="eForm"  method="get" autocomplete="OFF" action="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'bonus'])}}" >
+                      <form class="form-inline hidden-print" name="eForm" id="eForm"  method="get" autocomplete="OFF"  >
                               <div class="form-group m-r-10"> 
-                                <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>
+                               <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>
+                                &nbsp;&nbsp;&nbsp;&nbsp; 
+                                
+                                <span class="text-warning"><i class="fa fa-circle"></i> Pending</span>&nbsp;&nbsp;&nbsp;&nbsp;  
+                                <span class="text-success"><i class="fa fa-circle"></i> Approved</span>&nbsp;&nbsp;&nbsp;&nbsp; 
+                                <span class="text-danger"><i class="fa fa-circle"></i> Rejected</span>&nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
-                              <button type="submit" class="btn btn-primary m-r-5">Filter</button> 
-                                <div class="form-group m-r-10">
-                                  <select class="form-control" id="select-required" name="stuff" data-fv-notempty="true">
-                                            <option value="bonus">Bonus</option>
+
+
+                                <div class="form-group m-r-10"> Change to
+                                  <select class="form-control"  id="stuffer" name="stuffer" data-fv-notempty="true">
+                                  <option value="#">Select</option>
+                                            <option value="/bonus">Bonus</option>
                                             
                                         </select>
                                 </div>
-                                <div class="form-group m-r-10"> 
                                 
-                                <span class="text-warning"><i class="fa fa-circle"></i> Pending</span>&nbsp;&nbsp;&nbsp;&nbsp;  
-                      <span class="text-success"><i class="fa fa-circle"></i> Approved</span>&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <span class="text-danger"><i class="fa fa-circle"></i> Rejected</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                </div>
-                                 
+                                 <script>
+                                  $(function(){
+                                            // bind change event to select
+                                            $('#stuffer').on('change', function () {
+                                                var url = $(this).val(); // get selected value
+                                                if (url) { // require a URL
+                                                    window.location.href  = "{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'loan'])}}" 
+                                                }
+                                                return false;
+                                            });
+                                      });
+                                  </script>
                                 
                             </form>
-                         <script type="text/javascript">
-                         $('#eForm').on('submit', function() {
-                          var stuff = $('#stuff').val();
-                          var formAction = $('#search').attr('action');
-                          $('#search').attr('action', formAction + "'".stuff+"']");
-                          });
-                          </script>
+                          
                     </div>
                     <!-- end panel --> 
                 </div>
