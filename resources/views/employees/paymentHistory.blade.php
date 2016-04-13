@@ -858,11 +858,17 @@ session(['subtitle' => '']); ?>
                                 </div>
 
 
-                                <div class="form-group m-r-10"> Change to
+                                <div class="form-group m-r-10"> <strong>Change to</strong>&nbsp;&nbsp;
                                   <select class="form-control"  id="stuffer" name="stuffer" data-fv-notempty="true">
                                   <option value="#">Select</option>
-                                            <option value="/bonus">Bonus</option>
-                                            
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'bonus'])}}">Bonus</option>
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'deduction'])}}">Deductions</option>
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'loan'])}}">Loans</option>
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'personal benefits'])}}">Benefits</option>
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'overtime'])}}">Overtime</option>
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'absentCorrection'])}}">Absent Correction</option> 
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'vacation'])}}">Vacation</option>
+                                  <option value="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'expenses'])}}">Pro Payments</option>         
                                         </select>
                                 </div>
                                 
@@ -872,7 +878,7 @@ session(['subtitle' => '']); ?>
                                             $('#stuffer').on('change', function () {
                                                 var url = $(this).val(); // get selected value
                                                 if (url) { // require a URL
-                                                    window.location.href  = "{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'loan'])}}" 
+                                                    window.location.href  = url;
                                                 }
                                                 return false;
                                             });

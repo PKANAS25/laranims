@@ -13,8 +13,9 @@ session(['subtitle' => 'approvals']); ?>
                 white-space: nowrap;  
     } 
     .actionsCol{
-        min-width: 150px;
+        min-width: 170px;
     }
+
       
 </style>
 <div id="content" class="content">

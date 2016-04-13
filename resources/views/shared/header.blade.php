@@ -132,7 +132,7 @@
                                     <div class="media-left"><i class="fa fa-suitcase media-object bg-purple-lighter"></i></div>
                                     <div class="media-body">
                                         <h6 class="media-heading">{{$payrollContentRejectionsCount}} Payroll Rejections</h6>
-                                        <div class="text-muted f-s-11">verify & Re-issue</div>
+                                        <div class="text-muted f-s-11">Verify & Re-issue</div>
                                     </div>
                                 </a>
                             </li>
