@@ -4,6 +4,7 @@
 session(['subtitle' => '']); ?> 
 
 @section('content') 
+ 
 <link rel="stylesheet" type="text/css" href="/dist/msgbox/jquery.msgbox.css" />
 <script type="text/javascript" src="/dist/msgbox/jquery.msgbox.min.js"></script>   
 <div id="content" class="content">
@@ -39,14 +40,8 @@ session(['subtitle' => '']); ?>
                             </div>
                             <h4 class="panel-title">{{$employee->fullname}}</h4>
                         </div>
-                      <div class="panel-body">
-                      <br>&nbsp;&nbsp;&nbsp;&nbsp;
-                      <span class="text-warning"><i class="fa fa-circle"></i> Pending</span>&nbsp;&nbsp;&nbsp;&nbsp;  
-                      <span class="text-success"><i class="fa fa-circle"></i> Approved</span>&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <span class="text-danger"><i class="fa fa-circle"></i> Rejected</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                      <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>
-                      <br>&nbsp;
-                       
+                      <div class="panel-body"> 
+                     
                                 @if($stuff=='bonus')
                                    <table  id="data-table" class="table table-striped table-bordered">
                                        <thead>
@@ -57,10 +52,10 @@ session(['subtitle' => '']); ?>
                                                <th>Notes</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th> 
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
+                                               <th>Reject Reason</th>
+                                               <th><i class="fa fa-file"></th>
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                        <tbody>
@@ -163,10 +158,10 @@ session(['subtitle' => '']); ?>
                                                <th>Notes</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th> 
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
+                                               <th>Reject Reason</th>
+                                               <th><i class="fa fa-file"></th>
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                        <tbody>
@@ -269,10 +264,10 @@ session(['subtitle' => '']); ?>
                                                <th>Notes</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th> 
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
+                                               <th>Reject Reason</th>
+                                               <th><i class="fa fa-file"></th>
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                        <tbody>
@@ -377,10 +372,10 @@ session(['subtitle' => '']); ?>
                                                <th>Balance</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th> 
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
+                                               <th>Reject Reason</th>
+                                               <th><i class="fa fa-file"></th>
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                         <tbody>
@@ -487,10 +482,10 @@ session(['subtitle' => '']); ?>
                                                <th>Status</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th> 
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
+                                               <th>Reject Reason</th>
+                                               <th><i class="fa fa-file"></th>
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                        <tbody>
@@ -597,10 +592,10 @@ session(['subtitle' => '']); ?>
                                                <th>Notes</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th> 
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
-                                               <th></th>
+                                               <th>Reject Reason</th>
+                                               <th><i class="fa fa-file"></th>
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                        <tbody>
@@ -704,8 +699,8 @@ session(['subtitle' => '']); ?>
                                                <th>Category</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th>  
-                                               <th></th>
-                                               <th></th> 
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                         <tbody>
@@ -780,10 +775,9 @@ session(['subtitle' => '']); ?>
                                                <th>Bill No</th>
                                                <th>Bill Date</th>
                                                <th>Company</th>
-                                               <th>PRO</th> 
-                                               
-                                               <th></th>
-                                               <th></th>
+                                               <th>PRO</th>  
+                                               <th><i class="fa fa-trash"></i></th>
+                                               <th><i class="fa fa-refresh"></i></th>
                                            </tr>
                                        </thead>
                                         <tbody>
@@ -849,8 +843,37 @@ session(['subtitle' => '']); ?>
                                    </table>                                                                       
     <!-------------------------------------------------------------------------------------------------------------------------------------------- -->  
                                     @endif <!-- if stuff=='xyz'  -->
-         
-                         
+                
+                      
+                      
+
+                      <form class="form-inline hidden-print" name="eForm" id="eForm"  method="get" autocomplete="OFF" action="{{action('EmployeesControllerExtra@payContentHistory',[base64_encode($employee->employee_id),'bonus'])}}" >
+                              <div class="form-group m-r-10"> 
+                                <a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}"><i class="fa fa-arrow-left"></i> Back to Employee Profile</a>
+                                </div>
+                              <button type="submit" class="btn btn-primary m-r-5">Filter</button> 
+                                <div class="form-group m-r-10">
+                                  <select class="form-control" id="select-required" name="stuff" data-fv-notempty="true">
+                                            <option value="bonus">Bonus</option>
+                                            
+                                        </select>
+                                </div>
+                                <div class="form-group m-r-10"> 
+                                
+                                <span class="text-warning"><i class="fa fa-circle"></i> Pending</span>&nbsp;&nbsp;&nbsp;&nbsp;  
+                      <span class="text-success"><i class="fa fa-circle"></i> Approved</span>&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <span class="text-danger"><i class="fa fa-circle"></i> Rejected</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                                 
+                                
+                            </form>
+                         <script type="text/javascript">
+                         $('#eForm').on('submit', function() {
+                          var stuff = $('#stuff').val();
+                          var formAction = $('#search').attr('action');
+                          $('#search').attr('action', formAction + "'".stuff+"']");
+                          });
+                          </script>
                     </div>
                     <!-- end panel --> 
                 </div>

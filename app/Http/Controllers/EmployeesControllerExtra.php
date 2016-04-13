@@ -565,20 +565,86 @@ class EmployeesControllerExtra extends Controller
          if($employee->deleted!=0)
          return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
 
-         $this->validate($request, [
-        'benefit' => 'required', 
-        'benefit_start' => 'required|date_format:Y-m-d',
-        'amount' => 'required|numeric',
-        'max_rounds' => 'required|numeric',
+         $this->validate($request, [ 
+        'dated' => 'required|date_format:Y-m-d',
+        'time_1' => 'required|date_format:H:i',
+        'time_2' => 'required|date_format:H:i',
         'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
 
-        $id = DB::table('personal_benefits')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'benefit_start' => $request->benefit_start, 'benefit' => $request->benefit, 'amount' => $request->amount, 'max_rounds' => $request->max_rounds, 'admin' => Auth::id()]);  
+        $dated = Carbon::parse($request->dated);
+        
+ 
+        
+        $hrs = (Carbon::parse($request->time_1)->diffInMinutes(Carbon::parse($request->time_2)))/60;
+         
+
+        $salary = EmployeesSalary::where('employee_id',$employeeId)->first();
+        $total = $salary->basic + $salary->accomodation+ $salary->travel + $salary->other;
+        $per_hour = round(($total/30)/(8));
+
+        if($dated->dayOfWeek==5)//if Friday
+        {
+           $hrs = sprintf ("%.2f",$hrs * 1.50);
+           $addedNote= "<br />Friday. Hrs * 1.50  ==>".$hrs;
+           $amount = round($hrs*$per_hour);
+        }
+
+        else
+          {
+             
+            if(Carbon::parse($request->time_1)->format('H:i')  >= Carbon::parse("21:00")->format('H:i') || Carbon::parse($request->time_1)->format('H:i') < Carbon::parse("04:00")->format('H:i') && Carbon::parse($request->time_2)->format('H:i') <= Carbon::parse("04:00")->format('H:i'))
+            {
+              $hrs = $hrs * (1.50);
+              $addedNote=  "<br />1st Case ==> Hrs * 1.5 = $hrs";
+            }//if($request->time_1  > strtotime("21:00"))
+            
+            if(Carbon::parse($request->time_1)->format('H:i') < Carbon::parse("21:00")->format('H:i') && Carbon::parse($request->time_2)->format('H:i') > Carbon::parse("21:00")->format('H:i'))
+            {
+              $temp = ("21:00"); 
+              $hrs1 = (Carbon::parse($temp)->diffInMinutes(Carbon::parse($request->time_1)))/60 ;
+              $hrs1 = sprintf ("%.2f",$hrs1 * 1.25);
+              $hrs2 = (Carbon::parse($request->time_2)->diffInMinutes(Carbon::parse($temp)))/60 ;
+              $hrs2 = sprintf ("%.2f",$hrs2 * 1.50);
+              $hrs = sprintf ("%.2f",($hrs1+$hrs2));
+              $addedNote=  "<br />2nd Case ==> Hrs1 = $hrs1, Hrs2 = $hrs2<br />Total Hrs= $hrs";
+              
+            }//if($request->time_1 <= strtotime("21:00") && $request->time_2 > strtotime("21:00"))
+
+            if(Carbon::parse($request->time_1)->format('H:i') < Carbon::parse("04:00")->format('H:i') && Carbon::parse($request->time_2)->format('H:i') > Carbon::parse("04:00")->format('H:i'))
+            {
+              $temp = ("04:00"); 
+              $hrs1 = (Carbon::parse($temp)->diffInMinutes(Carbon::parse($request->time_1)))/60 ;
+              $hrs1 = sprintf ("%.2f",$hrs1 * 1.50);
+              $hrs2 = (Carbon::parse($request->time_2)->diffInMinutes(Carbon::parse($temp)))/60 ;
+              $hrs2 = sprintf ("%.2f",$hrs2 * 1.25);
+              $hrs = sprintf ("%.2f",($hrs1+$hrs2));
+              $addedNote=  "<br />3rd Case ==> Hrs1 = $hrs1, Hrs2 = $hrs2<br />Total Hrs= $hrs";
+              
+            }//if($request->time_1 <= strtotime("21:00") && $request->time_2 > strtotime("21:00"))
+              
+            
+            if(Carbon::parse($request->time_1)->format('H:i') >= Carbon::parse("04:00")->format('H:i') && Carbon::parse($request->time_2)->format('H:i') >= Carbon::parse("04:00")->format('H:i') && Carbon::parse($request->time_1)->format('H:i') <= Carbon::parse("21:00")->format('H:i') && Carbon::parse($request->time_2)->format('H:i') <= Carbon::parse("21:00")->format('H:i'))
+            {
+              $hrs = sprintf ("%.2f",$hrs * 1.25);
+              $addedNote=  "<br />4th Case ==> Hrs * 1.25 = $hrs";  
+            }//if($request->time_1 < strtotime("04:00") && $request->time_2 <= strtotime("04:00"))
+            
+            $amount =  round($hrs * $per_hour);
+            
+          
+          }// Big ELSE
+      
+      $notes  = "Time : FROM ".Carbon::parse($request->time_1)->format('h:i:a')." to ".Carbon::parse($request->time_2)->format('h:i:a').$addedNote."<br />".$request->notes; 
+
+   
+         
+       $id = DB::table('over_time')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'dated' => $request->dated, 'hours' => $hrs, 'amount' => $amount, 'notes' => $notes, 'admin' => Auth::id()]);  
 
         $imageName = $id.'.jpg';
         if($request->file('fileToUpload'))
-        $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/benefit/', $imageName); 
+        $request->file('fileToUpload')->move(base_path().'/public/uploads/hrx/overtime/', $imageName); 
 
-        return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Benefit Added!');  
+        return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('status', 'Overtime Added!');  
     } 
 
 

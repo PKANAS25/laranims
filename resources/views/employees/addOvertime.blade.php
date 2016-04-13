@@ -60,14 +60,14 @@ session(['subtitle' => '']); ?>
                               <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="time_1">Start time :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="time_1"   name="time_1" data-fv-notempty="true"   value="{{ old('time_1') }}" />
+                                        <input class="form-control" type="text" id="time_1"   name="time_1" data-fv-notempty="true"   value="{{ old('time_1') }}" placeholder="HH:mm"  pattern="^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$"  data-fv-regexp-message="Invalid time"/>
                                     </div>
                                 </div>
 
                              <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="time_2">End time :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="time_2"   name="time_2" data-fv-notempty="true"   value="{{ old('time_2') }}" />
+                                        <input class="form-control" type="text" id="time_2"   name="time_2" data-fv-notempty="true"   value="{{ old('time_2') }}" placeholder="HH:mm"  pattern="^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$"  data-fv-regexp-message="Invalid time"/>
                                     </div>
                                 </div>   
 
