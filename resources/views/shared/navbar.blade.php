@@ -116,7 +116,7 @@
                         <ul class="sub-menu">
                         @if(Auth::user()->admin_type>1)
                             @if(Auth::user()->hasRole('Payroll')) 
-                            <li><a href="table_basic.html">Generate Payroll</a></li> 
+                            <li @if(session('subtitle') == 'generate') class="active" @endif><a href="/payroll/generate/step1">Generate Payroll</a></li> 
                             @endif
 
                             @if(Auth::user()->hasRole('PayrollApprovals')) 

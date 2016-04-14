@@ -48,6 +48,7 @@ class Kernel extends HttpKernel
         'ProPayments' =>\App\Http\Middleware\ProPayments::class,
         'PayrollReports' =>\App\Http\Middleware\PayrollReports::class,
         'PayrollApprovals' =>\App\Http\Middleware\PayrollApprovals::class,
+        'Payroll' =>\App\Http\Middleware\Payroll::class,
         
     ];
 }

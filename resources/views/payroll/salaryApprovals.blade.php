@@ -583,7 +583,6 @@ session(['subtitle' => 'approvals']); ?>
     </div>
  <script>
         $(document).ready(function() {
-            App.init(); 
                                             
             $('#data-table2').dataTable( {
                 "paging":   false,

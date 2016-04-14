@@ -316,7 +316,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/payroll/content/rejections/unread', ['middleware' => 'HRAdmin','uses'=>'PayrollController@approvePayrollContent']);
 
+//--------------------------------------------------------PayrollControllerMain------------------------------------------------ 
 
+     Route::get('/payroll/generate/step1',['middleware' => 'Payroll', function () {return view('payroll.step1');}]);
 
 });
 
