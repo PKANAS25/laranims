@@ -271,13 +271,25 @@
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="fa fa-bus"></i>
-                            <span>Buses</span>
+                            <span>Vehicles</span>
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="map_vector.html">Buses List</a></li>
+                            <li><a href="map_vector.html">Buses</a></li>
                             <li><a href="map_google.html">Add Bus</a></li>
-                            <li><a href="map_google.html">Bus Report I</a></li>
-                            <li><a href="map_google.html">Bus Report II</a></li>
+                            <li><a href="map_google.html">Cars</a></li>
+                            <li><a href="map_google.html">Add Car</a></li>
+                            <li class="has-sub">
+                                <a href="javascript:;">
+                                    <b class="caret pull-right"></b>
+                                    Reports
+                                </a>
+                                <ul class="sub-menu">
+                                    <li><a href="map_google.html">Bus Report I</a></li>
+                                    <li><a href="map_google.html">Bus Report II</a></li>
+                                    <li><a href="map_google.html">Car Fines</a></li>
+                                </ul>
+                            </li>
+                           
                         </ul>
                     </li>
 <!-- *************************************************************Extras*************************************************************************** -->                    

@@ -253,7 +253,7 @@ session(['subtitle' => 'approvals']); ?>
 
                                     <div class="tab-pane fade" id="default-tab-3">
                                          
-                                            <table id="data-table3" class="table table-striped table-bordered">
+                                        <table id="data-table3" class="table table-striped table-bordered">
                                          <thead>
                                             <tr> 
                                                 <th>ID</th> 
@@ -515,7 +515,44 @@ session(['subtitle' => 'approvals']); ?>
 
                                     <div class="tab-pane fade" id="default-tab-6">
                                         
-                                            Payroll
+                                             <table id="data-table6" class="table table-striped table-bordered">
+                                         <thead>
+                                            <tr> 
+                                                <th>Branch</th>
+                                                <th>Month</th>
+                                                <th>Date</th>
+                                                <th>Accountant</th>
+                                                <th>  </th>
+                                            </tr>
+                                         </thead>   
+                                         <tbody>
+                                         
+                                         @foreach($payrolls as $payroll)
+                                         <tr> 
+                                         <td>{{ str_replace( "Al Dana - ", '',$payroll->name) }}</td>
+                                         <td>{{ date("M-Y",strtotime($payroll->month_year.'-01'))   }}</td>
+                                         <td>{{ $payroll->start_date }} to {{ $payroll->end_date }}</td> 
+                                         <td>{{ $payroll->acc }}</td>  
+                                        
+
+                                         <td><div id="payroll{{$payroll->payroll_id}}">
+                                               <button class="btn btn-xs" id="approvepayroll{{$payroll->payroll_id}}" value="{{ $payroll->payroll_id }}"> <i class="fa fa-thumbs-up text-success"></i></button>  
+                                        </div>
+                                                <script type="text/javascript">
+                                                    $(document.body).on('click', '#approvepayroll{{$payroll->payroll_id}}', function(e){
+                                                        e.preventDefault();
+                                                        id = $(this).val(); 
+                                                         $.get('/approvePayrollContent',{item:'payroll', id:id, action:'1',reason:''}, function(actionBlade){ 
+                                                            $("#payroll{{$payroll->payroll_id}}").html(actionBlade); 
+                                                        });
+                                                    });
+
+                                                    
+                                                </script></td>
+                                         </tr>
+                                         @endforeach
+                                         </tbody>
+                                         </table>
                                        
                                     </div>
 
@@ -587,6 +624,18 @@ session(['subtitle' => 'approvals']); ?>
 
 
              $('#data-table5').dataTable( {
+                "paging":   false,
+                "ordering": true,
+                "info":     false,
+                "aaSorting": [],
+                "columnDefs": [ {
+                      "targets": 'nosort',
+                      "bSortable": false,
+                      "searchable": false
+                    } ]
+            } );
+
+              $('#data-table6').dataTable( {
                 "paging":   false,
                 "ordering": true,
                 "info":     false,

@@ -16,6 +16,8 @@ use App\Branch;
 use App\EmployeesSalary; 
 use App\Nationality; 
 
+use App\Payroll;
+
 
 use File;
 use Image;
@@ -287,12 +289,18 @@ class PayrollController extends Controller
                                      
                                       else  
                                       $benefit->file=0;                  
-                                }                                                                  
-
+                                }    
+ 
+                                                                                          
+        $payrolls = Payroll::select('payroll.*', 'branches.name', 'users.name AS acc')
+                           ->leftjoin('branches','branches.id','=','payroll.company_id')
+                           ->leftjoin('users','payroll.accountant','=','users.id')
+                           ->where('approved',0) 
+                           ->get(); 
       }
       
 
-     return view('payroll.salaryApprovals',compact('branches','working_under','bonuses','deductions','loans','overtimes','benefits'));
+     return view('payroll.salaryApprovals',compact('branches','working_under','bonuses','deductions','loans','overtimes','benefits','payrolls'));
    }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -366,9 +374,17 @@ class PayrollController extends Controller
         } 
       }
 
-      
+      elseif($item=='payroll')
+      { 
+        if($action==1)
+        {
+           Payroll::where('payroll_id',$id)->update(['approved' => 1,'decided_by' => Auth::id(),'locked'=> 1]);
+ 
+           echo "<i class=\"fa fa-check-circle-o  text-success\"></i>"; 
+        } 
+      } 
+   
 
-      
    }
 
 
