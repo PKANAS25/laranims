@@ -318,7 +318,11 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
 //--------------------------------------------------------PayrollControllerMain------------------------------------------------ 
 
-     Route::get('/payroll/generate/step1',['middleware' => 'Payroll', function () {return view('payroll.step1');}]);
+    Route::get('/payroll/generate/initialize',['middleware' => 'Payroll', function () {return view('payroll.initialize');}]);
+    Route::get('/payrollBranches', ['middleware' => 'Payroll','uses'=>'PayrollControllerMain@branchFilter']);
+    Route::post('/payroll/generate/initialize',['middleware' => 'Payroll', 'uses'=>'PayrollControllerMain@step2']);
+     
+
 
 });
 

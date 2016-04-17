@@ -15,6 +15,9 @@ use App\Employee;
 use App\Branch;
 use App\EmployeesSalary; 
 
+use App\Payroll;
+
+
 use File;
 use Image;
 use Validator;
@@ -422,13 +425,17 @@ class EmployeesControllerExtra extends Controller
 
          $employee = Employee::where('employee_id',$employeeId)->first();
          if($employee->deleted!=0)
-         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!'); 
+         return redirect()->action('EmployeesController@profile',base64_encode($employeeId))->with('warningStatus', 'This employee is not active!');  
 
          $this->validate($request, [
         'dated' => 'required|date_format:Y-m-d',
         'amount' => 'required|numeric',
         'notes' => 'required',
         'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
+
+         $restrict = Payroll::whereRaw("'".$request->dated."' BETWEEN `start_date` AND `end_date`")->where('company_id',$employee->working_under)->count();
+         if($restrict)
+          return redirect()->back()->withErrors('Payroll Saved. No more entries on the selected month');
 
         $id = DB::table('bonus')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
 
@@ -463,6 +470,10 @@ class EmployeesControllerExtra extends Controller
         'amount' => 'required|numeric',
         'reason' => 'required',
         'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
+
+         $restrict = Payroll::whereRaw("'".$request->dated."' BETWEEN `start_date` AND `end_date`")->where('company_id',$employee->working_under)->count();
+         if($restrict)
+          return redirect()->back()->withErrors('Payroll Saved. No more entries on the selected month');
 
         $id = DB::table('deductions_xtra')->insertGetId(['emp_id' => $employeeId, 'entry_date' => Carbon::now(), 'reason' => $request->reason, 'dated' => $request->dated, 'amount' => $request->amount, 'notes' => $request->notes, 'admin' => Auth::id()]);  
 
@@ -569,7 +580,11 @@ class EmployeesControllerExtra extends Controller
         'dated' => 'required|date_format:Y-m-d',
         'time_1' => 'required|date_format:H:i',
         'time_2' => 'required|date_format:H:i',
-        'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]); 
+        'fileToUpload'=>'image|max:615|mimes:jpeg,jpg',]);
+
+        $restrict = Payroll::whereRaw("'".$request->dated."' BETWEEN `start_date` AND `end_date`")->where('company_id',$employee->working_under)->count();
+         if($restrict)
+          return redirect()->back()->withErrors('Payroll Saved. No more entries on the selected month'); 
 
         $dated = Carbon::parse($request->dated);
         
