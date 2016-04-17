@@ -1,20 +1,20 @@
-@extends('master') 
+@extends('formsMaster') 
  
-<?php session(['title' => 'XXXX']);
-session(['subtitle' => 'XXXXX']); ?> 
+<?php session(['title' => 'Payroll']);
+session(['subtitle' => 'generate']); ?> 
 
 @section('content') 
   
 <div id="content" class="content">
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right hidden-print">
-				<li><a href="javascript:;">XXXXXXXX</a></li>
-				<li class="active"><a href="javascript:;">XXXXXXXX</a></li>
+				<li><a href="javascript:;">Payroll</a></li>
+				<li class="active"><a href="javascript:;">Generate</a></li>
 				 
 			</ol> 
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header hidden-print">XXXXXX <small> XXXXXXX</small></h1>
+			<h1 class="page-header hidden-print">Generate <small> Payroll</small></h1>
 			<!-- end page-header -->
 			<!-- begin row -->
 			 <div class="col-md-12">
@@ -26,43 +26,56 @@ session(['subtitle' => 'XXXXX']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">XXXXXXXXXXX</h4>
+                            <h4 class="panel-title">Step II</h4>
                         </div>
+
+                        <div class="panel-body"> 
+                     
+
+                             <table id="data-table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr> 
+                                        <th>ID</th> 
+                                        <th>Name</th>
+                                        <th>Days Absent</th>
+                                        <th>Loan Deductions</th>
+                                        <th>Personal Benefits</th>
+                                        <th>Bonus</th>
+                                        <th>Overtime</th>
+                                        <th>Deductions Xtra</th>
+                                        <th>Salary</th>
+                                        <th>Absent Deduction</th>
+                                        <th>Net Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($employees AS $employee)
+                                <tr>
+                                <td>{{ $employee->employee_id }}</td>
+                                <td><a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}" target="_blank">{{ $employee->fullname }}</a></td>
+                                <td>{{ $employee->deduction_days }}</td>
+                                <td>{{ $employee->loanDeduction }}</td>
+                                <td>{{ $employee->totalBenefits }}</td>
+                                <td>{{ $employee->totalBonus }}</td>
+                                <td>{{ $employee->totalOverTimePay }}</td>
+                                <td>{{ $employee->totalDeduction }}</td>
+                                <td>{{ $employee->totalSalary }}</td>
+                                <td>{{ round($employee->absentDeduction) }}</td>
+                                <td>{{ round($employee->netAmount) }}</td>
+                                </tr>
+                                @endforeach
+                                </tbody>
+                                </table>
+
                         <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
-                            <input type="hidden" name="_token" value="{!! csrf_token() !!}">
-                        <div class="panel-body">
-                              
-                               
-                                 
-                                <div class="hidden-print">
-                                     @if (count($errors) > 0)
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                    @endif
-                                    @if (session('status'))
-                                        <div class="alert alert-success">
-                                            {{ session('status') }}   
-                                        </div>
-                                    @endif
-                                </div>    
+                            <input type="hidden" name="_token" value="{!! csrf_token() !!}"> 
+                            <input type="hidden" name="company" value="{{ $company }}" />
+                            <input type="hidden" name="payroll_month" value="{{ $payroll_month }}" />
+                            <input type="hidden" name="start_date" value="{{ $start_date }}" />
+                            <input type="hidden" name="end_date" value="{{ $end_date }}" />
+                        </form>
 
-
-                              <table id="data-table" class="table table-striped table-bordered">
-                                
-                                
-                            </table>
-
-                              <a href="javascript:;" onclick="window.print()" class="btn btn-sm btn-success m-b-10 hidden-print"><i class="fa fa-print m-r-5"></i> Print</a>
-                        </div> 
-                         
-                             
-                             
-                             </form>
+                        </div>
                          
                     
                     <!-- end panel --> 
@@ -70,5 +83,9 @@ session(['subtitle' => 'XXXXX']); ?>
 			<!-- end row -->
 		</div>
     </div>
- 
+<script>
+        $(document).ready(function() {
+            App.init(); 
+            });  
+    </script> 
         @endsection

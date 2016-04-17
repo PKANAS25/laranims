@@ -288,7 +288,7 @@ class PayrollControllerMain extends Controller
 
         } //foreach ($employees as $employee)                  
               
-        return view('payroll.middler',compact('employees'));
+        return view('payroll.middler',compact('employees','noSave','payroll_month','company','start_date','end_date'));
    
     }
 
