@@ -404,6 +404,104 @@ class PayrollController extends Controller
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+   public function individualContents($employeeId,$stuff,$start_date,$end_date)
+   {
+     $employeeId = base64_decode($employeeId);  
+
+      $employee = Employee::where('employees.employee_id',$employeeId)->first();
+
+      if($stuff=='bonus')
+      {
+      
+          $bonuses = DB::table('bonus')
+                         ->select('bonus.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','bonus.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','bonus.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId)
+                         ->whereBetween('dated',[$start_date,$end_date])
+                         ->orderBy('dated','DESC')
+                         ->get(); 
+          
+
+            return view('payroll.individualContents',compact('employee','stuff','bonuses')); 
+      }
+
+     
+     
+      elseif($stuff=='deduction')
+      {
+            $deductions = DB::table('deductions_xtra')
+                         ->select('deductions_xtra.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','deductions_xtra.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','deductions_xtra.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->whereBetween('dated',[$start_date,$end_date])
+                         ->orderBy('dated','DESC')
+                         ->get();
+
+            
+            return view('payroll.individualContents',compact('employee','stuff','deductions')); 
+       }
+
+      elseif($stuff=='loan')
+      {
+            $loans = DB::table('loans')
+                         ->select('loans.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','loans.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','loans.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->where('deduction_start','<=',$end_date)
+                         ->orderBy('payment_date','DESC')
+                         ->get();
+
+            
+
+            return view('payroll.individualContents',compact('employee','stuff','loans')); 
+       }
+
+      elseif($stuff=='personal benefits')
+      {
+      
+          $benefits = DB::table('personal_benefits')
+                         ->select('personal_benefits.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','personal_benefits.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','personal_benefits.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->where('benefit_start','<=',$end_date)
+                         ->orderBy('benefit_start','DESC')
+                         ->get();
+ 
+
+            return view('payroll.individualContents',compact('employee','stuff','benefits')); 
+      }
+
+      elseif($stuff=='overtime')
+      {
+      
+          $overtimes = DB::table('over_time')
+                         ->select('over_time.*','adminer.name AS admn', 'approver.name AS hrm')
+                         ->leftjoin('users AS adminer','over_time.admin','=','adminer.id')
+                         ->leftjoin('users AS approver','over_time.decided_by','=','approver.id')
+                         ->where('emp_id',$employeeId) 
+                         ->whereBetween('dated',[$start_date,$end_date])
+                         ->orderBy('dated','DESC')
+                         ->get();
+
+            foreach($overtimes as $overtime) 
+            { 
+                  if (File::exists(base_path().'/public/uploads/hrx/overtime/'.$overtime->over_id.'.jpg'))
+                     $overtime->file=1; 
+                 
+                  else  
+                  $overtime->file=0;                  
+            }
+
+            return view('payroll.individualContents',compact('employee','stuff','overtimes')); 
+      }
+
+
+   }
 }
 
 

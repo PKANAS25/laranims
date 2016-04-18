@@ -320,9 +320,10 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/payroll/generate/initialize',['middleware' => 'Payroll', function () {return view('payroll.initialize');}]);
     Route::get('/payrollBranches', ['middleware' => 'Payroll','uses'=>'PayrollControllerMain@branchFilter']);
-    Route::post('/payroll/generate/initialize',['middleware' => 'Payroll', 'uses'=>'PayrollControllerMain@step2']);
+    Route::post('/payroll/generate/middle',['middleware' => 'Payroll', 'uses'=>'PayrollControllerMain@step2']);
+    Route::post('/payroll/generate/final',['middleware' => 'Payroll', 'uses'=>'PayrollControllerMain@step3']);
      
-
+     Route::get('/employees/{employeeId}/{stuff}/{start}/{end}/individualContents', 'PayrollController@individualContents');   
 
 });
 

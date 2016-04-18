@@ -29,7 +29,7 @@ session(['subtitle' => 'generate']); ?>
                             <h4 class="panel-title">Initialize</h4>
                         </div>
                         
-                        <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
+                        <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" action="{{ action('PayrollControllerMain@step2') }}" >
                             <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                         
                          <div class="panel-body"> 

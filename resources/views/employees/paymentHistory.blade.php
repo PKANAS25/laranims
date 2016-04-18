@@ -60,7 +60,7 @@ session(['subtitle' => '']); ?>
                                        </thead>
                                        <tbody>
                                         @foreach($bonuses AS $index => $bonus)
-                                           <tr class=@if($bonus->approved==0) "text-warning" @elseif($bonus->approved==-1) "text-danger" @elseif($bonus->approved==1) "text-success" @endif">
+                                           <tr class=@if($bonus->approved==0) "text-warning" @elseif($bonus->approved==-1) "text-danger" @elseif($bonus->approved==1) "text-success" @endif>
                                                 <td>{{$index+1}}</td>
                                                <td>{{$bonus->dated}}</td>
                                                <td>{{$bonus->amount}}</td>
@@ -490,7 +490,7 @@ session(['subtitle' => '']); ?>
                                        </thead>
                                        <tbody>
                                         @foreach($benefits AS $index => $benefit)
-                                           <tr class=@if($benefit->approved==0) "text-warning" @elseif($benefit->approved==-1) "text-danger" @elseif($benefit->approved==1) "text-success" @endif>
+                                           <tr class=@if($benefit->approved==0) "text-warning" @elseif($benefit->approved==-1 || $benefit->cancelled==1) "text-danger" @elseif($benefit->approved==1) "text-success" @endif>
                                                <td>{{$index+1}}</td>
                                                <td>{{$benefit->benefit}}</td> 
                                                <td>{{$benefit->benefit_start}}</td>

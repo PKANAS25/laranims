@@ -51,14 +51,23 @@ session(['subtitle' => 'generate']); ?>
                                 <tbody>
                                 @foreach($employees AS $employee)
                                 <tr @if($employee->paidPersonal) class="bg-yellow-lighter" @elseif($employee->salaryNotOk) class="text-danger"  @endif>
+                                
                                 <td>{{ $employee->employee_id }}</td>
+                                
                                 <td><a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}" target="_blank">{{ $employee->fullname }}</a></td>
+                               
                                 <td>{{ $employee->deduction_days }}</td>
-                                <td>{{ $employee->loanDeduction }}</td>
-                                <td>{{ $employee->totalBenefits }}</td>
-                                <td>{{ $employee->totalBonus }}</td>
-                                <td>{{ $employee->totalOverTimePay }}</td>
-                                <td>{{ $employee->totalDeduction }}</td>
+
+                                <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'loan',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->loanDeduction }}</a></td>
+                                
+                                <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'personal benefits',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalBenefits }}</a></td>
+                                
+                                <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'bonus',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalBonus }}</a></td>
+                                
+                                <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'bonus',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalOverTimePay }}</a></td>
+                                
+                                <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'deduction',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalDeduction }}</a></td>
+
                                 <td>{{ $employee->totalSalary }}</td>
                                 <td>{{ round($employee->absentDeduction) }}</td>
                                 <td>{{ round($employee->netAmount) }}</td>
@@ -66,7 +75,7 @@ session(['subtitle' => 'generate']); ?>
                                 @endforeach
                                 <tr>
                                 <td colspan="11" align="right">
-                                       <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
+                                       <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" action="{{ action('PayrollControllerMain@step3') }}" >
                                             <input type="hidden" name="_token" value="{!! csrf_token() !!}"> 
                                             <input type="hidden" name="company" value="{{ $company }}" />
                                             <input type="hidden" name="payroll_month" value="{{ $payroll_month }}" />
@@ -82,11 +91,9 @@ session(['subtitle' => 'generate']); ?>
                                             </strong>
                                             </p> 
                                             @else 
-                                            <div class="form-group">
-                                                    <label class="control-label col-md-4 col-sm-4"></label>
-                                                    <div class="col-md-6 col-sm-6"> 
+                                            
                                                         <button type="submit" class="btn btn-primary">Save</button>
-                                                    </div>
+                                                    
                                             </div> 
                                             @endif
 

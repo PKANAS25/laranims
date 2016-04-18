@@ -319,5 +319,10 @@ class PayrollControllerMain extends Controller
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+ public function step3(Request $request)
+    {
+       echo $company = $request->company;
+      echo  $start_date = $request->start_date;
+       $end_date = $request->end_date; 
+    }
 }
