@@ -7,7 +7,7 @@ session(['subtitle' => 'grades']); ?>
 
 
 @section('content')
-<link href="/css/invoice-print.min.css" rel="stylesheet" />
+<link href="/css/other-print.min.css" rel="stylesheet" />
 
 <link rel="stylesheet" type="text/css" href="/dist/msgbox/jquery.msgbox.css" />
 <script type="text/javascript" src="/dist/msgbox/jquery.msgbox.min.js"></script> 
@@ -66,7 +66,7 @@ session(['subtitle' => 'grades']); ?>
                                     <div class="invoice-from" >
                                          
                                         <address class="m-t-5 m-b-5" align="center">
-                                          <img src="/img/logo.jpg" width="65" height="65" alt=""> {{Auth::user()->branch_name}} - {{ucwords($filter)}} Students List
+                                          <img src="/img/logo.jpg" width="65" height="65" alt=""> {{Auth::user()->branch_name}} - {{$grade->standard." - ".ucwords($grade->division)}} - {{ucwords($filter)}} Students List
                                         </address>
                                     </div>
                                   

@@ -50,7 +50,7 @@ session(['subtitle' => 'generate']); ?>
                                 </thead>
                                 <tbody>
                                 @foreach($employees AS $employee)
-                                <tr>
+                                <tr @if($employee->paidPersonal) class="bg-yellow-lighter" @elseif($employee->salaryNotOk) class="text-danger"  @endif>
                                 <td>{{ $employee->employee_id }}</td>
                                 <td><a href="{{ action('EmployeesController@profile',base64_encode($employee->employee_id)) }}" target="_blank">{{ $employee->fullname }}</a></td>
                                 <td>{{ $employee->deduction_days }}</td>
@@ -64,16 +64,39 @@ session(['subtitle' => 'generate']); ?>
                                 <td>{{ round($employee->netAmount) }}</td>
                                 </tr>
                                 @endforeach
+                                <tr>
+                                <td colspan="11" align="right">
+                                       <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
+                                            <input type="hidden" name="_token" value="{!! csrf_token() !!}"> 
+                                            <input type="hidden" name="company" value="{{ $company }}" />
+                                            <input type="hidden" name="payroll_month" value="{{ $payroll_month }}" />
+                                            <input type="hidden" name="start_date" value="{{ $start_date }}" />
+                                            <input type="hidden" name="end_date" value="{{ $end_date }}" />
+
+                                            @if($noSave==1)
+                                            <p class="text-danger">
+                                            <strong>
+                                                @if($salriesNotVerified) Salary verification pending. @endif
+                                                @if($pendingApprovals) Payroll contents approval pending. @endif
+                                                @if($bankRejections) Open payroll bank rejections. @endif
+                                            </strong>
+                                            </p> 
+                                            @else 
+                                            <div class="form-group">
+                                                    <label class="control-label col-md-4 col-sm-4"></label>
+                                                    <div class="col-md-6 col-sm-6"> 
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+                                            </div> 
+                                            @endif
+
+                                        </form> 
+                                </td>
+                                </tr>
                                 </tbody>
                                 </table>
 
-                        <form name="eForm" id="eForm"  method="POST" autocomplete="OFF" class="form-horizontal form-bordered" >
-                            <input type="hidden" name="_token" value="{!! csrf_token() !!}"> 
-                            <input type="hidden" name="company" value="{{ $company }}" />
-                            <input type="hidden" name="payroll_month" value="{{ $payroll_month }}" />
-                            <input type="hidden" name="start_date" value="{{ $start_date }}" />
-                            <input type="hidden" name="end_date" value="{{ $end_date }}" />
-                        </form>
+                        
 
                         </div>
                          

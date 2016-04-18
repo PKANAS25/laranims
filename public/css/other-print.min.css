@@ -1,0 +1,16 @@
+/*   
+Template Name: Color Admin - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.4
+Version: 1.7.0
+Author: Sean Ngu
+Website: http://www.seantheme.com/color-admin-v1.7/admin/
+*/@media print{
+	@page  
+{ 
+    size: auto;   /* auto is the initial value */ 
+
+    /* this affects the margin in the printer settings */ 
+    margin: 0mm 0mm 0mm 0mm;  
+} 
+
+	.content,.page-header-fixed,body{padding:0!important;margin:0!important}.header,.sidebar,.theme-panel{display:none!important}
+.table{border-color:#e2e7eb;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px}.table>thead>tr>th{color:#242a30;font-weight:600;border-bottom:2px solid #e2e7eb!important}.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th{border-color:#e2e7eb;padding:0!important}}

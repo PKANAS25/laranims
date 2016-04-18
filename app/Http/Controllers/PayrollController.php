@@ -289,15 +289,15 @@ class PayrollController extends Controller
                                      
                                       else  
                                       $benefit->file=0;                  
-                                }    
- 
-                                                                                          
-        $payrolls = Payroll::select('payroll.*', 'branches.name', 'users.name AS acc')
+                                }                                                        
+         
+      }
+
+      $payrolls = Payroll::select('payroll.*', 'branches.name', 'users.name AS acc')
                            ->leftjoin('branches','branches.id','=','payroll.company_id')
                            ->leftjoin('users','payroll.accountant','=','users.id')
                            ->where('approved',0) 
-                           ->get(); 
-      }
+                           ->get();
       
 
      return view('payroll.salaryApprovals',compact('branches','working_under','bonuses','deductions','loans','overtimes','benefits','payrolls'));
@@ -370,6 +370,21 @@ class PayrollController extends Controller
         else if($action==-1 && $reason)
         { 
            DB::table('over_time')->where('over_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
+           echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
+        } 
+      }
+
+      elseif($item=='benefit')
+      { 
+        if($action==1)
+        {
+           DB::table('personal_benefits')->where('benefit_id',$id)->update(['approved'=>1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now()]);
+           echo "<i class=\"fa fa-check-circle-o  text-success\"></i>"; 
+        }
+
+        else if($action==-1 && $reason)
+        { 
+           DB::table('personal_benefits')->where('benefit_id',$id)->update(['approved'=>-1,'decided_by'=>Auth::id(),'approved_date'=>Carbon::now(),'reject_reason'=>$reason,'reject_read'=>0]);
            echo "<i class=\"fa fa-minus-circle text-danger \"></i>";
         } 
       }

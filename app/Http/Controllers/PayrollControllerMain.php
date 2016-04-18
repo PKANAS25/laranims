@@ -77,7 +77,7 @@ class PayrollControllerMain extends Controller
        }
 
         
-       $noSave=0; 
+       $noSave=0; $bankRejections=0; $pendingApprovals=0; $salriesNotVerified=0;
 
        $AttendanceTypes = AttendanceType::all();
     
@@ -109,7 +109,11 @@ class PayrollControllerMain extends Controller
 //************************************************************Attendance Calculation***************************************************************************
             $employee->deduction_days = 0;
 
-            $attendances = StaffAttendance::whereBetween('dated', [$employee->joining_date, $end_date])->where('employee_id',$employee->employee_id)->get(); 
+            
+            $attStart = $start_date;
+            if(strtotime($employee->joining_date) > strtotime($start_date))
+                $attStart = $employee->joining_date;
+            $attendances = StaffAttendance::whereBetween('dated', [$attStart, $end_date])->where('employee_id',$employee->employee_id)->get(); 
                 
                 if($attendances)
                 {
@@ -276,8 +280,29 @@ class PayrollControllerMain extends Controller
                 if($employee->totalSalary == 0 || $salary->verification1 == 0 || $salary->verification2 == 0 || $salary->verification2 == 0)
                 {
                    $employee->salaryNotOk=1;  
+                   $salriesNotVerified=1;
                    $noSave=1;
                 } 
+
+              $first = DB::table('bonus')->select('bonus_id')->where('approved',0)->where('emp_id',$employee->employee_id)->whereBetween('dated',[$start_date,$end_date]);
+              $second = DB::table('deductions_xtra')->select('dedXtra_id')->where('approved',0)->where('emp_id',$employee->employee_id)->whereBetween('dated',[$start_date,$end_date]);
+              $third = DB::table('over_time')->select('over_id')->where('approved',0)->where('emp_id',$employee->employee_id)->whereBetween('dated',[$start_date,$end_date]);
+              $fourth = DB::table('loans')->select('loan_id')->where('approved',0)->where('emp_id',$employee->employee_id)->where('deduction_start','<=',$end_date);
+              $fifth = DB::table('personal_benefits')->select('benefit_id')->where('approved',0)->where('emp_id',$employee->employee_id)->where('benefit_start','<=',$end_date);
+              $allPending= $first->union($second)->union($third)->union($fourth)->union($fifth)->get();
+
+              
+                if($allPending)
+                {   
+                   $pendingApprovals=1;
+                   $noSave=1;
+                } 
+
+                 $rejections = DB::table('payroll_rejections')->where('closed',0)->get();
+                 if($rejections)
+                    {$noSave=1; $bankRejections=1; }
+
+//************************************************************************************************************************************************************
 
                 $daySalary=0; $employee->absentDeduction=0; $employee->netAmount=0;
                 $daySalary = ($employee->totalSalary /30);    
@@ -288,7 +313,7 @@ class PayrollControllerMain extends Controller
 
         } //foreach ($employees as $employee)                  
               
-        return view('payroll.middler',compact('employees','noSave','payroll_month','company','start_date','end_date'));
+        return view('payroll.middler',compact('employees','noSave','payroll_month','company','start_date','end_date','bankRejections','pendingApprovals','salriesNotVerified'));
    
     }
 
