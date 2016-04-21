@@ -323,7 +323,11 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/payroll/generate/middle',['middleware' => 'Payroll', 'uses'=>'PayrollControllerMain@step2']);
     Route::post('/payroll/generate/final',['middleware' => 'Payroll', 'uses'=>'PayrollControllerMain@step3']);
      
-     Route::get('/employees/{employeeId}/{stuff}/{start}/{end}/individualContents', 'PayrollController@individualContents');   
+    Route::get('/payroll/{employeeId}/{stuff}/{start}/{end}/individualContents', 'PayrollController@individualContents');  
+
+    Route::get('/payroll/{id}/view', ['middleware' => 'OfficeStaff','middleware' => 'PayrollReports','uses'=>'PayrollControllerMain@payrollView']);    
+    
+    Route::get('/payroll/history',['middleware' => 'PayrollReports', function () {return view('payroll.history');}]);
 
 });
 

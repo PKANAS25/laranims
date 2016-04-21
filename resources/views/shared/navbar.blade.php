@@ -124,11 +124,12 @@
                             @endif
 
                             @if(Auth::user()->hasRole('PayrollReports'))                            
-                            <li><a href="table_basic.html">History</a></li>
+                            <li><a href="/payroll/history">History</a></li>
                             <li @if(session('subtitle') == 'verification') class="active" @endif><a href="/payroll/salary/verification">Salary Verification</a></li> 
                             <li><a href="table_basic.html">Salary Contents Report</a></li> 
                             <li><a href="table_basic.html">Bank Rejections</a></li> 
                             @endif
+                            
                             @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')))
                             <li><a href="/payroll/content/rejections/unread">Payroll Rejections Unseen</a></li>
                             @endif

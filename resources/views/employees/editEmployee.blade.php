@@ -255,7 +255,7 @@ session(['subtitle' => '']); ?>
                                <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="person_code">Person Code :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="person_code" name="person_code"   data-fv-notempty="true" value="{{$employee->person_code}}"
+                                        <input class="form-control" type="text" id="person_code" name="person_code"    value="{{$employee->person_code}}"
                                         @if(!Auth::user()->hasRole('SalaryEditor')) readOnly @endif />
                                     </div>
                                 </div>
@@ -263,7 +263,7 @@ session(['subtitle' => '']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="labour_card_no">Labour card no. :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="labour_card_no" name="labour_card_no"   data-fv-notempty="true"   value="{{$employee->labour_card_no}}" />
+                                        <input class="form-control" type="text" id="labour_card_no" name="labour_card_no"    value="{{$employee->labour_card_no}}" />
                                     </div>
                                 </div>
 
@@ -272,21 +272,21 @@ session(['subtitle' => '']); ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="labour_card_expiry">Labour Card Expiry :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="labour_card_expiry" name="labour_card_expiry"   data-fv-notempty="true" value="{{$employee->labour_card_expiry}}" />
+                                        <input class="form-control" type="text" id="labour_card_expiry" name="labour_card_expiry"   value="{{$employee->labour_card_expiry}}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="visa_issue">Visa Issued On :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="visa_issue" name="visa_issue"   data-fv-notempty="true" value="{{$employee->visa_issue}}" />
+                                        <input class="form-control" type="text" id="visa_issue" name="visa_issue"     value="{{$employee->visa_issue}}" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-4 col-sm-4" for="visa_expiry">Visa Expires on :</label>
                                     <div class="col-md-6 col-sm-6">
-                                        <input class="form-control" type="text" id="visa_expiry" name="visa_expiry"   data-fv-notempty="true" value="{{$employee->visa_expiry}}" />
+                                        <input class="form-control" type="text" id="visa_expiry" name="visa_expiry"  value="{{$employee->visa_expiry}}" />
                                     </div>
                                 </div>
 

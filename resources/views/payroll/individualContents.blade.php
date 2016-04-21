@@ -218,8 +218,7 @@
                                                <th>Notes</th>
                                                <th>Entered By</th>
                                                <th>Approved By</th> 
-                                               <th>Reject Reason</th>
-                                               s
+                                               <th>Reject Reason</th> 
                                            </tr>
                                        </thead>
                                        <tbody>

@@ -26,7 +26,7 @@ session(['subtitle' => 'generate']); ?>
                                 
                                 
                             </div>
-                            <h4 class="panel-title">Step II</h4>
+                            <h4 class="panel-title">{{ date('M-Y',strtotime($payroll_month."-10")) }} Step II</h4>
                         </div>
 
                         <div class="panel-body"> 
@@ -64,7 +64,7 @@ session(['subtitle' => 'generate']); ?>
                                 
                                 <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'bonus',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalBonus }}</a></td>
                                 
-                                <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'bonus',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalOverTimePay }}</a></td>
+                                <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'overtime',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalOverTimePay }}</a></td>
                                 
                                 <td><a href = "javascript: void(0)" onClick="window.open('{{action('PayrollController@individualContents',[base64_encode($employee->employee_id),'deduction',$start_date,$end_date])}}','flyout','resizable=no,scrollbars=yes,width=900,height=560,top=65,left=210')" >{{ $employee->totalDeduction }}</a></td>
 
