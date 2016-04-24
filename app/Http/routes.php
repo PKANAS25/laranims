@@ -329,6 +329,12 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     
     Route::get('/payroll/history',['middleware' => 'PayrollReports', function () {return view('payroll.history');}]);
 
+//--------------------------------------------------------DocumentsController------------------------------------------------------------------ 
+
+
+    Route::get('/staffDocExpiry', ['middleware' => 'HRAdmin','uses'=>'DocumentsController@staffDocExpiryChange']);
+    Route::post('/staffDocUpload', ['middleware' => 'HRAdmin','uses'=>'DocumentsController@staffDocUpload']);
+
 });
 
  

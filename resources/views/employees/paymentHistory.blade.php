@@ -77,9 +77,9 @@ session(['subtitle' => '']); ?>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                                 <h4 class="modal-title">Bonus Document</h4> 
                                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $bonus->approved!=-1)
-                                                                <a href="/employee/upload/hrx/{{base64_encode('bonus')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                <a href="/employee/upload/hrx/{{base64_encode('bonus')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
                                                                 @endif
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                
                                                             </div>
                                                             <div class="modal-body" >
                                                                 <img height="100%" width="100%" src="/uploads/hrx/bonus/{{$bonus->bonus_id}}.jpg"  />
@@ -183,9 +183,9 @@ session(['subtitle' => '']); ?>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                                 <h4 class="modal-title">Bonus Document</h4> 
                                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $bonus->approved!=-1)
-                                                                <a href="/employee/upload/hrx/{{base64_encode('absentCorrection')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                <a href="/employee/upload/hrx/{{base64_encode('absentCorrection')}}/{{base64_encode($bonus->bonus_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
                                                                 @endif
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                
                                                             </div>
                                                             <div class="modal-body" >
                                                                 <img height="100%" width="100%" src="/uploads/hrx/bonus/{{$bonus->bonus_id}}.jpg"  />
@@ -290,9 +290,9 @@ session(['subtitle' => '']); ?>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                                 <h4 class="modal-title">Deduction Document</h4> 
                                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $deduction->approved!=-1)
-                                                                <a href="/employee/upload/hrx/{{base64_encode('deduction')}}/{{base64_encode($deduction->dedXtra_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                <a href="/employee/upload/hrx/{{base64_encode('deduction')}}/{{base64_encode($deduction->dedXtra_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
                                                                 @endif
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                
                                                             </div>
                                                             <div class="modal-body" >
                                                                 <img height="100%" width="100%" src="/uploads/hrx/deduction/{{$deduction->dedXtra_id}}.jpg"  />
@@ -400,9 +400,9 @@ session(['subtitle' => '']); ?>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                                 <h4 class="modal-title">Loan Document</h4> 
                                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $loan->approved!=-1)
-                                                                <a href="/employee/upload/hrx/{{base64_encode('loan')}}/{{base64_encode($loan->loan_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                <a href="/employee/upload/hrx/{{base64_encode('loan')}}/{{base64_encode($loan->loan_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
                                                                 @endif
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                
                                                             </div>
                                                             <div class="modal-body" >
                                                                 <img height="100%" width="100%" src="/uploads/hrx/loan/{{$loan->loan_id}}.jpg"  />
@@ -510,9 +510,9 @@ session(['subtitle' => '']); ?>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                                 <h4 class="modal-title">Personal Benefit Document</h4> 
                                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $benefit->approved!=-1)
-                                                                <a href="/employee/upload/hrx/{{base64_encode('personal benefits')}}/{{base64_encode($benefit->benefit_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                <a href="/employee/upload/hrx/{{base64_encode('personal benefits')}}/{{base64_encode($benefit->benefit_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
                                                                 @endif
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                
                                                             </div>
                                                             <div class="modal-body" >
                                                                 <img height="100%" width="100%" src="/uploads/hrx/benefit/{{$benefit->benefit_id}}.jpg"  />
@@ -618,9 +618,9 @@ session(['subtitle' => '']); ?>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                                 <h4 class="modal-title">overtime Document</h4> 
                                                                 @if((Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer')) && $overtime->approved!=-1)
-                                                                <a href="/employee/upload/hrx/{{base64_encode('overtime')}}/{{base64_encode($overtime->over_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document">
+                                                                <a href="/employee/upload/hrx/{{base64_encode('overtime')}}/{{base64_encode($overtime->over_id)}}/{{base64_encode($employee->employee_id)}}" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
                                                                 @endif
-                                                <i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                
                                                             </div>
                                                             <div class="modal-body" >
                                                                 <img height="100%" width="100%" src="/uploads/hrx/overtime/{{$overtime->over_id}}.jpg"  />

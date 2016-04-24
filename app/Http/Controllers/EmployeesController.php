@@ -39,8 +39,8 @@ class EmployeesController extends Controller
 //----------------------------------------------------------------------------------------------------------------------------------------
     public function profile($employeeId)
     {
-
-        $employeeId = base64_decode($employeeId); 
+ 
+        $employeeId = base64_decode($employeeId);  
 
         $employee = Employee::select('employees.*','nationality.nationality AS nation', 'religion.religion AS rel', 'visa_branch.name AS visa_in' , 'work_branch.name AS working_for')
                             ->leftjoin('nationality','employees.nationality', '=', 'nationality.nation_id')
@@ -77,10 +77,65 @@ class EmployeesController extends Controller
                                 ->leftjoin('branches','employees_salary.labour_card_under','=','branches.id')
                                 ->where('employee_id',$employeeId)
                                 ->first();
+  ///-----------------------------------------Documents Handling-------------------------------------------------------------------------------      
+        $salary->doc1 =0; $salary->doc2 =0;                        
+        if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'.jpg'))
+            $salary->doc1 = '/uploads/staff_docs/15_'.$employeeId.'.jpg' ;  
+        if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'_2.jpg'))
+            $salary->doc2 = '/uploads/staff_docs/15_'.$employeeId.'_2.jpg' ;
+
+
+        $doc_data = array();   $doc_data["Principal"] = "1" ; $doc_data["Teacher"] = "2"; $doc_data["Cleaner"] = "3"; 
+        $docType = $doc_data[$employee->bonus_category];   
+
+        $staffDocs = DB::table('staff_docs')    
+                       ->where('deleted',0) 
+                       ->where('doc_id','!=',15)
+                       ->where(function($query) use ($docType){
+                                     $query->where('doc_type', $docType);
+                                     $query->orWhere('doc_type', 0);
+                             })
+                       ->orderBy('doc_name')
+                       ->get();       
+        
+        foreach ($staffDocs as $staffDoc) 
+        { 
+            $staffDocDetail = DB::table('staff_docs_details')
+                                 ->where('emp_id',$employeeId)
+                                 ->where('doc_id',$staffDoc->doc_id)
+                                 ->first();
+           
+            $staffDoc->locked =0;  $staffDoc->expiry_date = "";
+
+            if($staffDocDetail )
+            {
+                if($staffDocDetail->lock) $staffDoc->locked = 1;
+
+                if($staffDocDetail->expiry_date) 
+                    {
+                        $staffDoc->expiry_date = $staffDocDetail->expiry_date;
+                        
+                        if($staffDocDetail->expiry_date < date('Y-m-d'))
+                            $staffDoc->locked =0;
+                    }
+            }
+            
+            $staffDoc->file1=0; $staffDoc->file2=0;
+            
+            if(File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'.jpg'))
+                $staffDoc->file1='/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'.jpg' ;  
+
+            if($staffDoc->no_of_files>1 && File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'_2.jpg'))
+                $staffDoc->file2='/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'_2.jpg' ;  
+                                
+        }  //foreach ($staffDocs as $staffDoc)       
+                               
+///-------------------------------------------------------------------------------------------------------------------------------
+
 
         $branches = Branch::where('id','!=',$employee->working_under)->orderBy('non_nursery','asc')->orderBy('name')->get();
 
-        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history','branches'));                  
+        return view('employees.profile',compact('employee','profile_pic','age','assestsAssigned','salary','history','branches','staffDocs'));                  
     } 
 //----------------------------------------------------------------------------------------------------------------------------------------
     public function add()

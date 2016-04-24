@@ -4,6 +4,21 @@
 session(['subtitle' => '']); ?> 
 
 @section('content') 
+<style type="text/css">
+    
+    .expiryCol{
+        max-width: 100px !important;
+    }
+    .filesCol{
+        max-width: 35px !important;
+    }
+    .uploadCol{
+        max-width: 155px !important;
+    }
+    
+    div#frm *{display:inline}
+      
+</style>
  <link rel="stylesheet" type="text/css" href="/dist/msgbox/jquery.msgbox.css" />
 <script type="text/javascript" src="/dist/msgbox/jquery.msgbox.min.js"></script>    
 
@@ -170,13 +185,15 @@ session(['subtitle' => '']); ?>
                                         </tr>
 
                                         <tr>
-                                            <td class="field">Visa Details</td>
-                                            <td>{{$employee->visa_in}} - Issued on <a>{{$employee->visa_issue}}</a> Expires on <a>{{$employee->visa_expiry}}</a></td>
-                                        </tr>
-                                        <tr>
                                             <td class="field">Passport Details</td>
                                             <td>{{$employee->passport_no}} - Expires on <a>{{$employee->passport_expiry}}</a></td>
                                         </tr>
+
+                                        <tr>
+                                            <td class="field">Visa Details</td>
+                                            <td>{{$employee->visa_in}} - Issued on <a>{{$employee->visa_issue}}</a> Expires on <a>{{$employee->visa_expiry}}</a></td>
+                                        </tr>
+                                        
                                         <tr>
                                             <td class="field">Labour Card Details</td>
                                             <td>{{$employee->labour_card_no}} -  Expires on <a>{{$employee->labour_card_expiry}}</a></td>
@@ -497,14 +514,70 @@ session(['subtitle' => '']); ?>
                                <td class="field">Iban</td>
                                <td>{{$salary->iban}}</td>
                            </tr>
-                           <tr>
-                               <td class="field">Documents</td>
-                               <td></td>
-                           </tr>
+                           
                            <tr>
                                <td class="field">Last edit remarks</td>
                                <td>{{$salary->edit_reason}}</td>
                            </tr>
+
+
+                           <tr>
+                               <td class="field">Documents</td>
+                               <td>
+                                @if($salary->doc1)
+                                <a href="#modal-dialogsalary1"  data-toggle="modal"><i class="fa fa-download text-info"></i> Doc 1</a>
+                                <div class="modal fade" id="modal-dialogsalary1">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                <h4 class="modal-title">Salary Document 1</h4> 
+                                                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
+                                                                <a href="/employee/upload/docs/15/1" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                                @endif 
+                                                            </div>
+                                                            <div class="modal-body" >
+                                                                <img height="100%" width="100%" src="{{ $salary->doc1 }}"  />
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                </div>
+                                @else
+                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
+                                    <a href="/employee/upload/docs/15/1" title="Click here to upload document 1"><i class="fa fa-upload text-inverse"></i> Upload Doc 1</a>
+                                    @endif
+                                @endif 
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                @if($salary->doc2)
+                                <a href="#modal-dialogsalary2"  data-toggle="modal"><i class="fa fa-download text-info"></i> Doc 2</a>
+                                <div class="modal fade" id="modal-dialogsalary2">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                <h4 class="modal-title">Salary Document 2</h4> 
+                                                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
+                                                                <a href="/employee/upload/docs/15/2" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
+                                                                @endif 
+                                                            </div>
+                                                            <div class="modal-body" >
+                                                                <img height="100%" width="100%" src="{{ $salary->doc2 }}"  />
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                </div>
+                                @else
+                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
+                                    <a href="/employee/upload/docs/15/2" title="Click here to upload document 1"><i class="fa fa-upload text-inverse"></i> Upload Doc 2</a>
+                                    @endif
+                                @endif 
+                               </td>
+                           </tr>
+
+
+
                            <tr>
                                <td class="field"></td>
                                <td>
@@ -513,6 +586,7 @@ session(['subtitle' => '']); ?>
                                <i class="fa fa-edit"></i> Edit</a>
                                </td>
                            </tr>
+                           
                        </table>
                        @else
                        <a @if(Auth::user()->hasRole('SalaryEditor') && $employee->deleted==0) 
@@ -527,7 +601,7 @@ session(['subtitle' => '']); ?>
                         <div class="tab-pane fade" id="default-tab-3">
                              
                              
-                            <table id="data-table6" class="table table-striped table-bordered">
+                            <table id="data-table2" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                     <th>#</th>
@@ -549,7 +623,110 @@ session(['subtitle' => '']); ?>
     <!------------------------------------------------------------Documents----------------------------------------------------------------------- -->                    
                          
                       <div class="tab-pane fade" id="default-tab-4">
-                           bbbbbb7777777
+                        <div class="panel-body">
+                            <table id="data-table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                    <th>Document</th>
+                                    <th class="expiryCol">Expiry</th>
+                                    <th class="filesCol">Files</th> 
+                                    <th class="uploadCol">File Handling</th> 
+                                    
+                                    <th> </th> 
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($staffDocs as $staffDoc)
+                                    <tr>
+                                    <td>{{ $staffDoc->doc_name }}</td>
+                                    <td class="expiryCol">@if($staffDoc->expires==0) 
+                                            NO 
+                                        @elseif($staffDoc->expires==1 && ($staffDoc->locked==1 && Auth::user()->hasRole('HRAdmin') && !Auth::user()->hasRole('HROfficer') ) || (!Auth::user()->hasRole('HRAdmin') && !Auth::user()->hasRole('HROfficer') )  )
+                                                {{ $staffDoc->expiry_date }}
+                                        @elseif( ($staffDoc->expires==1 && Auth::user()->hasRole('HROfficer') ) || ($staffDoc->expires==1 && $staffDoc->locked==0 && Auth::user()->hasRole('HRAdmin')  ) )
+                                        <span id="expiry{{ $staffDoc->doc_id }}"></span>
+                                        <input  type="text" id="dated{{ $staffDoc->doc_id }}" name="dated{{ $staffDoc->doc_id }}" value="{{ $staffDoc->expiry_date }}" />
+                                        <button class="btn btn-xs" id="saveExpiry{{$staffDoc->doc_id}}" value="{{ $staffDoc->doc_id }}"><i class="fa fa-save"></i></button>
+                                         
+                                        <script type="text/javascript"> 
+
+                                                    $(document.body).on('click', '#saveExpiry{{$staffDoc->doc_id}}', function(e){
+                                                        e.preventDefault();
+                                                        id = $(this).val();
+                                                        dated = window.document.getElementById("dated{{ $staffDoc->doc_id }}").value;
+                                                        if(dated)
+                                                        {
+                                                            $.get('/staffDocExpiry',{employee:{{ $employee->employee_id }}, id:id, dated:dated}, function(actionBlade){ 
+                                                            $("#expiry{{$staffDoc->doc_id}}").html(actionBlade); 
+                                                            });
+                                                        }
+                                                         
+                                                    });
+                                        </script>
+                                        @endif </td>
+                                    <td class="filesCol"> 
+                                        @if($staffDoc->file1)<div id="file1Span_{{ $staffDoc->doc_id }}"><a href="{{ $staffDoc->file1 }}" target="_blank">File 1 <i class="fa fa-download text-success"></i></a> </div>
+                                        @else <div id="file1Span_{{ $staffDoc->doc_id }}"><span class="text-danger">File 1</span> </div>
+                                        @endif
+                                        
+                                        @if($staffDoc->no_of_files>1 && $staffDoc->file2)<br/> <div id="file2Span_{{ $staffDoc->doc_id }}"><a href="{{ $staffDoc->file2 }}" target="_blank">File 2 <i class="fa fa-download text-success"></i></a></div>
+                                        @elseif($staffDoc->no_of_files>1 && !$staffDoc->file2)<div id="file2Span_{{ $staffDoc->doc_id }}"><span class="text-danger">File 2</span></div>
+                                        @endif
+                                    </td>
+                                   
+                                    <td class="uploadCol">
+                                    @if(($staffDoc->locked==0 && Auth::user()->hasRole('HRAdmin') ) || (Auth::user()->hasRole('HROfficer') ) )
+                                        <div id="frm">
+                                        <form enctype="multipart/form-data" id="upload_form{{ $staffDoc->doc_id }}" role="form" method="POST" action="" >
+                                        <input type="hidden" name="_token" value="{{ csrf_token()}}">
+                                        <input type="file" id="fileToUpload" name="fileToUpload" />
+                                        <input type="hidden" name="docId" value="{{ $staffDoc->doc_id }}">
+                                        <input type="hidden" name="employee" value="{{ $employee->employee_id }}">
+                                        <button class="btn btn-xs" id="upload1_{{$staffDoc->doc_id}}" ><i class="fa fa-save"></i></button>
+                                        </form>
+                                        </div>
+                                        @if($staffDoc->no_of_files>1 ) <br> 
+                                        <div id="frm">
+                                        <input type="file" name="file2_{{ $staffDoc->doc_id }}" />
+                                        <button class="btn btn-xs" id="upload2_{{$staffDoc->doc_id}}" value="{{ $staffDoc->doc_id }}"><i class="fa fa-save"></i></button>
+                                        </div>
+                                        @endif  
+                                      <script type="text/javascript"> 
+
+                                                    $(document.body).on('click', '#upload1_{{$staffDoc->doc_id}}', function(e){
+                                                        e.preventDefault();
+                                                         
+                                                        // if(fileToUpload)
+                                                        // {
+                                                        //     $.get('/staffDocUpload',{employee:{{ $employee->employee_id }}, id:id, number:1}, function(actionBlade){ 
+                                                        //     $("#file1Span_{{$staffDoc->doc_id}}").html(actionBlade); 
+                                                        //     });
+                                                        // }
+
+                                                        $.ajax({
+                                                                  url:'/staffDocUpload',
+                                                                  data:new FormData($("#upload_form{{ $staffDoc->doc_id }}")[0]),
+                                                                   
+                                                                  async:true,
+                                                                  type:'post',
+                                                                  processData: false,
+                                                                  contentType: false,
+                                                                  success:function(response){
+                                                                    console.log(response);
+                                                                  },
+                                                                });
+                                                         
+                                                    });
+                                       </script>   
+                                     @endif
+                                    </td>
+                                     
+                                    <td>&nbsp;</td>
+                                    </tr>
+                                    @endforeach
+                                    </tbody>
+                                    </table>
+                        </div>
                       </div>
     <!------------------------------------------------------------Forms----------------------------------------------------------------------- -->                    
 
@@ -568,5 +745,16 @@ session(['subtitle' => '']); ?>
             <!-- end profile-container --> 
 			  
 </div>
+
+ <script>
+        $(document).ready(function() {
+           @foreach($staffDocs as $staffDoc)
+            $('#dated{{ $staffDoc->doc_id }}').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+            }) 
+            @endforeach
+          });             
+    </script>
  
         @endsection
