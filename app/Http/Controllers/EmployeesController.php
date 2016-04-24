@@ -78,11 +78,11 @@ class EmployeesController extends Controller
                                 ->where('employee_id',$employeeId)
                                 ->first();
   ///-----------------------------------------Documents Handling-------------------------------------------------------------------------------      
-        $salary->doc1 =0; $salary->doc2 =0;                        
+        $employee->salaryDoc1 =0; $employee->salaryDoc2 =0;                       
         if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'.jpg'))
-            $salary->doc1 = '/uploads/staff_docs/15_'.$employeeId.'.jpg' ;  
+            $employee->salaryDoc1 = '/uploads/staff_docs/15_'.$employeeId.'.jpg' ;  
         if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'_2.jpg'))
-            $salary->doc2 = '/uploads/staff_docs/15_'.$employeeId.'_2.jpg' ;
+            $employee->salaryDoc2 = '/uploads/staff_docs/15_'.$employeeId.'_2.jpg' ;
 
 
         $doc_data = array();   $doc_data["Principal"] = "1" ; $doc_data["Teacher"] = "2"; $doc_data["Cleaner"] = "3"; 

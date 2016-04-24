@@ -136,7 +136,7 @@ session(['subtitle' => 'approvals']); ?>
                                                     $(document.body).on('click', '#approveBonus{{$bonus->bonus_id}}', function(e){
                                                         e.preventDefault();
                                                         id = $(this).val(); 
-                                                         $.get('/approvePayrollContent',{item:'bonus', id:id, action:'1',reason:''}, function(actionBlade){ 
+                                                         $.post('/approvePayrollContent',{item:'bonus', id:id, action:'1',reason:'',_token:'{{ csrf_token() }}' }, function(actionBlade){ 
                                                             $("#bonus{{$bonus->bonus_id}}").html(actionBlade); 
                                                         });
                                                     });
@@ -147,7 +147,7 @@ session(['subtitle' => 'approvals']); ?>
                                                         reason = window.document.getElementById("reasonBonus{{$bonus->bonus_id}}").value;
                                                         if(reason)
                                                         {
-                                                            $.get('/approvePayrollContent',{item:'bonus', id:id, action:'-1',reason:reason}, function(actionBlade){ 
+                                                            $.post('/approvePayrollContent',{item:'bonus', id:id, action:'-1',reason:reason,_token:'{{ csrf_token() }}' }, function(actionBlade){ 
                                                             $("#bonus{{$bonus->bonus_id}}").html(actionBlade); 
                                                             });
                                                         }
@@ -223,7 +223,7 @@ session(['subtitle' => 'approvals']); ?>
                                                     $(document.body).on('click', '#approveDeduction{{$deduction->dedXtra_id}}', function(e){
                                                         e.preventDefault();
                                                         id = $(this).val(); 
-                                                         $.get('/approvePayrollContent',{item:'deduction', id:id, action:'1',reason:''}, function(actionBlade){ 
+                                                         $.post('/approvePayrollContent',{item:'deduction', id:id, action:'1',reason:'',_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#deduction{{$deduction->dedXtra_id}}").html(actionBlade); 
                                                         });
                                                     });
@@ -234,7 +234,7 @@ session(['subtitle' => 'approvals']); ?>
                                                         reason = window.document.getElementById("reasonDeduction{{$deduction->dedXtra_id}}").value;
                                                         if(reason)
                                                         {
-                                                            $.get('/approvePayrollContent',{item:'deduction', id:id, action:'-1',reason:reason}, function(actionBlade){ 
+                                                            $.post('/approvePayrollContent',{item:'deduction', id:id, action:'-1',reason:reason,_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#deduction{{$deduction->dedXtra_id}}").html(actionBlade); 
                                                             });
                                                         }
@@ -312,7 +312,7 @@ session(['subtitle' => 'approvals']); ?>
                                                     $(document.body).on('click', '#approveLoan{{$loan->loan_id}}', function(e){
                                                         e.preventDefault();
                                                         id = $(this).val(); 
-                                                         $.get('/approvePayrollContent',{item:'loan', id:id, action:'1',reason:''}, function(actionBlade){ 
+                                                         $.post('/approvePayrollContent',{item:'loan', id:id, action:'1',reason:'',_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#loan{{$loan->loan_id}}").html(actionBlade); 
                                                         });
                                                     });
@@ -323,7 +323,7 @@ session(['subtitle' => 'approvals']); ?>
                                                         reason = window.document.getElementById("reasonLoan{{$loan->loan_id}}").value;
                                                         if(reason)
                                                         {
-                                                            $.get('/approvePayrollContent',{item:'loan', id:id, action:'-1',reason:reason}, function(actionBlade){ 
+                                                            $.post('/approvePayrollContent',{item:'loan', id:id, action:'-1',reason:reason,_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#loan{{$loan->loan_id}}").html(actionBlade); 
                                                             });
                                                         }
@@ -401,7 +401,7 @@ session(['subtitle' => 'approvals']); ?>
                                                     $(document.body).on('click', '#approveOvertime{{$overtime->over_id}}', function(e){
                                                         e.preventDefault();
                                                         id = $(this).val(); 
-                                                         $.get('/approvePayrollContent',{item:'overtime', id:id, action:'1',reason:''}, function(actionBlade){ 
+                                                         $.post('/approvePayrollContent',{item:'overtime', id:id, action:'1',reason:'',_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#overtime{{$overtime->over_id}}").html(actionBlade); 
                                                         });
                                                     });
@@ -412,7 +412,7 @@ session(['subtitle' => 'approvals']); ?>
                                                         reason = window.document.getElementById("reasonOvertime{{$overtime->over_id}}").value;
                                                         if(reason)
                                                         {
-                                                            $.get('/approvePayrollContent',{item:'overtime', id:id, action:'-1',reason:reason}, function(actionBlade){ 
+                                                            $.post('/approvePayrollContent',{item:'overtime', id:id, action:'-1',reason:reason,_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#overtime{{$overtime->over_id}}").html(actionBlade); 
                                                             });
                                                         }
@@ -486,7 +486,7 @@ session(['subtitle' => 'approvals']); ?>
                                                     $(document.body).on('click', '#approveBenefit{{$benefit->benefit_id}}', function(e){
                                                         e.preventDefault();
                                                         id = $(this).val(); 
-                                                         $.get('/approvePayrollContent',{item:'benefit', id:id, action:'1',reason:''}, function(actionBlade){ 
+                                                         $.post('/approvePayrollContent',{item:'benefit', id:id, action:'1',reason:'',_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#benefit{{$benefit->benefit_id}}").html(actionBlade); 
                                                         });
                                                     });
@@ -497,7 +497,7 @@ session(['subtitle' => 'approvals']); ?>
                                                         reason = window.document.getElementById("reasonBenefit{{$benefit->benefit_id}}").value;
                                                         if(reason)
                                                         {
-                                                            $.get('/approvePayrollContent',{item:'benefit', id:id, action:'-1',reason:reason}, function(actionBlade){ 
+                                                            $.post('/approvePayrollContent',{item:'benefit', id:id, action:'-1',reason:reason,_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#benefit{{$benefit->benefit_id}}").html(actionBlade); 
                                                             });
                                                         }
@@ -542,7 +542,7 @@ session(['subtitle' => 'approvals']); ?>
                                                     $(document.body).on('click', '#approvepayroll{{$payroll->payroll_id}}', function(e){
                                                         e.preventDefault();
                                                         id = $(this).val(); 
-                                                         $.get('/approvePayrollContent',{item:'payroll', id:id, action:'1',reason:''}, function(actionBlade){ 
+                                                         $.post('/approvePayrollContent',{item:'payroll', id:id, action:'1',reason:'',_token:'{{ csrf_token() }}'}, function(actionBlade){ 
                                                             $("#payroll{{$payroll->payroll_id}}").html(actionBlade); 
                                                         });
                                                     });

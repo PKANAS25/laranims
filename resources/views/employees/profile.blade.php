@@ -524,7 +524,7 @@ session(['subtitle' => '']); ?>
                            <tr>
                                <td class="field">Documents</td>
                                <td>
-                                @if($salary->doc1)
+                                @if($employee->salaryDoc1)
                                 <a href="#modal-dialogsalary1"  data-toggle="modal"><i class="fa fa-download text-info"></i> Doc 1</a>
                                 <div class="modal fade" id="modal-dialogsalary1">
                                                     <div class="modal-dialog">
@@ -544,12 +544,12 @@ session(['subtitle' => '']); ?>
                                                     </div>
                                 </div>
                                 @else
-                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
+                                @if(Auth::user()->hasRole('HROfficer'))
                                     <a href="/employee/upload/docs/15/1" title="Click here to upload document 1"><i class="fa fa-upload text-inverse"></i> Upload Doc 1</a>
                                     @endif
                                 @endif 
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                @if($salary->doc2)
+                                @if($employee->salaryDoc2)
                                 <a href="#modal-dialogsalary2"  data-toggle="modal"><i class="fa fa-download text-info"></i> Doc 2</a>
                                 <div class="modal fade" id="modal-dialogsalary2">
                                                     <div class="modal-dialog">
@@ -569,7 +569,7 @@ session(['subtitle' => '']); ?>
                                                     </div>
                                 </div>
                                 @else
-                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
+                                @if(Auth::user()->hasRole('HROfficer'))
                                     <a href="/employee/upload/docs/15/2" title="Click here to upload document 1"><i class="fa fa-upload text-inverse"></i> Upload Doc 2</a>
                                     @endif
                                 @endif 
@@ -677,6 +677,7 @@ session(['subtitle' => '']); ?>
                                     <td class="uploadCol">
                                     @if(($staffDoc->locked==0 && Auth::user()->hasRole('HRAdmin') ) || (Auth::user()->hasRole('HROfficer') ) )
                                         <div id="frm">
+
                                         <form enctype="multipart/form-data" id="upload_form{{ $staffDoc->doc_id }}" role="form" method="POST" action="" >
                                         <input type="hidden" name="_token" value="{{ csrf_token()}}">
                                         <input type="file" id="fileToUpload" name="fileToUpload" />
@@ -695,13 +696,7 @@ session(['subtitle' => '']); ?>
 
                                                     $(document.body).on('click', '#upload1_{{$staffDoc->doc_id}}', function(e){
                                                         e.preventDefault();
-                                                         
-                                                        // if(fileToUpload)
-                                                        // {
-                                                        //     $.get('/staffDocUpload',{employee:{{ $employee->employee_id }}, id:id, number:1}, function(actionBlade){ 
-                                                        //     $("#file1Span_{{$staffDoc->doc_id}}").html(actionBlade); 
-                                                        //     });
-                                                        // }
+                                                        
 
                                                         $.ajax({
                                                                   url:'/staffDocUpload',
@@ -712,7 +707,8 @@ session(['subtitle' => '']); ?>
                                                                   processData: false,
                                                                   contentType: false,
                                                                   success:function(response){
-                                                                    console.log(response);
+                                                                    $("#file1Span_{{$staffDoc->doc_id}}").html('<a href="/uploads/staff_docs/{{ $staffDoc->doc_id }}_{{ $employee->employee_id }}.jpg" target="_blank">File 1 <i class="fa fa-download text-success"></i></a>'); 
+                                                                    $("#upload_form{{$staffDoc->doc_id}}").html('<span class="text-success">File uploaded <i class="fa fa-check-square-o"></i></span>');
                                                                   },
                                                                 });
                                                          
