@@ -79,10 +79,10 @@ class EmployeesController extends Controller
                                 ->first();
   ///-----------------------------------------Documents Handling-------------------------------------------------------------------------------      
         $employee->salaryDoc1 =0; $employee->salaryDoc2 =0;                       
-        if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'.jpg'))
-            $employee->salaryDoc1 = '/uploads/staff_docs/15_'.$employeeId.'.jpg' ;  
-        if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'_2.jpg'))
-            $employee->salaryDoc2 = '/uploads/staff_docs/15_'.$employeeId.'_2.jpg' ;
+        if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'.jpg') || File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'.pdf'))
+            $employee->salaryDoc1 = 1 ;  
+        if (File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'_2.jpg') ||File::exists(base_path().'/public/uploads/staff_docs/15_'.$employeeId.'_2.pdf'))
+            $employee->salaryDoc2 = 1 ;
 
 
         $doc_data = array();   $doc_data["Principal"] = "1" ; $doc_data["Teacher"] = "2"; $doc_data["Cleaner"] = "3"; 
@@ -122,11 +122,11 @@ class EmployeesController extends Controller
             
             $staffDoc->file1=0; $staffDoc->file2=0;
             
-            if(File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'.jpg'))
-                $staffDoc->file1='/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'.jpg' ;  
+            if(File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'.jpg') || File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'.pdf'))
+                $staffDoc->file1=1 ;  
 
-            if($staffDoc->no_of_files>1 && File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'_2.jpg'))
-                $staffDoc->file2='/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'_2.jpg' ;  
+            if($staffDoc->no_of_files>1 && (File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'_2.jpg') || File::exists(base_path().'/public/uploads/staff_docs/'.$staffDoc->doc_id.'_'.$employeeId.'_2.pdf')))
+                $staffDoc->file2=1;  
                                 
         }  //foreach ($staffDocs as $staffDoc)       
                                

@@ -10,7 +10,7 @@ session(['subtitle' => '']); ?>
         max-width: 100px !important;
     }
     .filesCol{
-        max-width: 35px !important;
+        max-width: 45px !important;
     }
     .uploadCol{
         max-width: 155px !important;
@@ -519,65 +519,64 @@ session(['subtitle' => '']); ?>
                                <td class="field">Last edit remarks</td>
                                <td>{{$salary->edit_reason}}</td>
                            </tr>
-
+ 
 
                            <tr>
                                <td class="field">Documents</td>
                                <td>
-                                @if($employee->salaryDoc1)
-                                <a href="#modal-dialogsalary1"  data-toggle="modal"><i class="fa fa-download text-info"></i> Doc 1</a>
-                                <div class="modal fade" id="modal-dialogsalary1">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                                <h4 class="modal-title">Salary Document 1</h4> 
-                                                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
-                                                                <a href="/employee/upload/docs/15/1" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
-                                                                @endif 
-                                                            </div>
-                                                            <div class="modal-body" >
-                                                                <img height="100%" width="100%" src="{{ $salary->doc1 }}"  />
-                                                            </div>
-                                                            
-                                                        </div>
-                                                    </div>
-                                </div>
-                                @else
-                                @if(Auth::user()->hasRole('HROfficer'))
-                                    <a href="/employee/upload/docs/15/1" title="Click here to upload document 1"><i class="fa fa-upload text-inverse"></i> Upload Doc 1</a>
-                                    @endif
+                               <span id="file1Span_15">
+                                @if($employee->salaryDoc1) 
+                                        <a href="{{ action('DocumentsController@staffDocShow',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(1)]) }}" target="_blank">File 1</a>
+                                        &nbsp;&nbsp;
+                                        <a href="{{ action('DocumentsController@staffDocDownload',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(1)]) }}"><i class="fa fa-download text-success"></i></a>  
                                 @endif 
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span id="file2Span_15"> 
                                 @if($employee->salaryDoc2)
-                                <a href="#modal-dialogsalary2"  data-toggle="modal"><i class="fa fa-download text-info"></i> Doc 2</a>
-                                <div class="modal fade" id="modal-dialogsalary2">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                                <h4 class="modal-title">Salary Document 2</h4> 
-                                                                @if(Auth::user()->hasRole('HRAdmin') || Auth::user()->hasRole('HROfficer'))
-                                                                <a href="/employee/upload/docs/15/2" title="Click here to upload document"><i class="fa fa-upload text-inverse"></i> Change File</a>
-                                                                @endif 
-                                                            </div>
-                                                            <div class="modal-body" >
-                                                                <img height="100%" width="100%" src="{{ $salary->doc2 }}"  />
-                                                            </div>
-                                                            
-                                                        </div>
-                                                    </div>
-                                </div>
-                                @else
-                                @if(Auth::user()->hasRole('HROfficer'))
-                                    <a href="/employee/upload/docs/15/2" title="Click here to upload document 1"><i class="fa fa-upload text-inverse"></i> Upload Doc 2</a>
-                                    @endif
+                                 
+                                        <a href="{{ action('DocumentsController@staffDocShow',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(2)]) }}" target="_blank">File 2</a>
+                                        &nbsp;&nbsp;
+                                        <a href="{{ action('DocumentsController@staffDocDownload',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(2)]) }}"><i class="fa fa-download text-success"></i></a>  
                                 @endif 
+                                </span>
                                </td>
                            </tr>
+                                       @if(Auth::user()->hasRole('HROfficer'))         
+                                        <tr>
+                                        <td>File 1</td>
+                                        <td>
+                                                    <div id="frm">
 
+                                                    <form enctype="multipart/form-data" id="upload_form15" role="form" method="POST" action="" >
+                                                    <input type="hidden" name="_token" value="{{ csrf_token()}}">
+                                                    <input type="file" id="fileToUpload" name="fileToUpload" />
+                                                    <input type="hidden" name="docId" value="15">
+                                                    <input type="hidden" name="employee" value="{{ $employee->employee_id }}">
+                                                    <input type="hidden" name="number" value="1">
+                                                    <button class="btn btn-xs" id="upload1_15" ><i class="fa fa-save"></i></button>
+                                                    </form>
+                                                    </div>
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                        <td>File 2</td>
+                                        <td>
+                                                    <div id="frm">
 
-
+                                                    <form enctype="multipart/form-data" id="upload2_form15" role="form" method="POST" action="" >
+                                                    <input type="hidden" name="_token" value="{{ csrf_token()}}">
+                                                    <input type="file" id="fileToUpload" name="fileToUpload" />
+                                                    <input type="hidden" name="docId" value="15">
+                                                    <input type="hidden" name="employee" value="{{ $employee->employee_id }}">
+                                                    <input type="hidden" name="number" value="2">
+                                                    <button class="btn btn-xs" id="upload2_15" ><i class="fa fa-save"></i></button>
+                                                    </form>
+                                                    </div>
+                                        </td>
+                                        </tr>
+                                             
+                                        @endif
                            <tr>
                                <td class="field"></td>
                                <td>
@@ -665,11 +664,17 @@ session(['subtitle' => '']); ?>
                                         </script>
                                         @endif </td>
                                     <td class="filesCol"> 
-                                        @if($staffDoc->file1)<div id="file1Span_{{ $staffDoc->doc_id }}"><a href="{{ $staffDoc->file1 }}" target="_blank">File 1 <i class="fa fa-download text-success"></i></a> </div>
+                                        @if($staffDoc->file1)
+                                        <div id="file1Span_{{ $staffDoc->doc_id }}">
+                                        <a href="{{ action('DocumentsController@staffDocShow',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(1)]) }}" target="_blank">File 1</a>&nbsp;&nbsp;<a href="{{ action('DocumentsController@staffDocDownload',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(1)]) }}"><i class="fa fa-download text-success"></i></a> 
+                                        </div>
                                         @else <div id="file1Span_{{ $staffDoc->doc_id }}"><span class="text-danger">File 1</span> </div>
                                         @endif
                                         
-                                        @if($staffDoc->no_of_files>1 && $staffDoc->file2)<br/> <div id="file2Span_{{ $staffDoc->doc_id }}"><a href="{{ $staffDoc->file2 }}" target="_blank">File 2 <i class="fa fa-download text-success"></i></a></div>
+                                        @if($staffDoc->no_of_files>1 && $staffDoc->file2)<br/> 
+                                        <div id="file2Span_{{ $staffDoc->doc_id }}">
+                                        <a href="{{ action('DocumentsController@staffDocShow',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(2)]) }}" target="_blank">File 2</a>&nbsp;&nbsp;<a href="{{ action('DocumentsController@staffDocDownload',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(2)]) }}"><i class="fa fa-download text-success"></i></a>
+                                        </div>
                                         @elseif($staffDoc->no_of_files>1 && !$staffDoc->file2)<div id="file2Span_{{ $staffDoc->doc_id }}"><span class="text-danger">File 2</span></div>
                                         @endif
                                     </td>
@@ -683,20 +688,77 @@ session(['subtitle' => '']); ?>
                                         <input type="file" id="fileToUpload" name="fileToUpload" />
                                         <input type="hidden" name="docId" value="{{ $staffDoc->doc_id }}">
                                         <input type="hidden" name="employee" value="{{ $employee->employee_id }}">
+                                        <input type="hidden" name="number" value="1">
                                         <button class="btn btn-xs" id="upload1_{{$staffDoc->doc_id}}" ><i class="fa fa-save"></i></button>
                                         </form>
                                         </div>
                                         @if($staffDoc->no_of_files>1 ) <br> 
                                         <div id="frm">
-                                        <input type="file" name="file2_{{ $staffDoc->doc_id }}" />
-                                        <button class="btn btn-xs" id="upload2_{{$staffDoc->doc_id}}" value="{{ $staffDoc->doc_id }}"><i class="fa fa-save"></i></button>
+                                        <form enctype="multipart/form-data" id="upload2_form{{ $staffDoc->doc_id }}" role="form" method="POST" action="" >
+                                        <input type="hidden" name="_token" value="{{ csrf_token()}}">
+                                        <input type="file" id="fileToUpload" name="fileToUpload" />
+                                        <input type="hidden" name="docId" value="{{ $staffDoc->doc_id }}">
+                                        <input type="hidden" name="employee" value="{{ $employee->employee_id }}">
+                                        <input type="hidden" name="number" value="2">
+                                        <button class="btn btn-xs" id="upload2_{{$staffDoc->doc_id}}" ><i class="fa fa-save"></i></button>
+                                        </form>
                                         </div>
+                                        <script type="text/javascript"> 
+
+                                                    $(document.body).on('click', '#upload2_{{$staffDoc->doc_id}}', function(e){
+                                                        e.preventDefault();
+                                                        Form=window.document.getElementById("upload2_form{{ $staffDoc->doc_id }}");
+                                                        var ext = Form.fileToUpload.value.slice(Form.fileToUpload.value.lastIndexOf(".")).toLowerCase(); 
+                                                        if(ext!=".jpg" && ext!=".jpeg" && ext!=".pdf")
+                                                          {     
+                                                                $.msgbox("Please upload a valid jpg/pdf file.");
+                                                                return false;
+                                                          }
+                                                         var iSize = (Form.fileToUpload.files[0].size / 1024);  
+                                                         if(iSize>800)
+                                                          {
+                                                             $.msgbox("Max file size 800 KB.");
+                                                             return false;
+                                                          } 
+
+                                                        $.ajax({
+                                                                  url:'/staffDocUpload',
+                                                                  data:new FormData($("#upload2_form{{ $staffDoc->doc_id }}")[0]),
+                                                                   
+                                                                  async:true,
+                                                                  type:'post',
+                                                                  processData: false,
+                                                                  contentType: false,
+                                                                  success:function(response){
+                                                                    if(response)
+                                                                    {
+                                                                       $("#file2Span_{{$staffDoc->doc_id}}").html('<a href="{{ action('DocumentsController@staffDocShow',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(2)]) }}" target="_blank">File 2</a>&nbsp;&nbsp;<a href="{{ action('DocumentsController@staffDocDownload',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(2)]) }}"><i class="fa fa-download text-success"></i></a>'); 
+                                                                         $("#upload2_form{{$staffDoc->doc_id}}").html('<span class="text-success">File uploaded <i class="fa fa-check-square-o"></i></span>'); 
+                                                                    }
+                                                                    
+                                                                  },
+                                                                });
+                                                         
+                                                    });
+                                       </script>  
                                         @endif  
-                                      <script type="text/javascript"> 
+                                       <script type="text/javascript"> 
 
                                                     $(document.body).on('click', '#upload1_{{$staffDoc->doc_id}}', function(e){
                                                         e.preventDefault();
-                                                        
+                                                        Form=window.document.getElementById("upload_form{{ $staffDoc->doc_id }}");
+                                                        var ext = Form.fileToUpload.value.slice(Form.fileToUpload.value.lastIndexOf(".")).toLowerCase(); 
+                                                        if(ext!=".jpg" && ext!=".jpeg" && ext!=".pdf")
+                                                          {     
+                                                                $.msgbox("Please upload a valid jpg/pdf file.");
+                                                                return false;
+                                                          }
+                                                         var iSize = (Form.fileToUpload.files[0].size / 1024);  
+                                                         if(iSize>800)
+                                                          {
+                                                             $.msgbox("Max file size 800 KB.");
+                                                             return false;
+                                                          } 
 
                                                         $.ajax({
                                                                   url:'/staffDocUpload',
@@ -707,8 +769,12 @@ session(['subtitle' => '']); ?>
                                                                   processData: false,
                                                                   contentType: false,
                                                                   success:function(response){
-                                                                    $("#file1Span_{{$staffDoc->doc_id}}").html('<a href="/uploads/staff_docs/{{ $staffDoc->doc_id }}_{{ $employee->employee_id }}.jpg" target="_blank">File 1 <i class="fa fa-download text-success"></i></a>'); 
-                                                                    $("#upload_form{{$staffDoc->doc_id}}").html('<span class="text-success">File uploaded <i class="fa fa-check-square-o"></i></span>');
+                                                                    if(response)
+                                                                    {
+                                                                       $("#file1Span_{{$staffDoc->doc_id}}").html('<a href="{{ action('DocumentsController@staffDocShow',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(1)]) }}" target="_blank">File 1</a>&nbsp;&nbsp;<a href="{{ action('DocumentsController@staffDocDownload',[base64_encode($staffDoc->doc_id),base64_encode($employee->employee_id),base64_encode(1)]) }}"><i class="fa fa-download text-success"></i></a>'); 
+                                                                         $("#upload_form{{$staffDoc->doc_id}}").html('<span class="text-success">File uploaded <i class="fa fa-check-square-o"></i></span>'); 
+                                                                    }
+                                                                    
                                                                   },
                                                                 });
                                                          
@@ -750,7 +816,83 @@ session(['subtitle' => '']); ?>
                 autoclose: true
             }) 
             @endforeach
-          });             
+          });     
+
+
+
+ 
+        $(document.body).on('click', '#upload1_15', function(e){
+            e.preventDefault();
+            Form=window.document.getElementById("upload_form15");
+            var ext = Form.fileToUpload.value.slice(Form.fileToUpload.value.lastIndexOf(".")).toLowerCase(); 
+            if(ext!=".jpg" && ext!=".jpeg" && ext!=".pdf")
+              {     
+                    $.msgbox("Please upload a valid jpg/pdf file.");
+                    return false;
+              }
+             var iSize = (Form.fileToUpload.files[0].size / 1024);  
+             if(iSize>800)
+              {
+                 $.msgbox("Max file size 800 KB.");
+                 return false;
+              } 
+
+            $.ajax({
+                      url:'/staffDocUpload',
+                      data:new FormData($("#upload_form15")[0]),
+                       
+                      async:true,
+                      type:'post',
+                      processData: false,
+                      contentType: false,
+                      success:function(response){
+                        if(response)
+                        {   $("#file1Span_15").html('<a href="{{ action('DocumentsController@staffDocShow',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(1)]) }}" target="_blank">File 1</a>&nbsp;&nbsp;<a href="{{ action('DocumentsController@staffDocDownload',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(1)]) }}"><i class="fa fa-download text-success"></i></a>'); 
+                             $("#upload_form15").html('<span class="text-success">File uploaded <i class="fa fa-check-square-o"></i></span>'); 
+                        }
+                        
+                      },
+                    });
+             
+        });
+
+        $(document.body).on('click', '#upload2_15', function(e){
+            e.preventDefault();
+            Form=window.document.getElementById("upload2_form15");
+            var ext = Form.fileToUpload.value.slice(Form.fileToUpload.value.lastIndexOf(".")).toLowerCase(); 
+            if(ext!=".jpg" && ext!=".jpeg" && ext!=".pdf")
+              {     
+                    $.msgbox("Please upload a valid jpg/pdf file.");
+                    return false;
+              }
+             var iSize = (Form.fileToUpload.files[0].size / 1024);  
+             if(iSize>800)
+              {
+                 $.msgbox("Max file size 800 KB.");
+                 return false;
+              } 
+
+            $.ajax({
+                      url:'/staffDocUpload',
+                      data:new FormData($("#upload2_form15")[0]),
+                       
+                      async:true,
+                      type:'post',
+                      processData: false,
+                      contentType: false,
+                      success:function(response){
+                        if(response)
+                        {   $("#file2Span_15").html('<a href="{{ action('DocumentsController@staffDocShow',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(2)]) }}" target="_blank">File 2</a>&nbsp;&nbsp;<a href="{{ action('DocumentsController@staffDocDownload',[base64_encode(15),base64_encode($employee->employee_id),base64_encode(2)]) }}"><i class="fa fa-download text-success"></i></a>'); 
+                             $("#upload2_form15").html('<span class="text-success">File uploaded <i class="fa fa-check-square-o"></i></span>'); 
+                        }
+                        
+                      },
+                    });
+             
+        });
+
+        
+
     </script>
  
         @endsection

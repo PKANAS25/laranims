@@ -335,6 +335,9 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/staffDocExpiry', ['middleware' => 'HRAdmin','uses'=>'DocumentsController@staffDocExpiryChange']);
     Route::post('/staffDocUpload', ['middleware' => 'HRAdmin','uses'=>'DocumentsController@staffDocUpload']);
 
+    Route::get('/{docId}/{employee}/{number}/staff/show/Document', ['uses'=>'DocumentsController@staffDocShow']);
+    Route::get('/{docId}/{employee}/{number}/staffDocDownload', ['uses'=>'DocumentsController@staffDocDownload']);
+
 });
 
  
