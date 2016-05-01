@@ -186,17 +186,17 @@ session(['subtitle' => '']); ?>
 
                                         <tr>
                                             <td class="field">Passport Details</td>
-                                            <td>{{$employee->passport_no}} - Expires on <a>{{$employee->passport_expiry}}</a></td>
+                                            <td>{{$employee->passport_no}} - Expires on <a><span id="passportExpiry">{{$employee->passport_expiry}}</span></a></td>
                                         </tr>
 
                                         <tr>
                                             <td class="field">Visa Details</td>
-                                            <td>{{$employee->visa_in}} - Issued on <a>{{$employee->visa_issue}}</a> Expires on <a>{{$employee->visa_expiry}}</a></td>
+                                            <td>{{$employee->visa_in}} - Issued on <a>{{$employee->visa_issue}}</a> Expires on <a><span id="visaExpiry">{{$employee->visa_expiry}}</span></a></td>
                                         </tr>
                                         
                                         <tr>
                                             <td class="field">Labour Card Details</td>
-                                            <td>{{$employee->labour_card_no}} -  Expires on <a>{{$employee->labour_card_expiry}}</a></td>
+                                            <td>{{$employee->labour_card_no}} -  Expires on <a><span id="labourExpiry">{{$employee->labour_card_expiry}}</span></a></td>
                                         </tr>
                                         <tr>
                                             <td class="field">Person Code</td>
@@ -657,7 +657,14 @@ session(['subtitle' => '']); ?>
                                                         {
                                                             $.get('/staffDocExpiry',{employee:{{ $employee->employee_id }}, id:id, dated:dated}, function(actionBlade){ 
                                                             $("#expiry{{$staffDoc->doc_id}}").html(actionBlade); 
+                                                            if(id==14)
+                                                                 $("#labourExpiry").html(dated); 
+                                                             else if(id==2)
+                                                                 $("#visaExpiry").html(dated); 
+                                                             else if(id==1)
+                                                                 $("#passportExpiry").html(dated); 
                                                             });
+
                                                         }
                                                          
                                                     });
