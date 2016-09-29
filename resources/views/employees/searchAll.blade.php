@@ -86,7 +86,7 @@ session(['subtitle' => 'EmpSearchAll']); ?>
                                             $.get('/employeeSearchBindAll',{keyword:value }, function(searchBlade){                      
                                             $("#searchResults").html(searchBlade);
                                             });
-                                        },100));
+                                        },400));
                         
                                      }); 
 

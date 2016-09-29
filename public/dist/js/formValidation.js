@@ -6751,6 +6751,7 @@ if (typeof jQuery === 'undefined') {
                     // http://regexr.com/39tak
                     value   = $.trim(value);
                     isValid = (/^(((\+|00)?971[\s\.-]?(\(0\)[\s\.-]?)?|0)(\(5(0|2|5|6)\)|5(0|2|5|6)|2|3|4|6|7|9)|60)([\s\.-]?[0-9]){7}$/).test(value);
+					//isValid = (/^((\(5(0|2|5|6)\)|5(0|2|5|6))|60)([0-9]){7}$/).test(value); Mobile numbers only->9 digits without preceding zeroes
                     break;
                     
                 case 'BG':

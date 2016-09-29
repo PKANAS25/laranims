@@ -86,7 +86,7 @@ session(['subtitle' => 'EmpSearch']); ?>
                                             $.get('/employeeSearchBind',{keyword:value }, function(searchBlade){                      
                                             $("#searchResults").html(searchBlade);
                                             });
-                                        },100));
+                                        },400));
                         
                                      }); 
 

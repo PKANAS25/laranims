@@ -28,8 +28,7 @@ session(['subtitle' => '']); ?>
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right hidden-print">
 				<li><a href="javascript:;">Employee</a></li>
-				<li class="active"><a href="javascript:;">Profile</a></li>
-				 
+				<li class="active"><a href="javascript:;">Profile</a></li> 
 			</ol> 
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->

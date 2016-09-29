@@ -1,0 +1,70 @@
+warning: CRLF will be replaced by LF in public/dist/js/formValidation.js.
+The file will have its original line endings in your working directory.
+[1mdiff --git a/app/Http/Controllers/StudentsController.php b/app/Http/Controllers/StudentsController.php[m
+[1mindex 4acec36..aa956f5 100644[m
+[1m--- a/app/Http/Controllers/StudentsController.php[m
+[1m+++ b/app/Http/Controllers/StudentsController.php[m
+[36m@@ -135,9 +135,8 @@[m [mclass StudentsController extends Controller[m
+             );[m
+ [m
+         }[m
+[31m-         $msg = ucwords(strtolower($request->get('fullname')))." is successfully enrolled. Welcome to ".Auth::user()->branch_name.".+Please+call+8006877+for+any+enquiries" ;[m
+[31m-              $msg = str_replace(" ", "+", $msg);[m
+[31m-              $msg = str_replace("++", "+", $msg);[m
+[32m+[m[32m              $msg = ucwords(strtolower($request->get('fullname')))." is successfully enrolled. Welcome to ".Auth::user()->branch_name.".+Please+call+8006877+for+any+enquiries" ;[m
+[32m+[m[32m              $msg = rawurlencode($msg);[m
+               [m
+               ///////////////////////////////////////////////Sending SMS to mother/////////////////////////////////////////////////////[m
+               $mobile_no = preg_replace('/\D/', '', $request->get('mother_mob'));[m
+[1mdiff --git a/public/dist/js/formValidation.js b/public/dist/js/formValidation.js[m
+[1mindex 0779c8e..c9bf1eb 100644[m
+[1m--- a/public/dist/js/formValidation.js[m
+[1m+++ b/public/dist/js/formValidation.js[m
+[36m@@ -6751,6 +6751,7 @@[m [mif (typeof jQuery === 'undefined') {[m
+                     // http://regexr.com/39tak[m
+                     value   = $.trim(value);[m
+                     isValid = (/^(((\+|00)?971[\s\.-]?(\(0\)[\s\.-]?)?|0)(\(5(0|2|5|6)\)|5(0|2|5|6)|2|3|4|6|7|9)|60)([\s\.-]?[0-9]){7}$/).test(value);[m
+[32m+[m					[32m//isValid = (/^((\(5(0|2|5|6)\)|5(0|2|5|6))|60)([0-9]){7}$/).test(value); Mobile numbers only->9 digits without preceding zeroes[m
+                     break;[m
+                     [m
+                 case 'BG':[m
+[1mdiff --git a/resources/views/employees/profile.blade.php b/resources/views/employees/profile.blade.php[m
+[1mindex d71f087..541bbac 100644[m
+[1m--- a/resources/views/employees/profile.blade.php[m
+[1m+++ b/resources/views/employees/profile.blade.php[m
+[36m@@ -28,8 +28,7 @@[m [msession(['subtitle' => '']); ?>[m
+ 			<!-- begin breadcrumb -->[m
+ 			<ol class="breadcrumb pull-right hidden-print">[m
+ 				<li><a href="javascript:;">Employee</a></li>[m
+[31m-				<li class="active"><a href="javascript:;">Profile</a></li>[m
+[31m-				 [m
+[32m+[m				[32m<li class="active"><a href="javascript:;">Profile</a></li>[m[41m [m
+ 			</ol> [m
+ 			<!-- end breadcrumb -->[m
+ 			<!-- begin page-header -->[m
+[1mdiff --git a/resources/views/employees/search.blade.php b/resources/views/employees/search.blade.php[m
+[1mindex 6b76ed6..2d55c5b 100644[m
+[1m--- a/resources/views/employees/search.blade.php[m
+[1m+++ b/resources/views/employees/search.blade.php[m
+[36m@@ -86,7 +86,7 @@[m [msession(['subtitle' => 'EmpSearch']); ?>[m
+                                             $.get('/employeeSearchBind',{keyword:value }, function(searchBlade){                      [m
+                                             $("#searchResults").html(searchBlade);[m
+                                             });[m
+[31m-                                        },100));[m
+[32m+[m[32m                                        },400));[m
+                         [m
+                                      }); [m
+ [m
+[1mdiff --git a/resources/views/employees/searchAll.blade.php b/resources/views/employees/searchAll.blade.php[m
+[1mindex 8ca46cd..d607706 100644[m
+[1m--- a/resources/views/employees/searchAll.blade.php[m
+[1m+++ b/resources/views/employees/searchAll.blade.php[m
+[36m@@ -86,7 +86,7 @@[m [msession(['subtitle' => 'EmpSearchAll']); ?>[m
+                                             $.get('/employeeSearchBindAll',{keyword:value }, function(searchBlade){                      [m
+                                             $("#searchResults").html(searchBlade);[m
+                                             });[m
+[31m-                                        },100));[m
+[32m+[m[32m                                        },400));[m
+                         [m
+                                      }); [m
+ [m

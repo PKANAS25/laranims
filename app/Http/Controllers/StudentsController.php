@@ -135,9 +135,8 @@ class StudentsController extends Controller
             );
 
         }
-         $msg = ucwords(strtolower($request->get('fullname')))." is successfully enrolled. Welcome to ".Auth::user()->branch_name.".+Please+call+8006877+for+any+enquiries" ;
-              $msg = str_replace(" ", "+", $msg);
-              $msg = str_replace("++", "+", $msg);
+              $msg = ucwords(strtolower($request->get('fullname')))." is successfully enrolled. Welcome to ".Auth::user()->branch_name.".+Please+call+8006877+for+any+enquiries" ;
+              $msg = rawurlencode($msg);
               
               ///////////////////////////////////////////////Sending SMS to mother/////////////////////////////////////////////////////
               $mobile_no = preg_replace('/\D/', '', $request->get('mother_mob'));
