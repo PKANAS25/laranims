@@ -23,14 +23,14 @@
                     <li @if(session('title') == 'Home') class="active" @endif><a href="/home"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
 <!-- ***********************************************************Payments***************************************************************************** -->                   
         @if(Auth::user()->branch_type==0)                     
-                    <li class="has-sub">
+                    <li class="has-sub @if(session('title') == 'Payments') active @endif ">
                         <a href="javascript:;">
                              <b class="caret pull-right"></b>
                             <i class="fa fa-credit-card"></i> 
                             <span>Payments</span>
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="email_inbox.html">Balance</a></li>
+                            <li @if(session('subtitle') == 'balance') class="active" @endif><a href="/payments/balance">Balance</a></li>
                             <li><a href="email_inbox_v2.html">Receipt Book</a></li>
                             <li><a href="email_compose.html">Paments Lock</a></li>
                             <li><a href="email_detail.html">Payments Deposit</a></li>

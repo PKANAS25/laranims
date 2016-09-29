@@ -7,6 +7,9 @@ session(['subtitle' => 'addEmp']); ?>
 
 
 @section('content')
+
+<link rel="stylesheet" type="text/css" href="/js/timepicker/jquery.ui.timepicker.css" />
+<script type="text/javascript" src="/js/timepicker/jquery.ui.timepicker.js?v=0.3.3"></script>  
  
 <div id="content" class="content">
             <!-- begin breadcrumb -->
@@ -213,7 +216,7 @@ session(['subtitle' => 'addEmp']); ?>
                                          </div>
                                          
                                          <div class="form-group m-r-10">
-                                                <input class="form-control" type="text" name="end_time" data-fv-notempty="true" value="14:30" />
+                                                <input class="form-control" type="text" name="end_time" id="end_time" data-fv-notempty="true" value="14:30" />
                                          </div> 
                                     </div>
 
@@ -382,6 +385,24 @@ session(['subtitle' => 'addEmp']); ?>
     <script>
         $(document).ready(function() {
             App.init(); 
+
+             @if(Auth::user()->hasRole('AttendanceManager'))
+             $('#start_time').timepicker({
+                            showPeriodLabels: false,
+                             minutes: { interval: 1 }
+                        }).on('change', function(e) { 
+            $('#eForm').formValidation('revalidateField', 'start_time');
+            $('#eForm').formValidation('revalidateField', 'end_time');
+            });
+
+            $('#end_time').timepicker({
+                            showPeriodLabels: false,
+                             minutes: { interval: 1 }
+                        }).on('change', function(e) { 
+            $('#eForm').formValidation('revalidateField', 'end_time');
+            $('#eForm').formValidation('revalidateField', 'start_time');
+            });
+            @endif   
 
             $('#dob').datepicker({
                 format: "yyyy-mm-dd",

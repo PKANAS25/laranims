@@ -338,6 +338,11 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::get('/{docId}/{employee}/{number}/staff/show/Document', ['uses'=>'DocumentsController@staffDocShow']);
     Route::get('/{docId}/{employee}/{number}/staffDocDownload', ['uses'=>'DocumentsController@staffDocDownload']);
 
+//----------------------------------------------------PaymentsController--------------------------------------------------------------------------
+
+    Route::get('/payments/balance',['uses'=>'PaymentsController@balance']);
+    Route::get('/payments/{classId}/{filter}/balance',['uses'=>'PaymentsController@balanceGrades']);
+
 });
 
  
