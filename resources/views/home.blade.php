@@ -15,7 +15,7 @@ session(['subtitle' => '']); ?>
             </ol>
             <!-- end breadcrumb -->
             <!-- begin page-header -->
-            <h1 class="page-header">Dashboard <small>header small text goes here...</small></h1>
+            <h1 class="page-header">Dashboard <small>Active students & Basic status</small></h1>
             <!-- end page-header -->
             
             <!-- begin row -->
@@ -30,11 +30,11 @@ session(['subtitle' => '']); ?>
                     <div class="widget widget-stats bg-green">
                         <div class="stats-icon"><i class="fa fa-money"></i></div>
                         <div class="stats-info">
-                            <h4>NEW PAYMENTS</h4>
-                            <p>71,922 AED</p>    
+                            <h4>CASH NOT DEPOSITED</h4>
+                            <p>{{ $cashInHand }} AED</p>    
                         </div>
                         <div class="stats-link">
-                            <a href="javascript:;">  <i class="fa fa-arrow-circle-o-right"></i></a>
+                            <a href="javascript:;"> As per today <i class="fa fa-arrow-circle-o-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -45,24 +45,10 @@ session(['subtitle' => '']); ?>
                         <div class="stats-icon"><i class="fa fa-link"></i></div>
                         <div class="stats-info">
                             <h4>NEW SUBSCRIPTIONS</h4>
-                            <p>9 yearly, 36 others</p>   
+                            <p>{{ $yearly }} yearly, {{ $otherSubs }} others</p>   
                         </div>
                         <div class="stats-link">
-                            <a href="javascript:;"> <i class="fa fa-arrow-circle-o-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- end col-3 -->
-                <!-- begin col-3 -->
-                <div class="col-md-3 col-sm-6">
-                    <div class="widget widget-stats bg-purple">
-                        <div class="stats-icon"><i class="fa fa-child"></i></div>
-                        <div class="stats-info">
-                            <h4>NEW ENROLMENTS</h4>
-                            <p>7</p>    
-                        </div>
-                        <div class="stats-link">
-                            <a href="javascript:;"> <i class="fa fa-arrow-circle-o-right"></i></a>
+                            <a href="javascript:;">last 30 days <i class="fa fa-arrow-circle-o-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -73,14 +59,29 @@ session(['subtitle' => '']); ?>
                         <div class="stats-icon"><i class="fa fa-clock-o"></i></div>
                         <div class="stats-info">
                             <h4>EXPIRING STUDENTS</h4>
-                            <p>12</p> 
+                            <p>{{ $expiring }}</p> 
                         </div>
                         <div class="stats-link">
-                            <a href="javascript:;"> <i class="fa fa-arrow-circle-o-right"></i></a>
+                            <a href="javascript:;"> Within 7 days <i class="fa fa-arrow-circle-o-right"></i></a>
                         </div>
                     </div>
                 </div>
                 <!-- end col-3 -->
+                <!-- begin col-3 -->
+                <div class="col-md-3 col-sm-6">
+                    <div class="widget widget-stats bg-purple">
+                        <div class="stats-icon"><i class="fa fa-child"></i></div>
+                        <div class="stats-info">
+                            <h4>NEW ENROLMENTS</h4>
+                            <p>{{ $enrollments }}</p>    
+                        </div>
+                        <div class="stats-link">
+                            <a href="javascript:;">last 90 days  <i class="fa fa-arrow-circle-o-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- end col-3 -->
+              
             </div>
             <!-- end row -->
 
@@ -116,7 +117,7 @@ session(['subtitle' => '']); ?>
                                     <?php $i=1; ?>
                                      @foreach($subscriptions as $subs)
 
-                                    <tr @if($subs->remaining_days<8) class="danger" @endif>
+                                    <tr @if($subs->remaining_days<8) title="This subscription ends in {{ $subs->remaining_days }} days" class="danger" @endif>
                                         <td>{!! $i !!}</td>
                                         <td>{!! $subs->student_id !!}</td>
                                         <td><a href="{!! action('StudentsController@profile', base64_encode($subs->student_id)) !!}">{!!  $subs->full_name !!} </a></td>

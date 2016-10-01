@@ -48,8 +48,44 @@ class HomeController extends Controller
             
             ->get();
           
+        $cashInHand = DB::table('invoices')->where('bank_ok',0)->where('deleted',0)->where('branch',$selectedBranch)->sum('amount_paid');
 
-        return view('home',compact('subscriptions'));
+        $yearly = DB::table('subscriptions') 
+                    ->leftjoin('students', 'subscriptions.student_id', '=', 'students.student_id')
+                    ->where('subscriptions.deleted',0 )
+                    ->where('refunded',0) 
+                    ->where('subscription_type',1) 
+                    ->where('students.branch',$selectedBranch)
+                    ->whereRaw("enroll_date BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()")
+                    ->count(); 
+
+
+        $otherSubs = DB::table('subscriptions') 
+                    ->leftjoin('students', 'subscriptions.student_id', '=', 'students.student_id')
+                    ->where('subscriptions.deleted',0 )
+                    ->where('refunded',0) 
+                    ->where('subscription_type','!=',1) 
+                    ->where('students.branch',$selectedBranch)
+                    ->whereRaw("enroll_date BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()")
+                    ->count(); 
+
+        $enrollments = DB::table('students')   
+                         ->where('deleted',0)
+                         ->where('branch',$selectedBranch) 
+                         ->whereRaw("enrolled_on BETWEEN CURDATE() - INTERVAL 90 DAY AND CURDATE()")   
+                         ->count();   
+
+        $expiring = DB::table('subscriptions') 
+                      ->leftjoin('students', 'subscriptions.student_id', '=', 'students.student_id')
+                      ->where('subscriptions.deleted',0 )
+                      ->where('refunded',0) 
+                      ->where('students.branch',$selectedBranch) 
+                      ->where('students.deleted',0)  
+                      ->whereRaw("end_date < CURDATE() + INTERVAL 7 DAY")
+                      ->whereRaw("'$today' Between subscriptions.start_date AND subscriptions.end_date")   
+                      ->count();                 
+
+        return view('home',compact('subscriptions','cashInHand','yearly','otherSubs','enrollments','expiring'));
     }
 
     

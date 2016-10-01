@@ -9,7 +9,7 @@ session(['subtitle' => 'balance']); ?>
 			<!-- begin breadcrumb -->
 			<ol class="breadcrumb pull-right">
 				<li><a href="javascript:;">Grades</a></li>
-				<li class="active"><a href="javascript:;">List</a></li>
+				<li class="active"><a href="javascript:;">Balance</a></li>
 				 
 			</ol> 
 			<!-- end breadcrumb -->

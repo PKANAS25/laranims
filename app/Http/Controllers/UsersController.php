@@ -32,7 +32,7 @@ class UsersController extends Controller
     {
         $id = base64_decode($id);
         $user = User::whereId($id)->firstOrFail();
-        $roles = Role::all();
+        $roles = Role::orderBy('display_name')->get();
         $selectedRoles = $user->roles->lists('id')->toArray();
         return view('users.edit', compact('user', 'roles', 'selectedRoles'));
     }

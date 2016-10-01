@@ -72,6 +72,7 @@ class PaymentsController extends Controller
    public function balanceGrades($classId,$filter)
     {
         $grade = Classroom::where('class_id',base64_decode($classId))->first();
+        $today = Carbon::now()->toDateString();
 
         if($filter=='active')
          $students = DB::table('subscriptions') 
@@ -92,10 +93,7 @@ class PaymentsController extends Controller
             ->orderBy('students.full_name')            
             ->get();
 
-        elseif($filter=='all')
-        {
-      
-           
+        elseif($filter=='all') 
          $students = DB::table('students') 
             ->leftjoin('nationality', 'students.nationality', '=', 'nationality.nation_id')
             ->select('students.*', 'nationality.nationality as nation') 
@@ -104,14 +102,43 @@ class PaymentsController extends Controller
             ->selectRaw("(SELECT SUM(amount) FROM subscriptions_hour WHERE subscriptions_hour.student_id = students.student_id AND   deleted=0)AS totalHours")
             ->selectRaw("(SELECT SUM(subscriptions_amount) FROM invoices WHERE invoices.student_id = students.student_id   AND deleted=0 AND NOT(cheque=1 AND cheque_bounce=1))AS totalPaid") 
             ->where('students.current_grade',base64_decode($classId)) 
-            ->where('students.deleted',$deleted)            
+            ->where('students.deleted',0)            
             ->orderBy('students.full_name')            
-            ->get();
-        }
+            ->get(); 
+            $gradeBalance=0;
+            foreach ($students as $student) 
+                    {
+                        $totalPayable = 0;  
 
-        return view('payments.balanceGrade',compact('grades','students'));
+                         $payable1 = DB::table('subscriptions')->where('student_id',$student->student_id)->where('refunded',0)->where('deleted',0)->sum('amount');
+                         $payable2 = DB::table('subscriptions')->where('student_id',$student->student_id)->where('refunded',1)->where('deleted',0)->sum('non_refundable_amount');
+                         $payable3 = DB::table('subscriptions_hour')->where('student_id',$student->student_id)->where('deleted',0)->sum('amount');
+                         $totalPayable = $payable1+$payable2+$payable3;
+
+                         $paid = DB::table('invoices')
+                                   ->where('student_id',$student->student_id)
+                                   ->where('deleted',0)
+                                   ->whereRaw("NOT(cheque='1' AND cheque_bounce='1')")
+                                   ->sum('subscriptions_amount');
+                         
+                         $student->totalPayable = $totalPayable;   
+                         $student->studentBalance = $totalPayable-$paid;   
+                         
+                         if($student->studentBalance>0)  
+                         $gradeBalance += $student->studentBalance;    
+                    } //foreach ($students as $student) 
+        
+        $i=0;           
+        return view('payments.balanceGrade',compact('grade','students','i','gradeBalance'));
     }
+ ///-------------------------------------------------------------------------------------------------------------------------------
+   
+   public function receiptBook()
+    {
+    }    
 ///-------------------------------------------------------------------------------------------------------------------------------    
+
+
 }
 
 
