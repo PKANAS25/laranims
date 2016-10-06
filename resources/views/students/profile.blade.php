@@ -512,6 +512,7 @@ session(['subtitle' => '']); ?>
                                         <th >Service Charge</th>
                                         <th >Amount</th>                                        
                                         <th >&nbsp;</th>
+                                        @if(Auth::user()->hasRole('PaymentsUnlock'))<th >&nbsp;</th>@endif
                                     </thead>
                                     <tbody> 
                                                
@@ -539,6 +540,38 @@ session(['subtitle' => '']); ?>
                                                     <td><a title="Print receipt"  href="{!! action('InvoiceController@view', base64_encode($invoice->invoice_id) ) !!}" class="btn btn-sm btn-primary"><i class="fa fa-print"></i></a>
                                                      @if($invoice->locked==0 && Auth::user()->hasRole('nursery_admin') && Auth::user()->branch==$student->branch)&nbsp;&nbsp; &nbsp;&nbsp; <a title="Delete receipt" href="#modal-dialog{{$invoice->invoice_id}}" class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>@endif
                                                     </td>
+                                                    @if(Auth::user()->hasRole('PaymentsUnlock'))
+                                                    <td><div id="divUnlock{{ $invoice->invoice_id}}">
+                                                        @if($invoice->locked==1)
+                                                            <button class="btn btn-sm" id="invUnlock{{ $invoice->invoice_id}}" value="{{ $invoice->invoice_id}}"> <i class="fa fa-lock"></i></button>
+                                                        @elseif($invoice->locked==0)
+                                                            <button class="btn btn-sm" id="invLock{{ $invoice->invoice_id}}" value="{{ $invoice->invoice_id}}"> <i class="fa fa-unlock"></i></button>
+                                                        @endif
+                                                    </div>
+                                                <script type="text/javascript">
+                                                $(document.body).on('click', '#invUnlock{{ $invoice->invoice_id}}', function(e){
+                                                    e.preventDefault();
+                                                    invoiceId = $(this).val();
+
+                                                     $.get('/invLockUnlock',{action:'unlock', invoiceId:invoiceId }, function(actionBlade){                      
+                                                        $("#divUnlock{{ $invoice->invoice_id}}").html(actionBlade);
+                                                         
+                                                    });
+                                                });
+
+                                                $(document.body).on('click', '#invLock{{ $invoice->invoice_id}}', function(e){
+                                                    e.preventDefault();
+                                                    invoiceId = $(this).val();
+
+                                                     $.get('/invLockUnlock',{action:'lock', invoiceId:invoiceId }, function(actionBlade){                      
+                                                        $("#divUnlock{{ $invoice->invoice_id}}").html(actionBlade);
+                                                         
+                                                    });
+                                                });
+                                                </script>
+                                                
+                                            </td>
+                                            @endif
 
                                                  </tr>
                                                  

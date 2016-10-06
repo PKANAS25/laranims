@@ -750,7 +750,39 @@ class InvoiceController extends Controller
         return redirect()->action('InvoiceController@view', [base64_encode($customItem->invoice_id)])->with('status','Item Exchanged successfully') ;                  
 
     }    
+//-----------------------------------------------------------------------------------------------
 
+public function lockUnlock(Request $request)
+    {
+         
+        
+        $invoiceId =  $request->invoiceId; 
+                
+        if(Auth::user()->hasRole('PaymentsUnlock'))
+        {    
+            $receipt = Invoice::where('invoice_id',$invoiceId)->first();
+            if($receipt && $request->action=="unlock")
+            {
+                $receipt->locked=0;            
+                $receipt->save();
+                ?>
+                &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="invLock<?php echo $invoiceId;?>" value="<?php echo $invoiceId;?>"> <i class="fa fa-unlock"></i></button>
+                <?php
+              
+            }
+
+            else if($receipt && $request->action=="lock")
+            {
+                $receipt->locked=1;            
+                $receipt->save();
+                ?>
+                &nbsp;&nbsp; &nbsp;&nbsp; <button class="btn btn-sm" id="invUnlock<?php echo $invoiceId;?>" value="<?php echo $invoiceId;?>"> <i class="fa fa-lock"></i></button>
+                <?php
+              
+            }
+        }
+
+    }
 //====--------------------------------------------------------------------------------------------------------------------------
 
 }

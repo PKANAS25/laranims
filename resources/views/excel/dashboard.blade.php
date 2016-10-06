@@ -21,7 +21,7 @@
         <tr @if($subs->remaining_days<8) style="color:#F00" @endif>
             <td>{!! $i !!}</td>
             <td>{!! $subs->student_id !!}</td>
-            <td>{!!  $subs->full_name !!}</td>
+            <td>{!! $subs->full_name !!}</td>
             <td>{!! $subs->standard !!}</td>
             <td>{!! $subs->group_name !!}</td>
             <td>{!!  $subs->subscription_type==5 ? date("d-M-y",strtotime($subs->start_date)) : date("d-M-y",strtotime($subs->start_date))." To ".date("d-M-y",strtotime($subs->end_date)) !!}</td>

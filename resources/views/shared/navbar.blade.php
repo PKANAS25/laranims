@@ -31,7 +31,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li @if(session('subtitle') == 'balance') class="active" @endif><a href="/payments/balance">Balance</a></li>
-                            <li><a href="email_inbox_v2.html">Receipt Book</a></li>
+                            <li @if(session('subtitle') == 'receipts') class="active" @endif><a href="/payments/receipts">Receipt Book</a></li>
                             <li><a href="email_compose.html">Paments Lock</a></li>
                             <li><a href="email_detail.html">Payments Deposit</a></li>
                             <li><a href="email_detail.html">Bonus</a></li>
@@ -69,7 +69,7 @@
                         <a href="javascript:;">
                             <b class="caret pull-right"></b>
                             <i class="ion-ios-cart"></i>
-                            <span>Store</span></span> 
+                            <span>Store</span>
                         </a>
                         <ul class="sub-menu">
                             @if(Auth::user()->hasRole('StoreManager') || Auth::user()->hasRole('StoreView'))
@@ -104,7 +104,7 @@
                     </li>
                     @endif
 
-                    @endif<!-- if branch type -- >
+                    @endif <!-- if branch type -- >
 <!-- ***********************************************************Payroll***************************************************************************** -->                                        
                     
                      <li class="has-sub @if(session('title') == 'Payroll')   active @endif">

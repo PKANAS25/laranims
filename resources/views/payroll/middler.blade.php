@@ -85,14 +85,15 @@ session(['subtitle' => 'generate']); ?>
                                             @if($noSave==1)
                                             <p class="text-danger">
                                             <strong>
-                                                @if($salriesNotVerified) Salary verification pending. @endif
-                                                @if($pendingApprovals) Payroll contents approval pending. @endif
-                                                @if($bankRejections) Open payroll bank rejections. @endif
+                                                @if($salriesNotVerified) Salary verification pending<br> @endif
+                                                @if($pendingApprovals) Payroll contents approval pending<br> @endif
+                                                @if($bankRejections) Open payroll bank rejections<br> @endif
+                                                @if($pendingAppeals) Attendance appeals pending<br> @endif
                                             </strong>
                                             </p> 
                                             @else 
                                             
-                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
                                                     
                                             </div> 
                                             @endif

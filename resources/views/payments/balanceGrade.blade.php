@@ -65,6 +65,8 @@ session(['subtitle' => 'balance']); ?>
 <a class="btn btn-sm btn-info m-b-10 hidden-print" href="{!! action('PaymentsController@balanceGrades', array(base64_encode($grade->class_id),'active')) !!}">Show Active</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a class="btn btn-sm btn-warning m-b-10 hidden-print" href="{!! action('PaymentsController@balanceGrades', array(base64_encode($grade->class_id),'all')) !!}">Show All</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a class="btn btn-sm text-white bg-yellow-darker m-b-10 hidden-print"  href="{!! action('ExcelController@studentsBalance', array(base64_encode($grade->class_id),$filter)) !!}"><i class="fa fa-file-excel-o"></i> Excel</a>
                               
                         </div> 
                     <!-- end panel --> 

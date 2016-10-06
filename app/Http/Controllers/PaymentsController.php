@@ -7,10 +7,13 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Auth;
+use DB;
 use App\Classroom;
 use App\Nationality;
 use App\Student;
-use DB;
+use App\Branch;
+use App\Invoice;
+
 
 use File;
 
@@ -129,18 +132,43 @@ class PaymentsController extends Controller
                     } //foreach ($students as $student) 
         
         $i=0;           
-        return view('payments.balanceGrade',compact('grade','students','i','gradeBalance'));
+        return view('payments.balanceGrade',compact('grade','students','i','gradeBalance','filter'));
     }
  ///-------------------------------------------------------------------------------------------------------------------------------
    
    public function receiptBook()
     {
+        $branches = Branch::where('non_nursery',0)->orderBy('name')->get();   
+        $submit=0;
+
+        return view('payments.receiptBook',compact('branches','submit'));
+    }    
+///-------------------------------------------------------------------------------------------------------------------------------    
+
+     public function receiptBookGenerate(Request $request)
+    {
+        $branches = Branch::where('non_nursery',0)->orderBy('name')->get();
+        $branchSelected = Branch::where('id',$request->branch)->first();  
+        $submit=1;
+
+        $receipts = Invoice::select('invoices.*','students.full_name','users.name AS receiver') 
+                           ->leftjoin('students', 'invoices.student_id', '=', 'students.student_id')
+                           ->leftjoin('users', 'invoices.admin', '=', 'users.id')
+                           ->where('invoices.branch',$request->branch)
+                           ->where('invoices.deleted',0)
+                           ->where('invoices.amount_paid','>=',0)
+                           ->whereBetween('invoices.dated', [$request->start_date, $request->end_date])
+                           ->orderBy('invoices.invoice_id','DESC')
+                           ->get();
+
+        return view('payments.receiptBook',compact('branches','branchSelected','submit','receipts'));
     }    
 ///-------------------------------------------------------------------------------------------------------------------------------    
 
 
 }
-
+ 
+                                     
 
  
                                    

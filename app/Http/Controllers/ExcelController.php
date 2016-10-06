@@ -61,11 +61,9 @@ class ExcelController extends Controller
         })->export('xlsx');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  ///-------------------------------------------------------------------------------------------------------------------------------
+
+
     public function students($classId,$filter)
     {
         $today = Carbon::now()->toDateString();
@@ -129,60 +127,85 @@ class ExcelController extends Controller
                 });
                 })->export('xlsx');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+ ///-------------------------------------------------------------------------------------------------------------------------------
+   
+   public function studentsBalance($classId,$filter)
     {
-        //
-    }
+        $grade = Classroom::where('class_id',base64_decode($classId))->first();
+        $today = Carbon::now()->toDateString();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        if($filter=='active')
+         $students = DB::table('subscriptions') 
+            ->leftjoin('students', 'subscriptions.student_id', '=', 'students.student_id')
+            ->leftjoin('nationality', 'students.nationality', '=', 'nationality.nation_id')
+            ->select('subscriptions.*', 'nationality.nationality as nation','students.full_name','students.full_name_arabic','students.dob','students.gender','students.father_mob','students.mother_mob','students.branch') 
+            ->selectRaw("DATEDIFF(subscriptions.end_date,'$today')  as remainingDays") 
+            ->selectRaw("(SELECT SUM(amount) FROM subscriptions WHERE subscriptions.student_id = students.student_id AND refunded=0 AND deleted=0)AS totalSubs")
+            ->selectRaw("(SELECT SUM(non_refundable_amount) FROM subscriptions WHERE subscriptions.student_id = students.student_id AND refunded=1 AND deleted=0)AS totalRefunded")
+            ->selectRaw("(SELECT SUM(amount) FROM subscriptions_hour WHERE subscriptions_hour.student_id = students.student_id AND   deleted=0)AS totalHours")
+            ->selectRaw("(SELECT SUM(subscriptions_amount) FROM invoices WHERE invoices.student_id = students.student_id   AND deleted=0 AND NOT(cheque=1 AND cheque_bounce=1))AS totalPaid")
+            ->where('subscriptions.deleted',0 )
+            ->where('refunded',0) 
+            ->where('students.current_grade',base64_decode($classId)) 
+            ->where('students.deleted',0) 
+            ->whereRaw("'$today' Between subscriptions.start_date AND subscriptions.end_date")
+            ->orderBy('current_standard', 'ASC')
+            ->orderBy('students.full_name')            
+            ->get();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        elseif($filter=='all') 
+         $students = DB::table('students') 
+            ->leftjoin('nationality', 'students.nationality', '=', 'nationality.nation_id')
+            ->select('students.*', 'nationality.nationality as nation') 
+            ->selectRaw("(SELECT SUM(amount) FROM subscriptions WHERE subscriptions.student_id = students.student_id AND refunded=0 AND deleted=0)AS totalSubs")
+            ->selectRaw("(SELECT SUM(non_refundable_amount) FROM subscriptions WHERE subscriptions.student_id = students.student_id AND refunded=1 AND deleted=0)AS totalRefunded")
+            ->selectRaw("(SELECT SUM(amount) FROM subscriptions_hour WHERE subscriptions_hour.student_id = students.student_id AND   deleted=0)AS totalHours")
+            ->selectRaw("(SELECT SUM(subscriptions_amount) FROM invoices WHERE invoices.student_id = students.student_id   AND deleted=0 AND NOT(cheque=1 AND cheque_bounce=1))AS totalPaid") 
+            ->where('students.current_grade',base64_decode($classId)) 
+            ->where('students.deleted',0)            
+            ->orderBy('students.full_name')            
+            ->get(); 
+            $gradeBalance=0;
+            foreach ($students as $student) 
+                    {
+                        $totalPayable = 0;  
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+                         $payable1 = DB::table('subscriptions')->where('student_id',$student->student_id)->where('refunded',0)->where('deleted',0)->sum('amount');
+                         $payable2 = DB::table('subscriptions')->where('student_id',$student->student_id)->where('refunded',1)->where('deleted',0)->sum('non_refundable_amount');
+                         $payable3 = DB::table('subscriptions_hour')->where('student_id',$student->student_id)->where('deleted',0)->sum('amount');
+                         $totalPayable = $payable1+$payable2+$payable3;
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+                         $paid = DB::table('invoices')
+                                   ->where('student_id',$student->student_id)
+                                   ->where('deleted',0)
+                                   ->whereRaw("NOT(cheque='1' AND cheque_bounce='1')")
+                                   ->sum('subscriptions_amount');
+                         
+                         $student->totalPayable = $totalPayable;   
+                         $student->studentBalance = $totalPayable-$paid;   
+                         
+                         if($student->studentBalance>0)  
+                         $gradeBalance += $student->studentBalance;    
+                    } //foreach ($students as $student) 
+        
+        Excel::create(Auth::user()->branch_name.' ('.$grade->standard." - ".ucwords($grade->division).") Balance", function($excel) use ($students,$classId,$grade,$filter,$gradeBalance)  {
+
+                // Set the title
+                $excel->setTitle('Al Dana NMS');
+
+                // Chain the setters
+                $excel->setCreator(Auth::user()->name)
+                      ->setCompany('Al Dana Nurseries');
+
+                // Call them separately
+                $excel->setDescription('Students Balance');
+
+                $excel->sheet('First sheet', function($sheet)  use ($students,$classId,$grade,$filter,$gradeBalance) {
+                $sheet->loadView('excel.studentsBalance')->with(compact('grade','students','gradeBalance','filter'));
+                });
+                })->export('xlsx');
+
+         
     }
+ ///-------------------------------------------------------------------------------------------------------------------------------
 }

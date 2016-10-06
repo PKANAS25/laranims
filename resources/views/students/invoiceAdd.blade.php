@@ -182,7 +182,7 @@ session(['subtitle' => '']); ?>
 
    function payFinalizer()
     {
-        var subscription_pay = $("#subscription_pay").val(); 
+      var subscription_pay = $("#subscription_pay").val(); 
       var event_total = $("#event_total").val(); 
       var store_total = $("#store_total").val();
       var discount = $("input#discount").val();

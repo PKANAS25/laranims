@@ -78,7 +78,7 @@ class PayrollControllerMain extends Controller
        }
 
         
-       $noSave=0; $bankRejections=0; $pendingApprovals=0; $salriesNotVerified=0;
+       $noSave=0; $bankRejections=0; $pendingApprovals=0; $salriesNotVerified=0; $pendingAppeals=0;
 
        $AttendanceTypes = AttendanceType::all();
     
@@ -173,7 +173,31 @@ class PayrollControllerMain extends Controller
                         
                         $date_looper = date ("Y-m-d", strtotime ("+1 day", strtotime($date_looper))); 
                     }
-                } 
+                }
+//**************************************************************Checking absence in a Paid vacation*************************************************
+
+                $vacations = Vacation::where('end_date','>=',$start_date)
+                                     ->where('start_date','<=',$end_date)
+                                     ->where('emp_id',$employee->employee_id)
+                                     ->where('paid',1)
+                                     ->get(); 
+
+                foreach ($vacations as $vacation) 
+                {
+                    $vacStart = $vacation->start_date; $vacEnd = $vacation->end_date; $date_looper = $vacStart;
+                    
+                    while(strtotime($date_looper)<=strtotime($vacEnd))
+                    {
+                        if(strtotime($date_looper)>=strtotime($start_date) && strtotime($date_looper)<=strtotime($end_date))
+                        { 
+                            $duplicateAttendance = StaffAttendance::where('dated', $date_looper)->where('employee_id',$employee->employee_id)->count(); 
+                            if($duplicateAttendance)
+                                $employee->deduction_days--;  
+                        }
+                        
+                        $date_looper = date ("Y-m-d", strtotime ("+1 day", strtotime($date_looper))); 
+                    }
+                }  
 //*************************************************************************************************************************************************************** 
                 if($employee->deduction_days>30) 
                     $employee->deduction_days=30; 
@@ -309,6 +333,16 @@ class PayrollControllerMain extends Controller
                  if($rejections)
                     {$noSave=1; $bankRejections=1; }
 
+                  $pendingAppeals = DB::table('appeals')
+                                  ->select('appeals.*','staff_attendance.dated')
+                                  ->leftjoin('staff_attendance','appeals.matter_id','=','staff_attendance.attendance_id')
+                                  ->where('status',0)
+                                  ->where('dated','!=','')
+                                  ->where('dated','>','2016-08-31')
+                                  ->count();
+                 if($pendingAppeals)
+                 $noSave=1; 
+
 //************************************************************************************************************************************************************
 
                 $daySalary=0; $employee->absentDeduction=0; $employee->netAmount=0;
@@ -320,7 +354,7 @@ class PayrollControllerMain extends Controller
 
         } //foreach ($employees as $employee)                  
               
-        return view('payroll.middler',compact('employees','noSave','payroll_month','company','start_date','end_date','bankRejections','pendingApprovals','salriesNotVerified'));
+        return view('payroll.middler',compact('employees','noSave','payroll_month','company','start_date','end_date','bankRejections','pendingApprovals','salriesNotVerified','pendingAppeals'));
    
     }
 

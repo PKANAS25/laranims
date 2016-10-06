@@ -88,6 +88,8 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
     Route::post('/student/invoice/add/{studentId}', 'InvoiceController@save');
     Route::get('/invoice/{invoiceId}', 'InvoiceController@view');
 
+    Route::get('/invLockUnlock', 'InvoiceController@lockUnlock');
+
     Route::post('/profile/student/{studentId}', ['middleware' => 'nursery_admin','uses'=>'InvoiceController@delete']);
 
     Route::get('/invoice/exchange/{customId}','InvoiceController@exchangeForm');
@@ -342,6 +344,10 @@ Route::group(array('middleware' => 'critical','middleware' => 'auth' ), function
 
     Route::get('/payments/balance',['uses'=>'PaymentsController@balance']);
     Route::get('/payments/{classId}/{filter}/balance',['uses'=>'PaymentsController@balanceGrades']);
+    Route::get('/excelStudentsBalance/{classId}/{filter}', 'ExcelController@studentsBalance');
+
+    Route::get('/payments/receipts',['uses'=>'PaymentsController@receiptBook']);
+    Route::post('/payments/receipts',['uses'=>'PaymentsController@receiptBookGenerate']);
 
 });
 
