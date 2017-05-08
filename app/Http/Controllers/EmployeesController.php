@@ -107,7 +107,7 @@ class EmployeesController extends Controller
            
             $staffDoc->locked =0;  $staffDoc->expiry_date = "";
 
-            if($staffDocDetail )
+            if($staffDocDetail)
             {
                 if($staffDocDetail->lock) $staffDoc->locked = 1;
 

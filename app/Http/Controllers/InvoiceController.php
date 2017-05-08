@@ -44,7 +44,7 @@ class InvoiceController extends Controller
             ->first();
 
        if($branch->card_service_charge) 
-            $serviceChargeFlag =$branch->card_service_charge;
+            $serviceChargeFlag = $branch->card_service_charge;
        else
          $serviceChargeFlag =0;
 
